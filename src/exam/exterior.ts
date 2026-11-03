@@ -18,6 +18,9 @@ const [cx, cy, cw, ch] = sl.crop;
 /** photo pixel (y down) -> eye mm (origin at the iris centre, y up) */
 const mm = (px: number, py: number): [number, number] => [(px - ix) / k, -(py - iy) / k];
 
+/** The side the photo and the eye's +x temporal frame show: with the lateral canthus on the viewer's right, a left eye. The other side is drawn mirrored. */
+export const DRAWN_SIDE: "OD" | "OS" = fissure.lateral_canthus[0] > fissure.medial_canthus[0] ? "OS" : "OD";
+
 /** Frame centre in eye mm: the centre of the exterior crop. */
 export const exteriorCamera = (): [number, number] => mm(cx + cw / 2, cy + ch / 2);
 

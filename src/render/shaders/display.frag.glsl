@@ -4,8 +4,10 @@ out vec4 fragColor;
 uniform sampler2D uTex;
 uniform vec2 uRes;
 uniform float uEye, uBloom, uGrain;   // uBloom 1 = slit-lamp optics (glare, vignette), 0 = studio photograph; uGrain 0 = none
+uniform float uMirror;   // 1 = the picture is flipped left to right: the other eye of the patient
 void main(){
   vec2 uv = gl_FragCoord.xy/uRes;
+  if(uMirror > .5) uv.x = 1. - uv.x;
   vec3 c = textureLod(uTex, uv, 0.).rgb;
   vec3 b = max(textureLod(uTex, uv, 2.).rgb - .75, 0.)*.3
          + max(textureLod(uTex, uv, 3.5).rgb - .65, 0.)*.35

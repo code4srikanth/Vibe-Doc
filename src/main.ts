@@ -9,7 +9,7 @@ import { examLog, mountExam, type ExamScreen } from "./ui/exam.ts";
 import vesselMapUrl from "../assets/conjunctiva/vessel-map.png?url";
 import { useVesselImage } from "./render/vessels.ts";
 import { buildRetinalVessels, VESSEL_HALF } from "./render/fundusVessels.ts";
-import { exteriorCamera, exteriorUniforms, slitSkinUniforms } from "./exam/exterior.ts";
+import { DRAWN_SIDE, exteriorCamera, exteriorUniforms, slitSkinUniforms } from "./exam/exterior.ts";
 import { playIntro } from "./intro.ts";
 import { playLanding } from "./ui/landing.ts";
 import { playLobby } from "./ui/lobby.ts";
@@ -65,17 +65,30 @@ let examOver = false;        // the report is up: the exam's blinks and resizes 
 let texturesReady: Promise<unknown> = Promise.resolve();   // the vessel map and the exterior photo (started in start())
 window.__eyesim = { frames: 0, done: false };
 
-/** Resolves the case's eye; the lamp is kept unless `resetLamp`. */
+/** The same patient without the disease, the agent's edits or the case's overrides: a healthy eye of the same age. */
+const healthyCase = (kase: Case): Case => ({ ...kase, diseases: [], overrides: undefined });
+
+/** Resolves the eye being examined; the lamp is kept unless `resetLamp`. The case describes the affected eye, and the
+ *  other eye is that patient's healthy eye. A ?bare render always draws the case's own eye. */
 function resolve() {
-  const kase = remote?.base ?? library.cases.find(c => c.id === caseId)!;
+  const base = remote?.base ?? library.cases.find(c => c.id === caseId)!;
+  const other = !bare && !!viewedEye && viewedEye !== base.subject.eye;
+  const kase = other ? { ...healthyCase(base), subject: { ...base.subject, eye: viewedEye as "OD" | "OS" } } : base;
   // the patient's gaze and the dilating drop belong to this exam, not to the case: applied on top of it. Every exam starts
   // undilated and the trainee decides; a ?bare render (no trainee) shows the case's own exam conditions.
   const overrides = gaze[0] || gaze[1]
     ? { ...kase.overrides, "eye.globe": { ...kase.overrides?.["eye.globe"], "physiology.gaze_horizontal": gaze[0], "physiology.gaze_vertical": gaze[1] } }
     : kase.overrides;
-  eye = resolveCase(library, { ...kase, overrides, exam_conditions: { ...kase.exam_conditions, dilated: bare ? dilated || !!kase.exam_conditions?.dilated : dilated } }, remote?.edits);
+  eye = resolveCase(library, { ...kase, overrides, exam_conditions: { ...kase.exam_conditions, dilated: bare ? dilated || !!kase.exam_conditions?.dilated : dilated } }, other ? [] : remote?.edits);
   eye.issues.push(...checkRules(eye, library.rules));
 }
+
+/** The metadata has no side (+x is temporal), so the other side is the same picture flipped. ?bare renders keep the drawn side. */
+const mirrored = (side: string) => !bare && side !== DRAWN_SIDE;
+/** The lamp stays where the trainee put it, in screen terms; in the flipped eye's own frame that is the opposite side. */
+const lampOnEye = (s: LampSettings): LampSettings => mirrored(eye.case.subject.eye)
+  ? { ...s, angle: -s.angle, beamX: -s.beamX, rotation: -(s.rotation ?? 0) }
+  : s;
 
 function load() {
   resolve();
@@ -110,7 +123,7 @@ function applyFundus(r: EyeRenderer) {
     ...num("eye.macula", "anatomy.foveola_diameter", "anatomy.diameter")].join();
   if (fundusVessels?.key !== key) { fundusVessels?.tex.dispose(); fundusVessels = { key, tex: buildRetinalVessels(eye) }; }
   const left = (viewedEye ?? eye.case.subject.eye) === "OS";
-  const common = { ...eyeUniforms(eye), uVessels: fundusVessels.tex, uVesHalf: VESSEL_HALF, uLidClose: lids, uBloom: 0, uGrain: 0, uEye: 0 };
+  const common = { ...eyeUniforms(eye), uVessels: fundusVessels.tex, uVesHalf: VESSEL_HALF, uLidClose: lids, uBloom: 0, uGrain: 0, uEye: 0, uMirror: 0 };   // the fundus shader handles its own side
   if (fundusLens) {
     lensOrigin ??= [lamp.beamX - (lamp.decentre ?? 0), lamp.beamY ?? 0];
     lensView = fundusLensView(lamp, eye, { lens: fundusLens, left, dilated: dilated || !!eye.case.exam_conditions?.dilated, aspect: aspect(), origin: lensOrigin });
@@ -130,13 +143,13 @@ const SHOT_IRIS_MARGIN = 1.15;   // the report's field height over the iris diam
 async function drawForReport(view: Comparison["view"], healthy: boolean): Promise<string> {
   const r = renderer;
   if (!r || !remote) throw new Error("Nothing to draw with");
-  const kase: Case = healthy ? { ...remote.base, diseases: [], overrides: undefined } : remote.base;
+  const kase: Case = healthy ? healthyCase(remote.base) : remote.base;
   const e = resolveCase(library, kase, healthy ? [] : remote.edits);
   r.resize(SHOT_SIZE[0], SHOT_SIZE[1]);
   const skin = await slitSkinUniforms(), settings = settingsFor(view, e), aspectRatio = SHOT_SIZE[0] / SHOT_SIZE[1];
   const f = frame(settings, aspectRatio, skin.uExtRect as number[], e.num("eye.iris", "anatomy.diameter") * SHOT_IRIS_MARGIN * aspectRatio);
   r.setFragment(SHADERS.slitLamp);
-  r.setUniforms({ ...eyeUniforms(e), ...skin, ...lampUniforms(settings, e, f), uLidClose: 0, uLidCentre: 0 }, f.centre);
+  r.setUniforms({ ...eyeUniforms(e), ...skin, ...lampUniforms(settings, e, f), uLidClose: 0, uLidCentre: 0, uMirror: mirrored(kase.subject.eye) ? 1 : 0 }, f.centre);
   for (let idle = 0; !r.done && idle < SHOT_PATIENCE;) {
     await new Promise(requestAnimationFrame);
     if (!r.step()) idle++;
@@ -162,7 +175,7 @@ function apply() {
       const forEye = eye;
       exteriorUniforms().then(u => {
         if (!exterior || eye !== forEye) return;
-        r.setUniforms({ ...eyeUniforms(eye), ...u, uExtShow: qs.has("eyeonly") ? 0 : 1 }, exteriorCamera());   // ?eyeonly: the eye layer alone
+        r.setUniforms({ ...eyeUniforms(eye), ...u, uExtShow: qs.has("eyeonly") ? 0 : 1, uMirror: 0 }, exteriorCamera());   // ?eyeonly: the eye layer alone
         loading = false;
       }).catch(fail);
     }
@@ -174,7 +187,7 @@ function apply() {
         if (exterior || eye !== forEye) return;
         crop = bare ? undefined : u.uExtRect as number[];   // renders keep the standard field
         const f = field();
-        r.setUniforms({ ...eyeUniforms(eye), ...u, ...lampUniforms(lamp, eye, f), uLidClose: lids, uLidCentre: lidCentre, uLayer: Number(qs.get("layer")) || 0 }, f.centre);
+        r.setUniforms({ ...eyeUniforms(eye), ...u, ...lampUniforms(lampOnEye(lamp), eye, f), uLidClose: lids, uLidCentre: lidCentre, uLayer: Number(qs.get("layer")) || 0, uMirror: mirrored(eye.case.subject.eye) ? 1 : 0 }, f.centre);
         loading = false;
       }).catch(fail);
     }
@@ -225,12 +238,13 @@ function bindScreen() {
     setLids(f, centre = 0) { lids = f; lidCentre = centre; if (!examOver) renderer?.setUniforms({ uLidClose: f, uLidCentre: centre }, fundusLens && lensView ? lensView.camera : field().centre); },
     // through a lens the lamp moves over the lens's image, so the view follows the pointer at the image's scale
     fieldWidth: () => fundusLens && lensView ? lensView.fov * lensView.mag : field().width,
-    setFundusLens(lens, viewed) {
+    setFundusLens(lens) {
       // moving over the fundus used the joystick: leaving the lens puts the slit back where it was
       if (!lens && lensOrigin) { lamp.beamX = lensOrigin[0] + (lamp.decentre ?? 0); lamp.beamY = lensOrigin[1]; lensOrigin = undefined; }
-      fundusLens = lens; viewedEye = viewed;
+      fundusLens = lens;
       apply();
     },
+    setEye(viewed) { viewedEye = viewed; resolve(); apply(); renderPanels(); },
     patient: () => patient,
     // End Examination: the case sheet, then the Examiner's report; "Start Another Case" begins again from the landing screen
     end() {

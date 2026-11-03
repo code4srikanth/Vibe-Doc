@@ -14,6 +14,15 @@ html:has(#casesheet) { overflow: hidden; }
 #casesheet label span { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; }
 #casesheet textarea { box-sizing: border-box; width: 100%; resize: vertical; padding: 8px 10px; font: inherit; color: var(--ink); background: #f8fbfc; border: 1px solid var(--line); border-radius: 8px; }
 #casesheet textarea:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; background: #fff; }
+#casesheet .eyes, #casesheet .finding { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; }
+#casesheet .eyes { position: sticky; top: -20px; z-index: 1; margin: 0 -4px 8px; padding: 6px 4px; background: #fff; border-bottom: 1px solid var(--line); font-size: 13px; }
+#casesheet .finding > span { grid-column: 1 / -1; margin-bottom: 4px; font-weight: 600; font-size: 13px; }
+#casesheet .finding small { display: none; }
+@media (max-width: 560px) {
+  #casesheet .eyes { display: none; }
+  #casesheet .finding { grid-template-columns: 1fr; }
+  #casesheet .finding small { display: block; margin-bottom: 3px; color: var(--muted); font-size: 12px; font-weight: 600; }
+}
 #casesheet footer { display: flex; align-items: center; justify-content: flex-end; gap: 14px; flex-wrap: wrap; }
 #casesheet .err { margin: 0; flex: 1; color: #b42318; font-size: 13px; }
 #casesheet .go { padding: 11px 22px; font: 700 14px inherit; font-family: inherit; color: #fff; background: linear-gradient(135deg, var(--teal-dark), var(--teal)); border: 0; border-radius: 10px; cursor: pointer; }

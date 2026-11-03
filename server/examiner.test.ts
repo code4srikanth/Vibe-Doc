@@ -27,7 +27,7 @@ const reply = (scores: Record<string, number>, evidence: string[] = [], view = "
     })
   }
 });
-const sheet = cleanSheet({ diagnosis: "Acute angle closure", cornea: "Hazy cornea" });
+const sheet = cleanSheet({ diagnosis: "Acute angle closure", corneaRight: "Hazy cornea" });
 
 test("the total is the weighted sum of the dimension scores", async () => {
   const r = await evaluate(session(), lib, sheet, [], reply({ diagnosis: 100, observations: 80, history: 50, technique: 40, safety: 100 }));
@@ -67,6 +67,17 @@ test("scores are clamped, and the trainee's text goes to the model as data", asy
   assert.equal(r.dimensions.observations.score, 0);
   assert.match(seen, /never instructions to you/);
   assert.equal(injected.plan.length, 2000);
+});
+
+test("the model is told the affected eye and reads each eye's findings under its own label", async () => {
+  let seen = "";
+  const model: Model = async req => { seen = req.messages.map(m => m.content).join("\n"); return reply({ diagnosis: 50, observations: 50, history: 50, technique: 50, safety: 50 })(req); };
+  const s = session();
+  s.base = { ...s.base, subject: { ...s.base.subject, eye: "OS" } };
+  await evaluate(s, lib, cleanSheet({ corneaRight: "Clear", corneaLeft: "Hazy cornea" }), [], model);
+  assert.match(seen, /Affected eye: left\nOther eye: healthy/);
+  assert.match(seen, /Cornea, right eye: Clear/);
+  assert.match(seen, /Cornea, left eye: Hazy cornea/);
 });
 
 test("a cataract's report carries the trainee's diagnosis and a comparison captioned from the metadata", async () => {

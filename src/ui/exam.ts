@@ -22,8 +22,10 @@ export interface ExamHooks {
   setLids(fraction: number, centre?: number): void;
   /** Width of the view's field, mm. */
   fieldWidth(): number;
-  /** A fundus lens was chosen (or null, none): show the fundus through it, of this eye. */
-  setFundusLens(lens: string | null, viewed: "OD" | "OS"): void;
+  /** A fundus lens was chosen (or null, none): show the fundus through it. */
+  setFundusLens(lens: string | null): void;
+  /** The trainee moved to this eye: the case's own, or the patient's healthy other eye. */
+  setEye(viewed: "OD" | "OS"): void;
   /** The voice patient, once the session is open; without one the chat says so. */
   patient?(): PatientLink | undefined;
   /** The trainee ended the examination: the case sheet comes next. */
@@ -276,11 +278,11 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): Ex
       const b = (e.target as HTMLElement).closest<HTMLButtonElement>("button");
       if (!b) return;
       viewed = b.dataset.eye as "OD" | "OS";
-      showLens(); sync(); log("eye", viewed);
+      hooks.setEye(viewed); look(); showLens(); sync(); log("eye", viewed);
     });
   }
   const isFundus = () => lens in FUNDUS_LENSES;
-  const showLens = () => { if (isFundus() || wasFundus) hooks.setFundusLens(isFundus() ? lens : null, viewed); wasFundus = isFundus(); };
+  const showLens = () => { if (isFundus() || wasFundus) hooks.setFundusLens(isFundus() ? lens : null); wasFundus = isFundus(); };
   q<HTMLSelectElement>("#lens").onchange = e => { lens = (e.target as HTMLSelectElement).value; showLens(); sync(); log("lens", lens); };
   q(".fs").onclick = () => document.fullscreenElement ? document.exitFullscreen() : view.requestFullscreen().catch(() => { /* not allowed: stay inline */ });
 
@@ -444,6 +446,11 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): Ex
   // opening until asked again; asking for the held one again releases it.
   let held: string | null = null, wide = false, lidWide = false, lidNow = 0, lidAnim = 0;   // lidWide: the iris follows a lid raised for wide eyes, not for a gaze
   const lidRest = () => wide ? LID.wide : held === "up" ? LID.up : held === "down" ? LID.down : 0;
+  /** Holds the gaze asked for, in the viewed eye's frame: the patient's left is lateral in a left eye. */
+  const look = () => {
+    const [side, up] = INSTRUCTIONS.find(x => x.id === held)?.look ?? [0, 0];
+    hooks.setGaze(side * LOOK[0] * (viewed === "OS" ? 1 : -1), up * LOOK[1]);
+  };
   const lidsTo = (to: number, ms: number) => new Promise<void>(done => {
     const from = lidNow, t0 = performance.now(), id = ++lidAnim;
     const step = (now: number) => {
@@ -458,9 +465,8 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): Ex
     const i = INSTRUCTIONS.find(x => x.id === id)!;
     if (i.look) {
       held = release ? null : id;
-      const [side, up] = held ? i.look : [0, 0];
       lidsTo(lidRest(), 120);
-      hooks.setGaze(side * LOOK[0] * (patient.eye === "OS" ? 1 : -1), up * LOOK[1]);   // the patient's left is lateral in a left eye
+      look();
     } else if (id === "open") {
       wide = !release;
       lidWide = true;

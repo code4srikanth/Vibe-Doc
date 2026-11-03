@@ -37,7 +37,7 @@ export class EyeRenderer {
     const quad = new THREE.PlaneGeometry(2, 2);
     const common = { glslVersion: THREE.GLSL3, vertexShader: vert, depthTest: false, depthWrite: false };
     this.eyeMat = new THREE.RawShaderMaterial({ ...common, fragmentShader: fragment, uniforms: { uPrev: { value: null }, uZero: { value: 0 }, uRes: { value: new THREE.Vector2() }, uCam: { value: new THREE.Vector2() } } });
-    this.dispMat = new THREE.RawShaderMaterial({ ...common, fragmentShader: dispFrag, uniforms: { uTex: { value: null }, uRes: { value: new THREE.Vector2() }, uEye: { value: 0 }, uBloom: { value: 1 }, uGrain: { value: 1 } } });
+    this.dispMat = new THREE.RawShaderMaterial({ ...common, fragmentShader: dispFrag, uniforms: { uTex: { value: null }, uRes: { value: new THREE.Vector2() }, uEye: { value: 0 }, uBloom: { value: 1 }, uGrain: { value: 1 }, uMirror: { value: 0 } } });
     for (const [scene, mat] of [[this.eyeScene, this.eyeMat], [this.dispScene, this.dispMat]] as const) {
       const mesh = new THREE.Mesh(quad, mat);
       mesh.frustumCulled = false;
@@ -112,6 +112,7 @@ export class EyeRenderer {
     this.dispMat.uniforms.uEye.value = values.uEye ?? 0;
     this.dispMat.uniforms.uBloom.value = values.uBloom ?? 1;
     this.dispMat.uniforms.uGrain.value = values.uGrain ?? 1;
+    if (values.uMirror !== undefined) this.dispMat.uniforms.uMirror.value = values.uMirror;   // kept otherwise: a blink only sends the lids
     this.restart();
   }
 
