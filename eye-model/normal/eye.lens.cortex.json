@@ -1,0 +1,17 @@
+{
+  "id": "eye.lens.cortex",
+  "type": "LensLayer",
+  "summary": "Outer lens fibres around the nucleus; optically clear with faint lamellar zones. Cortical cataract spokes form here.",
+  "optics": {
+    "scatter": { "value": 0.003, "unit": "rel", "normal": [0.002, 0.006], "hard": [0, 1], "note": "Bulk backscatter of clear cortex. Render-calibrated." },
+    "lamellar_contrast": { "value": 0.006, "unit": "rel", "normal": [0.004, 0.01], "hard": [0, 0.1], "note": "Zones of discontinuity." },
+    "spoke_density": { "value": 0.0, "unit": "rel", "normal": [0, 0], "hard": [0, 1.6] },
+    "refractive_index": { "value": 1.386, "unit": "ratio", "normal": [1.37, 1.39], "hard": [1.33, 1.42], "note": "Surface (cortical) index of the lens, Le Grand full theoretical eye (Atchison & Smith 2000, appendix). Used only for lens surface reflectance (Purkinje III/IV)." }
+  },
+  "anatomy": {
+    "spoke_location": "inferior"
+  },
+  "relations": { "parent": "eye.lens", "attached_to": ["eye.lens.capsule", "eye.lens.nucleus"] },
+  "clinical": { "visible_in": ["optic_section_lens", "retroillumination"], "grading_scales": ["LOCS III C"] },
+  "provenance": { "source": "Render calibration; LOCS III: Chylack et al. (1993)", "confidence": "low", "reviewed_by": null }
+}

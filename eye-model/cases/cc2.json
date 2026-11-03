@@ -1,0 +1,26 @@
+{
+  "id": "cc2",
+  "title": "Moderate cortical cataract",
+  "subject": {
+    "age": 62,
+    "sex": "male",
+    "eye": "OD",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [
+    {
+      "id": "disease.cataract.cortical",
+      "grade": "2",
+      "params": {
+        "location": "inferior"
+      }
+    }
+  ],
+  "exam_conditions": {
+    "dilated": true
+  },
+  "answer": {
+    "diagnosis": "Cortical cataract, grade 2, inferior spokes, right eye"
+  }
+}

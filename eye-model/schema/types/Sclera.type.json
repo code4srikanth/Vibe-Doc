@@ -1,0 +1,13 @@
+{
+  "type": "Sclera",
+  "description": "Sclera (white of the eye).",
+  "required": {
+    "anatomy": [
+      "radius"
+    ],
+    "appearance": [
+      "base_colour",
+      "yellowing"
+    ]
+  }
+}

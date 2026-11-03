@@ -1,0 +1,20 @@
+{
+  "rules": [
+    { "id": "cornea_back_steeper_than_front", "assert": "{eye.cornea:anatomy.posterior_radius} < {eye.cornea:anatomy.anterior_radius}", "severity": "error", "message": "The posterior corneal surface must be more curved (smaller radius) than the anterior surface." },
+    { "id": "pupil_inside_iris", "assert": "{eye.pupil:anatomy.diameter} < {eye.cornea:anatomy.diameter} - 3", "severity": "error", "message": "The pupil must leave at least 1.5 mm of iris on each side." },
+    { "id": "iris_root_hidden", "assert": "{eye.iris:anatomy.diameter} >= {eye.cornea:anatomy.diameter}", "severity": "warning", "message": "The iris root should be hidden under the limbus: iris diameter at least the visible corneal diameter." },
+    { "id": "dilated_pupil_not_smaller", "assert": "{eye.pupil:anatomy.dilated_diameter} >= {eye.pupil:anatomy.diameter}", "severity": "error", "message": "A dilated pupil cannot be smaller than the undilated pupil." },
+    { "id": "lens_fits_inside_cornea_span", "assert": "{eye.lens:anatomy.equatorial_diameter} <= {eye.cornea:anatomy.diameter}", "severity": "error", "message": "The lens equator must fit within the corneal diameter." },
+    { "id": "lens_thinner_than_back_radius", "assert": "{eye.lens:anatomy.thickness} < {eye.lens:anatomy.posterior_radius}", "severity": "error", "message": "Lens thickness must be less than its posterior radius or the lens shape is impossible." },
+    { "id": "chamber_not_collapsed", "assert": "{eye.anterior_chamber:anatomy.depth} >= 1.0", "severity": "error", "message": "Central anterior chamber depth below 1 mm is a flat chamber, which the renderer does not model." },
+    { "id": "narrow_chamber_flag", "assert": "{eye.anterior_chamber:anatomy.depth} >= 2.0", "severity": "warning", "message": "Shallow central chamber: angle-closure risk. Expected in angle-closure cases." },
+    { "id": "fillet_reaches_opening", "assert": "{eye.sclera:anatomy.radius} + {eye.conjunctiva:anatomy.fornix_fillet_width} >= {eye.adnexa.palpebral_fissure:anatomy.opening_max_radius} + 0.2", "severity": "error", "message": "The globe plus the conjunctival fornix fillet must reach 0.2 mm beyond the edge of the lid opening, or rays inside the opening miss every surface." },
+    { "id": "cornea_thickness_plausible", "assert": "{eye.cornea:anatomy.central_thickness} >= 0.4", "severity": "warning", "message": "Central corneal thickness under 400 um is unusual outside ectasia or refractive surgery." },
+    { "id": "meniscus_on_margin", "assert": "{eye.tear_film:anatomy.lower_meniscus_height} <= {eye.adnexa.lower_lid:anatomy.margin_thickness}", "severity": "warning", "message": "The lower tear meniscus should not be taller than the lid margin it rests on; a higher meniscus means epiphora or obstruction." },
+    { "id": "disc_clear_of_macula", "assert": "0 - {eye.optic_disc:anatomy.position_x} >= {eye.macula:anatomy.diameter} / 2 + {eye.optic_disc:anatomy.horizontal_diameter} / 2 - 1.5", "severity": "error", "message": "The optic disc must lie nasal to the macula, not on it." },
+    { "id": "foveola_inside_fovea", "assert": "{eye.macula:anatomy.foveola_diameter} < {eye.macula:anatomy.fovea_diameter}", "severity": "error", "message": "The foveola must be smaller than the fovea." },
+    { "id": "fovea_inside_macula", "assert": "{eye.macula:anatomy.fovea_diameter} < {eye.macula:anatomy.diameter}", "severity": "error", "message": "The fovea must be smaller than the macula." },
+    { "id": "arteries_narrower", "assert": "{eye.retinal_vessels:anatomy.artery_vein_ratio} < 1", "severity": "warning", "message": "Retinal arteries are normally narrower than the veins." },
+    { "id": "cup_inside_disc", "assert": "{eye.optic_disc:anatomy.cup_disc_ratio_vertical} * {eye.optic_disc:anatomy.vertical_diameter} / 2 + {eye.optic_disc:anatomy.cup_decentration_y} < {eye.optic_disc:anatomy.vertical_diameter} / 2", "severity": "error", "message": "The cup must stay inside the disc." }
+  ]
+}

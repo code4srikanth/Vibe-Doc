@@ -1,0 +1,55 @@
+/* The evaluation report (src/ui/report.ts). */
+#report {
+  --ink: #102a43; --text: #475569; --muted: #64748b; --teal: #0d9488; --line: #d6e8ed; --good: #0f9d6b; --fair: #d97706; --low: #c2410c;
+  position: fixed; inset: 0; z-index: 330; overflow: auto; background: #eaf2f4; color: var(--ink); color-scheme: light;
+  box-sizing: border-box; border-bottom: 28px solid #eaf2f4;   /* the scrolling stops above the fixed legal footer, which stays readable */
+  font: 400 14px/1.45 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+}
+html:has(#report) { overflow: hidden; }
+#report .page { box-sizing: border-box; width: min(1000px, 100%); margin: 0 auto; padding: 18px 14px 40px; display: grid; gap: 14px; }
+#report .top { display: flex; align-items: center; justify-content: space-between; }
+#report .again { padding: 9px 16px; font: 700 13px inherit; font-family: inherit; color: #fff; background: var(--teal); border: 0; border-radius: 9px; cursor: pointer; }
+#report .again:focus-visible { outline: 3px solid rgba(13, 148, 136, .45); outline-offset: 2px; }
+#report .hero { display: flex; align-items: center; gap: 22px; padding: 20px 24px; background: #fff; border: 1px solid var(--line); border-radius: 16px; }
+#report .hero h1 { margin: 0 0 6px; font-size: 24px; }
+#report .key { margin: 0 0 3px; color: var(--text); }
+#report .ring { --c: var(--good); flex: none; width: 124px; height: 124px; border-radius: 50%; display: grid; place-items: center;
+  background: conic-gradient(var(--c) calc(var(--p) * 1%), #e3edf0 0); }
+#report .ring.fair { --c: var(--fair); } #report .ring.low { --c: var(--low); }
+#report .ring span { width: 96px; height: 96px; border-radius: 50%; background: #fff; display: grid; place-content: center; text-align: center; }
+#report .ring b { font-size: 34px; line-height: 1; } #report .ring small { color: var(--muted); font-size: 11px; }
+#report .flag { margin-top: 10px; padding: 8px 12px; color: #7a1d0c; background: #fdece8; border: 1px solid #f3c3b8; border-radius: 9px; }
+#report .block, #report .dim { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; }
+#report h3 { margin: 0 0 8px; font-size: 15px; }
+#report ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+#report li { position: relative; padding-left: 22px; }
+#report li::before { position: absolute; left: 0; top: 0; font-weight: 800; }
+#report .ticks li::before { content: "✓"; color: var(--good); }
+#report .crosses li::before { content: "✗"; color: var(--low); }
+#report .steps { counter-reset: s; }
+#report .steps li { counter-increment: s; padding-left: 28px; }
+#report .steps li::before { content: counter(s); left: 0; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; color: #fff; background: var(--teal); }
+#report .dims { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+#report .dim header { display: flex; justify-content: space-between; align-items: baseline; }
+#report .dim header h3 { margin: 0; } #report .dim header b { font-size: 22px; } #report .dim small { color: var(--muted); font-size: 12px; }
+#report .bar { height: 8px; margin: 8px 0 4px; background: #e3edf0; border-radius: 99px; overflow: hidden; }
+#report .bar i { display: block; height: 100%; border-radius: inherit; background: var(--good); }
+#report .dim.fair .bar i { background: var(--fair); } #report .dim.low .bar i { background: var(--low); }
+#report .weight { margin: 0 0 8px; color: var(--muted); font-size: 12px; }
+#report .dim p { margin: 0 0 8px; }
+#report blockquote { margin: 0; padding: 6px 10px; display: grid; gap: 4px; border-left: 3px solid var(--teal); background: #f3f9fa; color: var(--text); }
+#report .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; }
+#report .note { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+#report .reading { margin: 10px 0 0; color: var(--muted); font-size: 12.5px; }
+#report .reading a { color: #0b7a70; text-decoration: underline; }
+#report .reading a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+#report .sim { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+#report .compare { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+#report .compare h4 { margin: 0 0 6px; font-size: 14px; color: var(--teal); }
+#report .reveal { margin: 6px 0 0; color: var(--text); }
+#report .pair { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#report figure { margin: 0; }
+#report figcaption { margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 600; text-align: center; }
+#report .shot { aspect-ratio: 16 / 9; border-radius: 9px; overflow: hidden; display: grid; place-items: center; color: #9fb3c0; font-size: 12px; background: #0d1b26; }
+#report .shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 560px) { #report .hero { flex-direction: column; text-align: center; } #report .pair { grid-template-columns: 1fr; } }

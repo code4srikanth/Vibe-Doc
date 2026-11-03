@@ -1,0 +1,15 @@
+{
+  "type": "Macula",
+  "description": "The macula and fovea: sizes, extra pigment and the foveal light reflex.",
+  "required": {
+    "anatomy": [
+      "diameter",
+      "fovea_diameter",
+      "foveola_diameter"
+    ],
+    "appearance": [
+      "pigment",
+      "foveal_reflex"
+    ]
+  }
+}

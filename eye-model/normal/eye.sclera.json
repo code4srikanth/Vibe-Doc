@@ -1,0 +1,165 @@
+{
+  "id": "eye.sclera",
+  "type": "Sclera",
+  "summary": "Opaque white outer coat of the globe; yellows slightly with age.",
+  "anatomy": {
+    "radius": {
+      "value": 12.5,
+      "unit": "mm",
+      "normal": [
+        11,
+        12.5
+      ],
+      "hard": [
+        9,
+        15
+      ],
+      "note": "Radius of the scleral sphere used to shape the visible globe."
+    },
+    "thickness_limbus": {
+      "value": 0.53,
+      "unit": "mm",
+      "normal": [
+        0.39,
+        0.67
+      ],
+      "hard": [
+        0.2,
+        1.2
+      ],
+      "note": "Scleral thickness at the limbus (Olsen 1998: 0.53 +/- 0.14)."
+    },
+    "thickness_equator": {
+      "value": 0.39,
+      "unit": "mm",
+      "normal": [
+        0.25,
+        0.56
+      ],
+      "hard": [
+        0.1,
+        1.2
+      ],
+      "note": "Scleral thickness at the equator (Olsen 1998: 0.39 +/- 0.17)."
+    },
+    "limbal_zone_width": {
+      "value": 1.2,
+      "unit": "mm",
+      "normal": [
+        1,
+        1.5
+      ],
+      "hard": [
+        0.3,
+        2.5
+      ],
+      "note": "Width of the translucent grey-blue corneoscleral transition; the cornea-sclera join is a smooth groove this wide."
+    },
+    "overlap_superior": {
+      "value": 0.4,
+      "unit": "mm",
+      "normal": [
+        0.25,
+        0.8
+      ],
+      "hard": [
+        0,
+        2
+      ],
+      "note": "How far the sclera overlaps the cornea at 12 o'clock, making the visible front an oval (confidence low; Wolff's Anatomy 8th ed., 11.7 x 10.6 front; hidden under the lid in this subject)."
+    },
+    "overlap_inferior": {
+      "value": 0.2,
+      "unit": "mm",
+      "normal": [
+        0.1,
+        0.8
+      ],
+      "hard": [
+        0,
+        2
+      ],
+      "note": "How far the sclera overlaps the cornea at 6 o'clock (confidence low; source.jpg shows about 0.2; the slit-lamp reference shows about 0.7)."
+    },
+    "translucent_width_horizontal": {
+      "value": 0.55,
+      "unit": "mm",
+      "normal": [
+        0.4,
+        0.8
+      ],
+      "hard": [
+        0.05,
+        2
+      ],
+      "note": "10-90% width of the translucent limbal band at 3 and 9 o'clock (confidence low; render-measured 0.53-0.59 nasal in source.jpg, 0.47-0.57 in the user reference)."
+    },
+    "translucent_width_vertical": {
+      "value": 0.9,
+      "unit": "mm",
+      "normal": [
+        0.6,
+        1.5
+      ],
+      "hard": [
+        0.05,
+        3
+      ],
+      "note": "10-90% width of the translucent limbal band at 12 and 6 o'clock (confidence low; Hogan 1971: limbus wider vertically, about 1.5-2 mm against about 1 mm horizontally)."
+    }
+  },
+  "appearance": {
+    "base_colour": {
+      "value": [
+        0.72,
+        0.8,
+        0.84
+      ],
+      "unit": "rgb",
+      "note": "Linear albedo; sRGB #dde7ec sampled from the clean temporal sclera of assets/exterior/source.jpg (render calibration)."
+    },
+    "yellowing": {
+      "age": [
+        [
+          20,
+          0
+        ],
+        [
+          30,
+          0
+        ],
+        [
+          80,
+          0.6
+        ]
+      ],
+      "unit": "rel",
+      "normal": [
+        0,
+        0.7
+      ],
+      "hard": [
+        0,
+        1
+      ]
+    }
+  },
+  "relations": {
+    "parent": "eye",
+    "borders": [
+      "eye.cornea",
+      "eye.conjunctiva"
+    ]
+  },
+  "clinical": {
+    "visible_in": [
+      "diffuse",
+      "sclerotic_scatter"
+    ]
+  },
+  "provenance": {
+    "source": "Atchison & Smith (2000), ch. 2 (radius); Olsen et al., Am J Ophthalmol 125:237 (1998) (thickness); Bron, Tripathi & Tripathi, Wolff's Anatomy of the Eye and Orbit, 8th ed. (limbal zone, overlap); Hogan, Alvarado & Weddell, Histology of the Human Eye (1971) (vertical band); overlap and band widths: render calibration on assets/exterior/source.jpg and assets/refs/iris/gen-brown-01.png, see docs/realism/L5-cornea-tear.md; colour: render calibration from source.jpg",
+    "confidence": "medium",
+    "reviewed_by": null
+  }
+}

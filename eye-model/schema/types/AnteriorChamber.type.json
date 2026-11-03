@@ -1,0 +1,14 @@
+{
+  "type": "AnteriorChamber",
+  "description": "Aqueous-filled space between cornea and iris/lens.",
+  "required": {
+    "anatomy": [
+      "depth"
+    ],
+    "optics": [
+      "refractive_index",
+      "cells_grade",
+      "flare_grade"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "type.schema.json",
+  "title": "ComponentType",
+  "description": "Definition of a component type: which facet properties every component of this type must have. Each type has a matching render module in src/render/modules/.",
+  "type": "object",
+  "required": ["type", "description", "required"],
+  "properties": {
+    "type": { "type": "string", "pattern": "^[A-Z][A-Za-z]+$" },
+    "description": { "type": "string" },
+    "required": {
+      "type": "object",
+      "propertyNames": { "enum": ["anatomy", "optics", "appearance", "microstructure", "physiology"] },
+      "additionalProperties": { "type": "array", "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" } }
+    }
+  },
+  "additionalProperties": false
+}

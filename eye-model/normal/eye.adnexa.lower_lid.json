@@ -1,0 +1,126 @@
+{
+  "id": "eye.adnexa.lower_lid",
+  "type": "Eyelid",
+  "summary": "Lower eyelid; its margin sits near the lower limbus and carries the tear meniscus.",
+  "anatomy": {
+    "margin_height": {
+      "value": 5.96,
+      "unit": "mm",
+      "normal": [
+        4,
+        5.5
+      ],
+      "hard": [
+        0,
+        8
+      ],
+      "note": "Distance of the lid margin below the pupil centre (margin reflex distance 2)."
+    },
+    "fissure_half_width": {
+      "derived": "({eye.adnexa.palpebral_fissure:anatomy.lateral_canthus_x} - {eye.adnexa.palpebral_fissure:anatomy.medial_canthus_x}) / 2",
+      "unit": "mm",
+      "normal": [
+        12.5,
+        15
+      ],
+      "hard": [
+        9,
+        17
+      ],
+      "note": "Half the horizontal fissure width, from the canthi."
+    },
+    "fissure_centre_offset": {
+      "derived": "({eye.adnexa.palpebral_fissure:anatomy.lateral_canthus_x} + {eye.adnexa.palpebral_fissure:anatomy.medial_canthus_x}) / 2",
+      "unit": "mm",
+      "normal": [
+        -3,
+        -0.5
+      ],
+      "hard": [
+        -3,
+        4
+      ],
+      "note": "Horizontal offset of the fissure centre from the iris centre (+ = toward the lateral canthus), from the canthi. Negative: the fissure centre lies nasal to the cornea."
+    },
+    "apex_offset": {
+      "value": 1.54,
+      "unit": "mm",
+      "normal": [
+        -5,
+        2
+      ],
+      "hard": [
+        -10,
+        10
+      ],
+      "note": "Horizontal position of the lowest point of the lid margin."
+    },
+    "apex_height": {
+      "value": 2.79,
+      "unit": "mm",
+      "normal": [
+        1.5,
+        4
+      ],
+      "hard": [
+        0,
+        8
+      ],
+      "note": "Depth of the margin below the line joining the canthi."
+    },
+    "apex_shape": {
+      "value": 2,
+      "unit": "ratio",
+      "normal": [
+        1.5,
+        3
+      ],
+      "hard": [
+        1,
+        6
+      ]
+    },
+    "margin_thickness": {
+      "value": 1.1,
+      "unit": "mm",
+      "normal": [
+        0.6,
+        1.4
+      ],
+      "hard": [
+        0,
+        2.5
+      ],
+      "note": "Visible wet lower lid margin."
+    },
+    "swelling": {
+      "value": 0,
+      "unit": "mm",
+      "normal": [
+        0,
+        0.3
+      ],
+      "hard": [
+        0,
+        3
+      ],
+      "note": "How far oedema pushes the lower lid margin toward the eye (mm), with the swelling fading over the 4 mm of lid next to the margin; 0 in a healthy lid. Render-calibrated (low confidence)."
+    }
+  },
+  "relations": {
+    "parent": "eye.adnexa"
+  },
+  "clinical": {
+    "measured_by": [
+      "MRD2"
+    ],
+    "visible_in": [
+      "diffuse"
+    ]
+  },
+  "provenance": {
+    "source": "Margin and apex values derived from the trace in assets/exterior/fissure.json (51.2 px/mm; MRD from the pupil centre (1408, 870) px), checked by the validator within 0.05 mm. Normal ranges: Kanski's Clinical Ophthalmology, 9th ed.",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

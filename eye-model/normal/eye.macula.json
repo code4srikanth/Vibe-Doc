@@ -1,0 +1,17 @@
+{
+  "id": "eye.macula",
+  "type": "Macula",
+  "summary": "Macula temporal to the disc: a darker, vessel-free centre (fovea) with a bright foveal reflex in the young.",
+  "anatomy": {
+    "diameter": {"value": 5.5, "unit": "mm", "normal": [5.0, 6.0], "hard": [3.0, 8.0], "note": "Anatomical macula (between the temporal arcades), centred on the fovea."},
+    "fovea_diameter": {"value": 1.5, "unit": "mm", "normal": [1.2, 1.8], "hard": [0.8, 2.5], "note": "Fovea; its centre is the foveal avascular zone, about 0.5 mm across, where no vessel enters."},
+    "foveola_diameter": {"value": 0.35, "unit": "mm", "normal": [0.25, 0.45], "hard": [0.1, 0.8], "note": "Foveola, the floor of the foveal pit."}
+  },
+  "appearance": {
+    "pigment": {"value": 0.5, "unit": "ratio", "normal": [0.3, 0.65], "hard": [0, 0.9], "note": "Fraction of linear reflectance lost at the fovea from the extra RPE and luteal pigment (the reference: 0.21 against 0.42 in red); render calibration."},
+    "foveal_reflex": {"age": [[20, 1.0], [50, 0.5], [80, 0.15]], "unit": "ratio", "normal": [0, 1], "hard": [0, 1], "note": "Strength of the bright point reflex from the foveal pit; fades with age; render calibration (low)."}
+  },
+  "relations": {"parent": "eye.retina"},
+  "clinical": {"measured_by": ["fundus lens", "OCT"], "visible_in": ["fundus"], "notes": "Fundus coordinates: millimetres on the retina from the foveal centre, +x temporal, +y up, the same for both eyes (the renderer mirrors the left eye)."},
+  "provenance": {"source": "Kanski's Clinical Ophthalmology, 9th ed.; Remington, Clinical Anatomy and Physiology of the Visual System, 3rd ed.", "confidence": "medium", "reviewed_by": null}
+}

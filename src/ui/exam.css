@@ -1,0 +1,249 @@
+/* Screen 6, the exam (src/ui/exam.ts). Light instrument panels round the dark view; the controls column runs the full
+   height so the joystick sits under the arm angle, and the filters, knobs and patient instructions share the bottom row. */
+#exam {
+  --ink: #102a43; --text: #3d4f63; --muted: #6b7a8c; --line: #e2e9ee; --panel: #fff; --tint: #f4f8f9; --bg: #eef3f5;
+  --teal: #0f8f8c; --teal-2: #13a7a0; --teal-soft: #e3f4f2; --red: #e0353b;
+  --scheme: light; --shadow: rgba(16, 42, 67, .14); --end-hover: #fff1f1; --warn-bg: #fff5e6; --warn-fg: #9a5b00;
+  --pad-1: #fff; --pad-2: #e9f0f2; --pad-3: #dbe5e9; --pad-edge: #cfdbe0; --bubble: #eef4fb; --avatar: #e4ebf3; --avatar-fg: #4a5d73;
+  --avatar-you: #d2efec; --rail: #d3dde3; --off: #cfd9df; --tick: #b9c6cd; --select-edge: #9fd8d3;
+  position: fixed; inset: 0; color-scheme: var(--scheme); color: var(--ink); background: var(--bg);
+  font: 400 13px/1.35 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+  display: grid; gap: 10px; padding: 0 10px 10px;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 290px) minmax(250px, 300px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "top top top" "view ctl chat" "lower ctl ins";
+}
+/* dark theme: Settings sets data-theme on #exam (src/ui/theme.ts) */
+#exam[data-theme="dark"] {
+  --ink: #e6eef5; --text: #b4c2cf; --muted: #8497a9; --line: #2b3b49; --panel: #16212b; --tint: #1c2935; --bg: #0d141b;
+  --teal: #21b3ae; --teal-2: #2cc4bd; --teal-soft: #12363a; --red: #ff6b70;
+  --scheme: dark; --shadow: rgba(0, 0, 0, .55); --end-hover: #3a1c20; --warn-bg: #3a2c12; --warn-fg: #f0b45a;
+  --pad-1: #2b3946; --pad-2: #223039; --pad-3: #1b2731; --pad-edge: #34475a; --bubble: #1f2c3a; --avatar: #2a3b4d; --avatar-fg: #a9bccf;
+  --avatar-you: #17484a; --rail: #364857; --off: #3a4b5a; --tick: #4d6173; --select-edge: #2f6f6d;
+}
+#exam svg { flex: none; width: 1.25em; height: 1.25em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+#exam button, #exam select, #exam input { font: inherit; color: inherit; }
+#exam button { cursor: pointer; }
+#exam :is(button, select, input, [tabindex]):focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+#exam h2 { display: flex; align-items: center; gap: .55em; margin: 0 0 10px; font-size: 13.5px; font-weight: 700; }
+#exam h2 > svg { width: 18px; height: 18px; color: var(--ink); }
+#exam h3 { display: flex; align-items: center; gap: .5em; margin: 0 0 7px; font-size: 12px; font-weight: 600; color: var(--ink); }
+#exam h3 > svg { width: 15px; height: 15px; color: var(--teal); }
+#exam .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; min-width: 0; min-height: 0; }
+
+/* ---- header ---- */
+#exam .top { grid-area: top; position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 -10px; padding: 9px 18px; background: var(--panel); border-bottom: 1px solid var(--line); }
+#exam .brand { display: flex; align-items: center; gap: 14px; }
+#exam .brand img { display: block; height: 26px; width: auto; }
+#exam .rule { width: 1px; height: 22px; background: var(--line); }
+#exam .dept { font-size: 11px; letter-spacing: .28em; color: var(--muted); font-weight: 600; white-space: nowrap; }
+#exam nav { display: flex; align-items: center; gap: 18px; }
+#exam .chip-btn { display: flex; align-items: center; gap: 8px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); text-align: left; }
+#exam .chip-btn .ring { width: 26px; height: 26px; padding: 4px; border-radius: 50%; background: var(--tint); }
+#exam .chip-btn small { display: block; font-size: 10.5px; color: var(--muted); }
+#exam .chip-btn b { font-size: 12px; font-weight: 600; }
+#exam .chip-btn .chev { width: 14px; color: var(--muted); }
+#exam .link { display: flex; align-items: center; gap: 6px; border: 0; background: none; padding: 4px 2px; font-weight: 500; }
+#exam .link:hover { color: var(--teal); }
+#exam .end { padding: 8px 18px; border: 1.5px solid var(--red); border-radius: 99px; background: var(--panel); color: var(--red); font-weight: 600; white-space: nowrap; }
+#exam .end:hover { background: var(--end-hover); }
+#exam .pop { position: absolute; top: calc(100% + 6px); z-index: 20; width: 270px; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 14px 40px var(--shadow); }
+#exam .pop[hidden] { display: none; }
+#exam .pop p { margin: 8px 0 0; color: var(--text); font-size: 12px; }
+#exam .pop dl { margin: 0; display: grid; gap: 6px; }
+#exam .pop dl div { display: flex; justify-content: space-between; gap: 10px; }
+#exam .pop dt { color: var(--muted); } #exam .pop dd { margin: 0; font-weight: 600; }
+#exam .badge { display: inline-block; margin: 0 !important; padding: 3px 9px; border-radius: 99px; background: var(--warn-bg); color: var(--warn-fg) !important; font-weight: 600; }
+#exam .badge.ok { background: var(--teal-soft); color: var(--teal) !important; }
+#exam .pop .seg.theme { margin-bottom: 12px; }
+#exam[data-theme="dark"] .brand img { filter: invert(1) hue-rotate(180deg); }
+#exam .switch-row { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+
+/* ---- the view ---- */
+/* the view is 16:9, the exterior photo's shape, and as large as its cell allows (centred), so the photo fills it */
+#exam .stage { grid-area: view; min-height: 0; padding-top: 10px; container-type: size; display: grid; justify-content: center; align-content: start; }
+#view { position: relative; width: min(100cqw, 100cqh * 16 / 9); height: min(100cqh, 100cqw * 9 / 16); background: #000; border-radius: 12px; overflow: hidden; cursor: grab; touch-action: none; }
+#view:active { cursor: grabbing; }
+#cv { width: 100%; height: 100%; display: block; }
+#view .fs { position: absolute; right: 12px; top: 12px; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 8px; background: rgba(10, 14, 18, .55); color: #fff; }
+#view .fs svg { width: 18px; height: 18px; }
+#view .notice { position: absolute; left: 50%; bottom: 46px; translate: -50% 0; max-width: 80%; padding: 8px 14px; border-radius: 10px; background: rgba(10, 14, 18, .72); color: #fff; font-size: 12.5px; text-align: center; pointer-events: none; }
+#view .notice[hidden], #view .wait[hidden] { display: none; }
+#view .wait { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(236, 238, 240, .85); font-size: 13px; pointer-events: none; }
+#view .hint { position: absolute; left: 12px; bottom: 10px; font-size: 11px; color: rgba(236, 238, 240, .7); text-shadow: 0 1px 2px #000; pointer-events: none; }
+
+/* segmented buttons (eye, magnification) */
+#exam .seg { display: flex; gap: 6px; }
+#exam .seg button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 4px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); font-weight: 600; font-size: 12px; }
+#exam .seg button span { font-weight: 500; font-size: 11px; }
+#exam .seg button[aria-pressed="true"] { background: linear-gradient(180deg, var(--teal-2), var(--teal)); border-color: var(--teal); color: #fff; }
+#exam .seg button:not([aria-pressed="true"]):hover { border-color: var(--teal); }
+#exam .seg.big button { flex-direction: column; gap: 0; padding: 7px 4px; }
+#exam .seg.big button b { font-size: 14px; }
+
+/* ---- examination controls column ---- */
+#exam .controls { grid-area: ctl; margin-top: 10px; overflow-y: auto; display: flex; flex-direction: column; }
+#exam .group { padding: 10px; border-radius: 10px; background: var(--tint); }
+#exam .group + .group { margin-top: 8px; }
+#exam .select { position: relative; display: block; }
+#exam .select svg { position: absolute; top: 50%; translate: 0 -50%; left: 10px; width: 16px; height: 16px; pointer-events: none; }
+#exam .select .chev { left: auto; right: 10px; color: var(--teal); }
+#exam .select select { width: 100%; appearance: none; height: 34px; padding: 0 30px 0 34px; border: 1.5px solid var(--select-edge); border-radius: 8px; background: var(--panel); cursor: pointer; }
+#exam .range .row { display: flex; align-items: flex-start; gap: 10px; }
+#exam .track { position: relative; flex: 1; padding-bottom: 14px; }
+#exam input[type=range] { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 18px; margin: 0; background: transparent; cursor: pointer; }
+#exam input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--teal) var(--t, 0%), var(--rail) var(--t, 0%)); }
+#exam input[type=range]::-moz-range-track { height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--teal) var(--t, 0%), var(--rail) var(--t, 0%)); }
+#exam input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; margin-top: -5.5px; border-radius: 50%; background: var(--teal); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }
+#exam input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--teal); border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }
+#exam .ticks { position: absolute; left: 7px; right: 7px; bottom: 0; height: 12px; }
+#exam .ticks span { position: absolute; translate: -50% 0; font-size: 9.5px; color: var(--muted); white-space: nowrap; }
+#exam .range output { flex: none; min-width: 64px; padding: 5px 6px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); text-align: center; font-weight: 600; font-size: 12px; font-variant-numeric: tabular-nums; }
+
+/* joystick */
+#exam .joystick { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 8px; }
+#exam .pad { position: relative; width: 96px; height: 96px; border-radius: 50%; cursor: grab; touch-action: none;
+  background: radial-gradient(circle at 50% 50%, var(--pad-1) 0 30%, var(--pad-2) 31% 62%, var(--pad-3) 63%); border: 1px solid var(--pad-edge);
+  box-shadow: inset 0 2px 6px rgba(16, 42, 67, .12); }
+#exam .pad::before, #exam .pad::after { content: ""; position: absolute; background: var(--pad-edge); }
+#exam .pad::before { left: 50%; top: 10px; bottom: 10px; width: 1px; } #exam .pad::after { top: 50%; left: 10px; right: 10px; height: 1px; }
+#exam .pad .axis { white-space: nowrap; position: absolute; left: 50%; top: 3px; translate: -50% 0; font-size: 7.5px; letter-spacing: .08em; color: var(--muted); z-index: 1; }
+#exam .pad .axis.b { top: auto; bottom: 3px; }
+#exam .pad .knob { position: absolute; z-index: 2; left: 50%; top: 50%; width: 42px; height: 42px; margin: -21px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #6b7680, #2b3238 60%, #161a1e); box-shadow: 0 4px 10px rgba(0, 0, 0, .35), inset 0 1px 1px rgba(255, 255, 255, .25);
+  transition: translate .18s ease-out; }
+#exam .pad:active .knob { transition: none; }
+#exam .pad .knob::after { content: ""; position: absolute; inset: 15px; border-radius: 50%; background: var(--teal-2); box-shadow: 0 0 6px var(--teal-2); }
+#exam .twist { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; color: var(--muted); }
+#exam .twist button { display: grid; place-items: center; width: 30px; height: 28px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--teal); }
+#exam .twist button:hover { border-color: var(--teal); }
+#exam .readout { margin: 0; display: grid; gap: 4px; font-size: 11px; }
+#exam .readout div { display: flex; justify-content: space-between; gap: 6px; }
+#exam .readout dt { color: var(--muted); } #exam .readout dd { margin: 0; white-space: nowrap; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* ---- patient conversation ---- */
+#exam .chat { grid-area: chat; margin-top: 10px; display: flex; flex-direction: column; }
+#exam .chat h2 { justify-content: flex-start; white-space: nowrap; }
+#exam .mute { margin-left: auto; white-space: nowrap; display: flex; align-items: center; gap: 5px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); font-size: 11.5px; font-weight: 500; }
+#exam .mute[aria-pressed="true"] { border-color: var(--teal); color: var(--teal); }
+#exam .msgs { flex: 1; min-height: 0; overflow-y: auto; list-style: none; margin: 0; padding: 0 4px 0 0; display: flex; flex-direction: column; gap: 8px; }
+#exam .msgs li { display: flex; gap: 8px; align-items: flex-start; }
+#exam .msgs li > div { flex: 1; padding: 8px 10px; border-radius: 10px; background: var(--bubble); }
+#exam .msgs li.you > div { background: var(--teal-soft); }
+#exam .msgs .avatar { display: grid; place-items: center; flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--avatar); color: var(--avatar-fg); }
+#exam .msgs li.you .avatar { background: var(--avatar-you); color: var(--teal); }
+#exam .msgs .meta { margin: 0 0 2px; display: flex; gap: 8px; align-items: baseline; }
+#exam .msgs .meta b { font-size: 12px; } #exam .msgs time { font-size: 10.5px; color: var(--muted); }
+#exam .msgs .text { margin: 0; color: var(--text); font-size: 12.5px; }
+#exam .msgs .note { display: block; padding: 8px 10px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); font-size: 11.5px; }
+#exam .talk { display: flex; align-items: center; gap: 12px; padding: 10px 2px; }
+#exam .ptt { display: grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 50%; background: linear-gradient(180deg, var(--teal-2), var(--teal)); color: #fff; box-shadow: 0 6px 16px rgba(15, 143, 140, .3); }
+#exam .ptt svg { width: 22px; height: 22px; }
+#exam .ptt.on { animation: ex-pulse 1s ease-in-out infinite; }
+#exam .ptt:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+#exam .ptt-label { flex: 1; font-weight: 600; }
+#exam .spk { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 50%; background: var(--panel); }
+#exam .type { display: flex; align-items: center; gap: 6px; padding: 4px 4px 4px 12px; border: 1px solid var(--line); border-radius: 10px; }
+#exam .type input { flex: 1; min-width: 0; border: 0; outline: none; background: none; font-size: 12.5px; }
+#exam .type button { display: grid; place-items: center; width: 32px; height: 30px; border: 0; border-radius: 8px; background: var(--teal-soft); color: var(--teal); }
+@keyframes ex-pulse { 50% { box-shadow: 0 0 0 8px rgba(19, 167, 160, .2); } }
+
+/* ---- bottom row: filters and knobs share the view's column; kept low so the view gets the height ---- */
+#exam .filters, #exam .dials { grid-row: 3; }
+#exam :is(.filters, .dials, .instructions) { padding: 9px 10px; }
+#exam :is(.filters, .dials, .instructions) h2 { margin-bottom: 6px; }
+#exam .filters { grid-column: 1; width: calc(36% - 5px); }
+#exam .dials { grid-column: 1; justify-self: end; width: calc(64% - 5px); }
+#exam .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+#exam .tiles button { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 5px 2px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); font-size: 10.5px; font-weight: 500; line-height: 1.15; }
+#exam .tiles button[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft); box-shadow: inset 0 0 0 1px var(--teal); }
+#exam .dot { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 -2px 4px rgba(0, 0, 0, .25), 0 1px 2px rgba(0, 0, 0, .2); }
+#exam .dot.white { background: radial-gradient(circle at 35% 30%, #fff, #e8edf0); border: 2.5px solid var(--teal-2); }
+#exam .dot.cobalt { background: radial-gradient(circle at 35% 30%, #5f9bff, #1748c9); }
+#exam .dot.redfree { background: radial-gradient(circle at 35% 30%, #4fa36a, #145c2c); }
+#exam .dot.grey { background: radial-gradient(circle at 35% 30%, #70777d, #22272b); }
+#exam .sub { margin: -2px 0 5px; }
+#exam .toggles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
+#exam .toggles label { display: flex; flex-direction: column; gap: 3px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 9px; font-size: 11px; font-weight: 500; cursor: pointer; }
+#exam .toggles label span { display: flex; align-items: center; gap: 4px; }
+#exam .toggles label svg { width: 13px; height: 13px; color: var(--teal); }
+#exam .switch { -webkit-appearance: none; appearance: none; position: relative; width: 34px; height: 18px; margin: 0; border-radius: 99px; background: var(--off); cursor: pointer; transition: background .15s; }
+#exam .switch::after { content: ""; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--panel); box-shadow: 0 1px 2px rgba(0, 0, 0, .25); transition: translate .15s; }
+#exam .switch:checked { background: var(--teal); } #exam .switch:checked::after { translate: 16px 0; }
+
+#exam .knobs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+#exam .dial { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+#exam .dial h3 { margin-bottom: 4px; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+#exam .dial .face { position: relative; width: 64px; height: 64px; cursor: grab; touch-action: none; border-radius: 50%; }
+#exam .dial .scale { position: absolute; inset: 0; width: 100%; height: 100%; }
+#exam .dial .scale line { stroke: var(--tick); stroke-width: 1.4; }
+#exam .dial .cap { position: absolute; inset: 12px; border-radius: 50%; background: radial-gradient(circle at 38% 30%, #79838c, #343c43 55%, #1b2025); box-shadow: 0 5px 12px rgba(0, 0, 0, .3), inset 0 1px 1px rgba(255, 255, 255, .3); }
+#exam .dial .cap i { position: absolute; left: 50%; top: 3px; width: 3px; height: 12px; margin-left: -1.5px; border-radius: 2px; background: var(--teal-2); box-shadow: 0 0 6px rgba(19, 167, 160, .8); }
+#exam .dial .lim { position: absolute; bottom: -3px; font-size: 9px; color: var(--muted); }
+#exam .dial .lim.l { right: calc(100% - 4px); } #exam .dial .lim.r { left: calc(100% - 4px); }
+#exam .dial .lim.t { bottom: auto; top: -6px; left: 50%; translate: -50% 0; }
+#exam .dial output { margin-top: 3px; min-width: 70px; padding: 2px 6px; border: 1px solid var(--line); border-radius: 7px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* patient instructions */
+#exam .instructions { grid-area: ins; }
+#exam .instructions .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+#exam .instructions button { white-space: nowrap; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); font-size: 11px; font-weight: 500; }
+#exam .instructions button.wide { grid-column: span 2; }
+#exam .instructions button svg { width: 16px; height: 16px; }
+#exam .instructions button[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-soft); color: var(--teal); }
+#exam .instructions button:hover { border-color: var(--teal); color: var(--teal); }
+#exam .instructions button:active { background: var(--teal-soft); }
+
+/* ---- instructor drawer and end dialog ---- */
+#exam .drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 30; width: min(440px, 100%); overflow-y: auto; padding: 16px; background: var(--panel); border-left: 1px solid var(--line); box-shadow: -16px 0 40px rgba(16, 42, 67, .12); }
+#exam .drawer[hidden] { display: none; }
+#exam .drawer-head { display: flex; justify-content: space-between; align-items: center; }
+#exam .drawer .close { border: 0; background: none; font-size: 22px; line-height: 1; }
+#exam .drawer h3 { margin: 16px 0 8px; }
+#exam .drawer select { width: 100%; padding: 6px; border: 1px solid var(--line); border-radius: 7px; }
+#exam .drawer .field { display: grid; gap: 4px; font-weight: 600; }
+#exam #subject { margin-top: 8px; font: 11.5px ui-monospace, Consolas, monospace; color: var(--muted); }
+#exam #summary { color: var(--text); font-size: 12px; }
+#exam .scroll { overflow-x: auto; }
+#exam table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+#exam td { padding: 4px 0; border-bottom: 1px solid var(--line); }
+#exam td:last-child { text-align: right; font-family: ui-monospace, Consolas, monospace; }
+#exam tr.changed td:last-child { color: #b86e00; }
+#exam tr.changed td:first-child::after { content: " · changed"; color: var(--muted); }
+#exam #issues { margin: 0; padding-left: 18px; font-size: 12px; }
+#exam #issues .error b { color: var(--red); } #exam #issues .ok { list-style: none; margin-left: -18px; color: var(--teal); }
+#exam .end-dialog { width: min(400px, calc(100% - 32px)); padding: 20px; border: 0; border-radius: 14px; box-shadow: 0 24px 60px rgba(16, 42, 67, .25); color: var(--ink); }
+#exam .end-dialog::backdrop { background: rgba(16, 42, 67, .35); }
+#exam .end-dialog p { color: var(--text); }
+#exam .end-dialog .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+#exam .end-dialog button { padding: 8px 14px; border-radius: 99px; font-weight: 600; }
+#exam .end-dialog .ghost { border: 1px solid var(--line); background: var(--panel); }
+#exam .end-dialog .danger { border: 0; background: var(--red); color: #fff; }
+
+/* ---- narrow windows: one column, the view first ---- */
+@media (max-width: 1100px) {
+  #exam { position: static; min-height: 100vh; grid-template-columns: minmax(0, 1fr); grid-template-rows: none;
+    grid-template-areas: "top" "view" "ctl" "lower" "dials" "chat" "ins"; }
+  #exam .stage { aspect-ratio: 16 / 9; }
+  #exam .controls, #exam .chat { margin-top: 0; }
+  #exam .chat { min-height: 360px; }
+  #exam .filters, #exam .dials { grid-row: auto; grid-column: auto; width: auto; }
+  #exam .filters { grid-area: lower; } #exam .dials { grid-area: dials; }
+  #exam .dept, #exam .rule { display: none; }
+}
+@media (max-width: 560px) {
+  #exam nav { gap: 8px; } #exam .link { font-size: 0; } #exam .link svg { font-size: 13px; }
+  #exam .knobs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* renders (?bare): the view alone, full window */
+body.bare #exam { display: block; padding: 0; }
+body.bare #exam > :not(.stage) { display: none; }
+body.bare #exam .stage { padding: 0; }
+body.bare #view { position: fixed; inset: 0; width: auto; height: auto; border-radius: 0; }
+body.bare #view > :not(canvas) { display: none; }
+@media (prefers-reduced-motion: reduce) { #exam .pad .knob, #exam .switch, #exam .switch::after { transition: none; } #exam .ptt.on { animation: none; } }
+
+#exam .reset-lamp { margin: 10px 0 4px; padding: 8px 12px; border: 1px solid currentColor; border-radius: 8px; background: transparent; color: inherit; font-weight: 600; cursor: pointer; }
+
+#exam .dial .dial-slider { margin-top: 6px; }

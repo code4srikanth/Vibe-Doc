@@ -1,0 +1,40 @@
+{
+  "id": "ns4",
+  "title": "Dense brunescent nuclear cataract",
+  "subject": {
+    "age": 68,
+    "sex": "female",
+    "eye": "OD",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [
+    {
+      "id": "disease.cataract.nuclear",
+      "grade": "4"
+    },
+    {
+      "id": "disease.cataract.cortical",
+      "grade": "1",
+      "params": {
+        "location": "inferior"
+      }
+    },
+    {
+      "id": "disease.cornea.arcus_senilis",
+      "grade": "moderate"
+    }
+  ],
+  "exam_conditions": {
+    "dilated": true
+  },
+  "overrides": {
+    "eye.conjunctiva": {
+      "appearance.injection": 0.15
+    }
+  },
+  "answer": {
+    "diagnosis": "Age-related brunescent nuclear cataract (grade 4) with early inferior cortical changes, right eye",
+    "notes": "Arcus senilis incidental."
+  }
+}

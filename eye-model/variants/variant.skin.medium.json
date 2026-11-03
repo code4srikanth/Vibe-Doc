@@ -1,0 +1,14 @@
+{
+  "id": "variant.skin.medium",
+  "summary": "Medium skin tone.",
+  "patch": {
+    "eye.adnexa.skin": {
+      "appearance.tone": "medium",
+      "appearance.albedo": [
+        0.46,
+        0.25,
+        0.16
+      ]
+    }
+  }
+}

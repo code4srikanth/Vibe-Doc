@@ -1,0 +1,28 @@
+{
+  "id": "aacg",
+  "title": "Acute angle-closure attack",
+  "subject": {
+    "age": 62,
+    "sex": "female",
+    "eye": "OD",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [
+    {
+      "id": "disease.glaucoma.acute_angle_closure",
+      "grade": "attack"
+    },
+    {
+      "id": "disease.cataract.nuclear",
+      "grade": "1"
+    }
+  ],
+  "exam_conditions": {
+    "dilated": false
+  },
+  "answer": {
+    "diagnosis": "Acute primary angle closure, right eye",
+    "notes": "Do not dilate. IOP expected 40-70 mmHg."
+  }
+}

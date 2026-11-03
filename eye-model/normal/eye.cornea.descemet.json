@@ -1,0 +1,14 @@
+{
+  "id": "eye.cornea.descemet",
+  "type": "CorneaLayer",
+  "summary": "Basement membrane of the endothelium; thickens with age; folds (striae) appear with corneal oedema.",
+  "anatomy": {
+    "thickness": { "age": [[20, 0.008], [80, 0.016]], "unit": "mm", "normal": [0.005, 0.017], "hard": [0.0, 0.04] }
+  },
+  "optics": {
+    "scatter": { "value": 0.0, "unit": "rel", "normal": [0, 0.1], "hard": [0, 3] }
+  },
+  "relations": { "parent": "eye.cornea", "attached_to": ["eye.cornea.stroma", "eye.cornea.endothelium"] },
+  "clinical": { "visible_in": [] },
+  "provenance": { "source": "Atchison & Smith (2000), ch. 2; age thickening per standard histology texts", "confidence": "medium", "reviewed_by": null }
+}

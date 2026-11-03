@@ -1,0 +1,25 @@
+{
+  "type": "TearFilm",
+  "description": "Precorneal tear film and lid-margin menisci: the eye's wet optical front surface.",
+  "required": {
+    "anatomy": [
+      "thickness",
+      "lower_meniscus_height",
+      "upper_meniscus_height",
+      "meniscus_taper",
+      "lower_meniscus_radius",
+      "upper_meniscus_radius",
+      "irregularity_scale",
+      "discharge_band_width"
+    ],
+    "optics": [
+      "refractive_index",
+      "normal_reflectance",
+      "surface_irregularity",
+      "discharge"
+    ],
+    "appearance": [
+      "discharge_albedo"
+    ]
+  }
+}

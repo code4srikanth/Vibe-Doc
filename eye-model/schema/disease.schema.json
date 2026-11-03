@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "disease.schema.json",
+  "title": "Disease",
+  "description": "A disease as a metadata patch over the normal eye, like a deployment onto an org. Each grade sets component properties; nothing is drawn by hand.",
+  "type": "object",
+  "required": ["id", "name", "summary", "affects", "severity_scale", "grades", "revealed_by", "teaching_points", "provenance"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^disease(\\.[a-z][a-z0-9_]*)+$" },
+    "name": { "type": "string" },
+    "summary": { "type": "string", "maxLength": 160 },
+    "affects": { "type": "array", "items": { "type": "string", "pattern": "^eye(\\.[a-z][a-z0-9_]*)+$" }, "minItems": 1 },
+    "severity_scale": { "type": "string", "description": "e.g. 'Nuclear sclerosis 1-4 (approx. LOCS III NO/NC)', 'SUN cells', 'present'." },
+    "grades": {
+      "type": "object",
+      "description": "Grade label -> patch. Grades must get monotonically worse in every property they share.",
+      "propertyNames": { "pattern": "^[a-z0-9_]+$" },
+      "additionalProperties": { "$ref": "#/definitions/patch" },
+      "minProperties": 1
+    },
+    "co_findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["disease", "likelihood"],
+        "properties": {
+          "disease": { "type": "string" },
+          "grade": { "type": "string" },
+          "likelihood": { "enum": ["usual", "common", "possible"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "params": {
+      "type": "object",
+      "description": "Case-level options for this disease (e.g. location of spokes). Each maps to one string property.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["target", "path", "options"],
+        "properties": {
+          "target": { "type": "string", "pattern": "^eye(\\.[a-z][a-z0-9_]*)+$" },
+          "path": { "type": "string", "pattern": "^(anatomy|optics|appearance|microstructure|physiology)\\.[a-z][a-z0-9_]*$" },
+          "options": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "revealed_by": {
+      "type": "object",
+      "description": "Slit-lamp view -> what the trainee should see there.",
+      "propertyNames": { "enum": ["diffuse", "optic_section_cornea", "optic_section_lens", "parallelepiped", "retroillumination", "cobalt_blue", "specular_reflection", "sclerotic_scatter", "gonioscopy", "fundus", "tonometry"] },
+      "additionalProperties": { "type": "string" },
+      "minProperties": 1
+    },
+    "differentials": { "type": "array", "items": { "type": "string" } },
+    "teaching_points": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "further_reading": {
+      "type": "array",
+      "description": "Hand-picked external pages the report links to. Links only: their content is not copied here or sent to any model.",
+      "items": {
+        "type": "object",
+        "required": ["source", "title", "url", "sections"],
+        "properties": {
+          "source": { "type": "string" },
+          "title": { "type": "string" },
+          "url": { "type": "string", "pattern": "^https://" },
+          "sections": { "type": "array", "items": { "enum": ["diagnosis", "signs", "technique"] }, "minItems": 1, "description": "Where the report shows the link." }
+        },
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source", "confidence"],
+      "properties": {
+        "source": { "type": "string" },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "reviewed_by": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "patch": {
+      "type": "object",
+      "description": "Component ID -> { 'facet.property': new value } or { 'facet.generator.param': number }. Values replace the quantity's value (scalar or RGB), a string/boolean property, or one parameter of a procedural generator.",
+      "propertyNames": { "pattern": "^eye(\\.[a-z][a-z0-9_]*)+$" },
+      "additionalProperties": {
+        "type": "object",
+        "propertyNames": { "pattern": "^(anatomy|optics|appearance|microstructure|physiology)\\.[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)?$" },
+        "additionalProperties": {
+          "anyOf": [
+            { "type": "number" },
+            { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+            { "type": "string" },
+            { "type": "boolean" }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "eye.lens.capsule",
+  "type": "LensLayer",
+  "summary": "Elastic envelope of the lens; thin bright lines at the front and back of the lens section. Posterior subcapsular opacities sit just inside it.",
+  "optics": {
+    "scatter": { "value": 0.08, "unit": "rel", "normal": [0.05, 0.12], "hard": [0, 2], "note": "Interface brightness in an optic section. Render-calibrated." },
+    "posterior_subcapsular_opacity": { "value": 0.0, "unit": "rel", "normal": [0, 0], "hard": [0, 1] }
+  },
+  "relations": { "parent": "eye.lens", "borders": ["eye.anterior_chamber", "eye.iris"] },
+  "clinical": { "visible_in": ["optic_section_lens", "retroillumination"], "grading_scales": ["LOCS III P"] },
+  "provenance": { "source": "Render calibration; LOCS III: Chylack et al., Arch Ophthalmol 111:831 (1993)", "confidence": "low", "reviewed_by": null }
+}

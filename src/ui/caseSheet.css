@@ -1,0 +1,28 @@
+/* The case sheet (src/ui/caseSheet.ts): a full-screen form after End Examination. */
+#casesheet {
+  --ink: #102a43; --text: #475569; --muted: #64748b; --teal: #0d9488; --teal-dark: #087f8c; --line: #d6e8ed;
+  position: fixed; inset: 0; z-index: 320; overflow: auto; background: #eaf2f4; color: var(--ink); color-scheme: light;
+  display: grid; justify-items: center; padding: 20px 12px 40px; font: 400 14px/1.45 "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+}
+html:has(#casesheet) { overflow: hidden; }
+#casesheet .sheet { position: relative; width: min(900px, 100%); background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 18px 50px rgba(16, 42, 67, .12); padding: 22px 26px 26px; }
+#casesheet header h1 { margin: 12px 0 4px; font-size: 24px; }
+#casesheet header p { margin: 0 0 14px; color: var(--text); max-width: 62ch; }
+#casesheet fieldset { margin: 0 0 16px; padding: 12px 14px 4px; border: 1px solid var(--line); border-radius: 12px; }
+#casesheet legend { padding: 0 8px; font-weight: 700; color: var(--teal-dark); font-size: 13px; letter-spacing: .02em; text-transform: uppercase; }
+#casesheet label { display: block; margin-bottom: 12px; }
+#casesheet label span { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; }
+#casesheet textarea { box-sizing: border-box; width: 100%; resize: vertical; padding: 8px 10px; font: inherit; color: var(--ink); background: #f8fbfc; border: 1px solid var(--line); border-radius: 8px; }
+#casesheet textarea:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; background: #fff; }
+#casesheet footer { display: flex; align-items: center; justify-content: flex-end; gap: 14px; flex-wrap: wrap; }
+#casesheet .err { margin: 0; flex: 1; color: #b42318; font-size: 13px; }
+#casesheet .go { padding: 11px 22px; font: 700 14px inherit; font-family: inherit; color: #fff; background: linear-gradient(135deg, var(--teal-dark), var(--teal)); border: 0; border-radius: 10px; cursor: pointer; }
+#casesheet .go:hover { filter: brightness(1.06); }
+#casesheet .go:focus-visible { outline: 3px solid rgba(13, 148, 136, .45); outline-offset: 2px; }
+#casesheet .busy { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; text-align: center; background: rgba(255, 255, 255, .94); border-radius: inherit; }
+#casesheet .busy[hidden] { display: none; }
+#casesheet .busy h2 { margin: 6px 0 0; font-size: 20px; }
+#casesheet .busy p { margin: 0; color: var(--text); }
+#casesheet .spin { width: 48px; height: 48px; border-radius: 50%; border: 5px solid rgba(13, 148, 136, .18); border-top-color: var(--teal); animation: cs-spin .9s linear infinite; }
+@keyframes cs-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { #casesheet .spin { animation-duration: 3s; } }

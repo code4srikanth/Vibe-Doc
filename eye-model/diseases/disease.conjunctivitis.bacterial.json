@@ -1,0 +1,37 @@
+{
+  "id": "disease.conjunctivitis.bacterial",
+  "name": "Acute bacterial conjunctivitis",
+  "summary": "Engorged superficial vessels worst toward the fornices and palest at the limbus, sticky discharge, puffy lids; cornea clear, pupil normal.",
+  "affects": ["eye.conjunctiva", "eye.tear_film", "eye.adnexa.upper_lid", "eye.adnexa.lower_lid"],
+  "severity_scale": "mild, moderate, severe",
+  "grades": {
+    "mild": {
+      "eye.conjunctiva": { "appearance.injection": 0.4 },
+      "eye.tear_film": { "optics.discharge": 0.25 }
+    },
+    "moderate": {
+      "eye.conjunctiva": { "appearance.injection": 0.7 },
+      "eye.tear_film": { "optics.discharge": 0.55 },
+      "eye.adnexa.upper_lid": { "anatomy.swelling": 0.2 },
+      "eye.adnexa.lower_lid": { "anatomy.swelling": 0.15 }
+    },
+    "severe": {
+      "eye.conjunctiva": { "appearance.injection": 0.95 },
+      "eye.tear_film": { "optics.discharge": 0.9 },
+      "eye.adnexa.upper_lid": { "anatomy.swelling": 0.5 },
+      "eye.adnexa.lower_lid": { "anatomy.swelling": 0.35 }
+    }
+  },
+  "revealed_by": {
+    "diffuse": "Fiery red eye from engorged, mobile superficial vessels, worst in the fornices and corners and paler toward the limbus; lids slightly puffy; creamy mucopurulent strands in the lower meniscus and a pool at the inner corner.",
+    "optic_section_cornea": "Clear cornea of normal thickness and a quiet, deep anterior chamber: the inflammation stays on the surface."
+  },
+  "differentials": ["Viral conjunctivitis", "Allergic conjunctivitis", "Acute anterior uveitis", "Acute angle closure", "Keratitis"],
+  "teaching_points": [
+    "Conjunctival injection is worst away from the limbus; a ciliary flush is worst at it and points to the cornea, iris or angle.",
+    "Vision, pupil and cornea are normal; any of them abnormal means it is not simple conjunctivitis.",
+    "Mucopurulent discharge that glues the lids in the morning suggests bacteria; watery discharge suggests a virus or allergy.",
+    "Most cases settle in 5-7 days; topical antibiotics shorten them. Refer if vision falls, the eye is painful or it does not settle."
+  ],
+  "provenance": { "source": "Kanski's Clinical Ophthalmology, 9th ed.; AAO Preferred Practice Pattern: Conjunctivitis (2023). Values render-calibrated.", "confidence": "low", "reviewed_by": null }
+}

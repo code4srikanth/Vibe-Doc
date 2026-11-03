@@ -1,0 +1,17 @@
+{
+  "id": "eye.cornea.endothelium",
+  "type": "CorneaLayer",
+  "summary": "Single cell layer that pumps water out of the cornea; the back line of the optic section; keratic precipitates sit on it.",
+  "anatomy": {
+    "thickness": { "value": 0.005, "unit": "mm", "normal": [0.004, 0.006], "hard": [0.002, 0.01] }
+  },
+  "optics": {
+    "scatter": { "value": 0.35, "unit": "rel", "normal": [0.25, 0.45], "hard": [0, 3], "note": "Relative backscatter of the back interface. Render-calibrated." }
+  },
+  "microstructure": {
+    "cell_density": { "age": [[20, 3000], [80, 2300]], "unit": "cells/mm2", "normal": [2000, 3500], "hard": [300, 4500], "note": "Seen with specular reflection at high magnification." }
+  },
+  "relations": { "parent": "eye.cornea", "attached_to": ["eye.cornea.descemet"], "borders": ["eye.anterior_chamber"] },
+  "clinical": { "measured_by": ["specular microscopy"], "visible_in": ["optic_section_cornea", "specular_reflection"] },
+  "provenance": { "source": "Bourne et al., Invest Ophthalmol Vis Sci 38:779 (1997) for cell density and age loss", "confidence": "medium", "reviewed_by": null }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "variant.skin.light",
+  "summary": "Light skin tone.",
+  "patch": {
+    "eye.adnexa.skin": {
+      "appearance.tone": "light",
+      "appearance.albedo": [
+        1,
+        0.78,
+        0.66
+      ]
+    }
+  }
+}

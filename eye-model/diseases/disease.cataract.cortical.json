@@ -1,0 +1,32 @@
+{
+  "id": "disease.cataract.cortical",
+  "name": "Cortical cataract",
+  "summary": "Wedge-shaped opacities (spokes) in the peripheral cortex pointing to the centre; dark against the red reflex.",
+  "affects": ["eye.lens.cortex"],
+  "severity_scale": "Cortical 1-4 (approximately LOCS III C1-C5 by area)",
+  "grades": {
+    "1": { "eye.lens.cortex": { "optics.spoke_density": 0.4 } },
+    "2": { "eye.lens.cortex": { "optics.spoke_density": 0.8 } },
+    "3": { "eye.lens.cortex": { "optics.spoke_density": 1.2 } },
+    "4": { "eye.lens.cortex": { "optics.spoke_density": 1.6 } }
+  },
+  "params": {
+    "location": { "target": "eye.lens.cortex", "path": "anatomy.spoke_location", "options": ["inferior", "diffuse"] }
+  },
+  "revealed_by": {
+    "retroillumination": "Dark radial spokes silhouetted against the red reflex, often inferonasal first.",
+    "optic_section_lens": "White wedge opacities in the peripheral cortex."
+  },
+  "differentials": ["Nuclear cataract", "Posterior subcapsular cataract", "Vacuoles or water clefts"],
+  "teaching_points": [
+    "Use retroillumination through a dilated pupil to see spokes.",
+    "Spokes that reach the visual axis cause glare."
+  ],
+  "further_reading": [
+    { "source": "National Eye Institute", "title": "Cataracts", "url": "https://www.nei.nih.gov/learn-about-eye-health/eye-conditions-and-diseases/cataracts", "sections": ["diagnosis"] },
+    { "source": "MedlinePlus", "title": "Cataract", "url": "https://medlineplus.gov/cataract.html", "sections": ["diagnosis"] },
+    { "source": "EyeWiki", "title": "Cataract", "url": "https://eyewiki.org/Cataract", "sections": ["diagnosis", "signs"] },
+    { "source": "Moran CORE", "title": "Cataracts", "url": "https://morancore.utah.edu/basic-ophthalmology-review/cataracts/", "sections": ["signs", "technique"] }
+  ],
+  "provenance": { "source": "LOCS III: Chylack et al. (1993); values render-calibrated", "confidence": "low", "reviewed_by": null }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "Pupil",
+  "description": "Pupil aperture (real pupil in the iris plane), its position and reflexes; the entrance pupil seen through the cornea is derived.",
+  "required": {
+    "anatomy": [
+      "diameter",
+      "dilated_diameter",
+      "decentration_x",
+      "decentration_y",
+      "vertical_ratio"
+    ],
+    "optics": [
+      "entrance_magnification",
+      "entrance_diameter"
+    ],
+    "physiology": [
+      "light_reflex"
+    ]
+  }
+}

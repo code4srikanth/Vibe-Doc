@@ -1,0 +1,367 @@
+{
+  "id": "eye.iris",
+  "type": "Iris",
+  "summary": "Pigmented diaphragm in front of the lens; radial fibres, crypts and collarette are procedural; colour comes from the subject's variant.",
+  "anatomy": {
+    "diameter": {
+      "value": 12.2,
+      "unit": "mm",
+      "normal": [
+        11.5,
+        12.8
+      ],
+      "hard": [
+        10,
+        14
+      ],
+      "note": "True iris diameter root to root; the outer ~0.3-0.5 mm sits hidden under the limbus, so the visible iris ends at the corneal diameter."
+    },
+    "ruff_width": {
+      "value": 0.2,
+      "unit": "mm",
+      "normal": [
+        0.05,
+        0.3
+      ],
+      "hard": [
+        0,
+        0.5
+      ],
+      "note": "Pupillary ruff: posterior pigment epithelium wrapping round the pupil margin, seen as a dark beaded lip just outside the pupil."
+    },
+    "limbal_ring_width": {
+      "value": 0.85,
+      "unit": "mm",
+      "normal": [
+        0.4,
+        1.5
+      ],
+      "hard": [
+        0,
+        2
+      ],
+      "note": "Apparent (through the cornea) width of the dark limbal ring, from its half-dark onset to the visible iris edge. Measured on source.jpg; thins with age."
+    },
+    "limbal_ring_ramp": {
+      "value": 0.4,
+      "unit": "mm",
+      "normal": [
+        0.2,
+        0.8
+      ],
+      "hard": [
+        0.05,
+        2
+      ],
+      "note": "10-90% width of the ring's inner onset (apparent mm). Render-calibrated on source.jpg."
+    },
+    "limbal_blend_width": {
+      "value": 0.5,
+      "unit": "mm",
+      "normal": [
+        0.3,
+        0.8
+      ],
+      "hard": [
+        0,
+        2
+      ],
+      "note": "10-90% width of the soft iris-to-sclera transition, centred on the corneal edge (apparent mm). Measured on source.jpg."
+    }
+  },
+  "appearance": {
+    "colour": "brown",
+    "albedo_dark": {
+      "value": [
+        0.12,
+        0.05,
+        0.02
+      ],
+      "unit": "rgb",
+      "note": "Crypt floors and pupillary ruff: the posterior pigment epithelium seen through."
+    },
+    "albedo_light": {
+      "value": [
+        0.46,
+        0.24,
+        0.09
+      ],
+      "unit": "rgb",
+      "note": "Pupillary-zone stroma."
+    },
+    "border_layer_albedo": {
+      "value": [
+        0.3,
+        0.14,
+        0.05
+      ],
+      "unit": "rgb",
+      "note": "Anterior border layer between the crypts in the crypt band just outside the collarette. Placeholder for the normal brown eye; subject colours come from the variant."
+    },
+    "ciliary_albedo": {
+      "value": [
+        0.34,
+        0.18,
+        0.07
+      ],
+      "unit": "rgb",
+      "note": "Ciliary-zone stroma between the radial ridges; differs from the pupillary zone in hazel and two-tone irides."
+    },
+    "trabecula_albedo": {
+      "value": [
+        0.52,
+        0.32,
+        0.14
+      ],
+      "unit": "rgb",
+      "note": "Crests of the radial trabeculae and the collarette ridge. Placeholder for the normal brown eye; subject colours come from the variant."
+    },
+    "limbal_darkening": {
+      "value": 0.3,
+      "unit": "ratio",
+      "normal": [
+        0.1,
+        0.7
+      ],
+      "hard": [
+        0,
+        1
+      ],
+      "note": "Luma factor on the iris at the floor of the limbal ring (peripheral pigment plus recess under the limbal overhang). Replaces the painted limbal_colour. Calibrated on source.jpg."
+    },
+    "limbal_veil": {
+      "value": 0.02,
+      "unit": "ratio",
+      "normal": [
+        0,
+        0.06
+      ],
+      "hard": [
+        0,
+        0.3
+      ],
+      "note": "Fraction of the sclera base colour scattered over the ring by the oblique limbal tissue; gives the cool grey cast at the edge. Calibrated on source.jpg."
+    },
+    "limbal_texture_fade": {
+      "value": 0.5,
+      "unit": "ratio",
+      "normal": [
+        0.3,
+        0.8
+      ],
+      "hard": [
+        0,
+        1
+      ],
+      "note": "Fraction of the iris texture contrast (fibres, mottling, crypts) kept at the floor of the limbal ring. Measured on gen-brown-01 (about half). Render calibration."
+    }
+  },
+  "microstructure": {
+    "fibres": {
+      "generator": "fibre_bundles",
+      "seed": 11,
+      "params": {
+        "contrast": 1.2,
+        "streak": 0.6,
+        "bundle_spacing": 0.14,
+        "bundle_width": 0.05,
+        "spacing_jitter": 0.6,
+        "bundle_length": 0.8,
+        "interlacing": 0.45,
+        "angle_spread": 10,
+        "pupillary_spacing_ratio": 0.85,
+        "octaves": 5,
+        "octave_gain": 1.0,
+        "brightness_jitter": 0.5,
+        "waviness": 0.05,
+        "wave_length": 0.7,
+        "ridge_height": 0.04
+      }
+    },
+    "mottling": {
+      "generator": "fbm",
+      "seed": 19,
+      "params": {
+        "scale": 0.6,
+        "octaves": 3,
+        "amplitude": 0.15,
+        "radial_stretch": 1.5
+      }
+    },
+    "collarette": {
+      "generator": "zigzag_ring",
+      "seed": 5,
+      "params": {
+        "lobes": 30,
+        "amplitude": 0.17,
+        "lobe_jitter": 0.5,
+        "ridge_width": 0.1,
+        "ridge_height": 0.12,
+        "contrast": 0.9
+      }
+    },
+    "crypts": {
+      "generator": "radial_lozenges",
+      "seed": 7,
+      "params": {
+        "count": 110,
+        "density": 0.6,
+        "size": 0.4,
+        "aspect": 0.33,
+        "jitter": 0.4,
+        "inner": 0.1,
+        "outer": 0.4,
+        "inner_count": 24,
+        "depth": 0.15,
+        "contrast": 0.12,
+        "size_spread": 0.7,
+        "edge_softness": 0.25,
+        "outline_noise": 0.3,
+        "bridging": 0.0,
+        "wall_width": 0.05
+      }
+    },
+    "contraction_furrows": {
+      "generator": "concentric_arcs",
+      "seed": 13,
+      "params": {
+        "count": 4,
+        "inner": 0.6,
+        "outer": 0.92,
+        "coverage": 0.6,
+        "width": 0.08,
+        "depth": 0.05,
+        "onset_pupil": 3.5,
+        "full_pupil": 7,
+        "contrast": 1.0
+      }
+    },
+    "collarette_position": {
+      "value": 0.33,
+      "unit": "ratio",
+      "normal": [
+        0.2,
+        0.4
+      ],
+      "hard": [
+        0.1,
+        0.6
+      ],
+      "note": "Radial position between pupil margin (0) and root (1)."
+    },
+    "collarette_dilated_scale": {
+      "value": 0.75,
+      "unit": "ratio",
+      "normal": [
+        0.6,
+        1
+      ],
+      "hard": [
+        0.4,
+        1
+      ],
+      "note": "Width of the band from pupil margin to collarette in a dilated eye, against its width at that pupil size: the band gathers towards the margin as the pupil opens. Render-calibrated, not clinically validated."
+    },
+    "collarette_edge_roughness": {
+      "value": 0.04,
+      "unit": "mm",
+      "normal": [
+        0.01,
+        0.1
+      ],
+      "hard": [
+        0,
+        0.3
+      ],
+      "note": "Collarette band outer edge: fine irregularity (noise amplitude, about 4 per tooth) added to the sawtooth teeth (lobes, amplitude, lobe_jitter). ridge_width is the band shoulder and the width of its soft shadow, ridge_height the band height."
+    },
+    "collarette_crypt_count": {
+      "value": 30,
+      "unit": "count",
+      "normal": [
+        15,
+        45
+      ],
+      "hard": [
+        0,
+        80
+      ],
+      "note": "Crypts of the collarette band, one candidate slot each, plus a half-size family between them; they sit along the band outer edge and inside it."
+    },
+    "collarette_crypt_length": {
+      "value": 0.45,
+      "unit": "ratio",
+      "normal": [
+        0.2,
+        0.6
+      ],
+      "hard": [
+        0.05,
+        0.9
+      ],
+      "note": "Median radial length of a collarette-band crypt as a fraction of the band width (pupil margin to collarette); width from crypts.aspect, spread from crypts.size_spread."
+    },
+    "collarette_rim_brightness": {
+      "value": 0.5,
+      "unit": "ratio",
+      "normal": [
+        0.2,
+        0.8
+      ],
+      "hard": [
+        0,
+        1
+      ],
+      "note": "Pale trabecular rim round the band crypts and along the band edge: blend toward trabecula_albedo."
+    },
+    "collarette_net_angle": {
+      "value": 25,
+      "unit": "deg",
+      "normal": [
+        10,
+        40
+      ],
+      "hard": [
+        0,
+        60
+      ],
+      "note": "Fibre net across the band: the pupillary bundles plus two copies slanted by +/- this angle from radial, so the bundles cross."
+    }
+  },
+  "physiology": {
+    "convexity": {
+      "value": 0.2,
+      "unit": "mm",
+      "normal": [
+        0,
+        0.4
+      ],
+      "hard": [
+        -0.5,
+        2
+      ],
+      "note": "Forward bowing of the pupillary portion riding on the lens; large values approach iris bombe."
+    }
+  },
+  "relations": {
+    "parent": "eye",
+    "borders": [
+      "eye.anterior_chamber",
+      "eye.lens.capsule",
+      "eye.pupil"
+    ]
+  },
+  "clinical": {
+    "visible_in": [
+      "diffuse",
+      "optic_section_cornea",
+      "parallelepiped",
+      "retroillumination"
+    ]
+  },
+  "provenance": {
+    "source": "Morphology and sizes (diameter, collarette, crypts, ruff, furrows): Bron, Tripathi & Tripathi, Wolff's Anatomy of the Eye and Orbit, 8th ed., ch. on the iris; Snell & Lemp, Clinical Anatomy of the Eye, 2nd ed. Limbal ring: Peshek et al., Evol Psychol 9:137 (2011). Ring, blend, colours, generator parameters and convexity: render calibration on assets/exterior/source.jpg (docs/realism/L4-iris-pupil.md). Fibre bundles, mottling, crypt size distribution and limbal texture fade: render calibration on the user reference assets/refs/iris/gen-brown-01.png (AI-generated), cross-checked on source.jpg (L4b refinement). Collarette band (teeth, band height and shoulder, edge roughness, band crypts, rim, fibre net): render calibration on a user reference cut-out of the pupillary-zone ring (L4c, structure only).",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

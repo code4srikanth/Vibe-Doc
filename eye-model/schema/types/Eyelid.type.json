@@ -1,0 +1,16 @@
+{
+  "type": "Eyelid",
+  "description": "Upper or lower eyelid: margin position and shape of the palpebral fissure.",
+  "required": {
+    "anatomy": [
+      "margin_height",
+      "fissure_half_width",
+      "fissure_centre_offset",
+      "apex_offset",
+      "apex_height",
+      "apex_shape",
+      "margin_thickness",
+      "swelling"
+    ]
+  }
+}

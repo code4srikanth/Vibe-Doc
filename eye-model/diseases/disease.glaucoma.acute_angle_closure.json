@@ -1,0 +1,29 @@
+{
+  "id": "disease.glaucoma.acute_angle_closure",
+  "name": "Acute primary angle closure",
+  "summary": "Sudden blockage of aqueous outflow: very high IOP, oedematous cornea, shallow chamber, fixed mid-dilated pupil and ciliary flush.",
+  "affects": ["eye.cornea.stroma", "eye.tear_film", "eye.anterior_chamber", "eye.pupil", "eye.conjunctiva", "eye.lens"],
+  "severity_scale": "present",
+  "grades": {
+    "attack": {
+      "eye.cornea.stroma": { "optics.haze": 0.35 },
+      "eye.tear_film": { "optics.surface_irregularity": 0.02 },
+      "eye.anterior_chamber": { "anatomy.depth": 1.5, "optics.flare_grade": 1 },
+      "eye.pupil": { "anatomy.diameter": 5.1, "anatomy.dilated_diameter": 5.1, "anatomy.vertical_ratio": 1.15, "physiology.light_reflex": "fixed" },
+      "eye.conjunctiva": { "appearance.injection": 0.25, "appearance.ciliary_flush": 1, "appearance.ciliary_flush_width": 3.5 },
+      "eye.lens": { "anatomy.thickness": 4.8 }
+    }
+  },
+  "revealed_by": {
+    "diffuse": "Steamy hazy cornea with a dull, broken reflex; the iris and pupil are still seen through it. Ciliary flush densest around the limbus; fixed, vertically oval mid-dilated pupil.",
+    "optic_section_cornea": "Thick hazy corneal section; very shallow central chamber, so the corneal and lens beams almost touch.",
+    "tonometry": "IOP typically 40-70 mmHg."
+  },
+  "differentials": ["Acute anterior uveitis", "Neovascular glaucoma", "Phacomorphic glaucoma", "Acute conjunctivitis"],
+  "teaching_points": [
+    "Do not dilate; check IOP and the fellow eye's angle.",
+    "The cornea is hazy, not the lens; do not mistake it for a white cataract.",
+    "Treat urgently to lower IOP, then laser peripheral iridotomy to both eyes."
+  ],
+  "provenance": { "source": "Kanski's Clinical Ophthalmology, 9th ed.; EGS Terminology and Guidelines for Glaucoma, 5th ed.", "confidence": "medium", "reviewed_by": null }
+}

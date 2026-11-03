@@ -1,0 +1,14 @@
+{
+  "id": "eye.cornea.epithelium",
+  "type": "CorneaLayer",
+  "summary": "Outer cell layer under the tear film; shows as the bright front line of the corneal optic section and stains with fluorescein when damaged.",
+  "anatomy": {
+    "thickness": { "value": 0.053, "unit": "mm", "normal": [0.045, 0.06], "hard": [0.0, 0.12] }
+  },
+  "optics": {
+    "scatter": { "value": 0.4, "unit": "rel", "normal": [0.3, 0.5], "hard": [0, 3], "note": "Relative backscatter of the front interface in an optic section. Render-calibrated, not measured." }
+  },
+  "relations": { "parent": "eye.cornea", "attached_to": ["eye.cornea.bowman"] },
+  "clinical": { "visible_in": ["optic_section_cornea", "cobalt_blue", "specular_reflection"] },
+  "provenance": { "source": "Thickness: Reinstein et al., J Refract Surg 24:571 (2008). Scatter: render calibration.", "confidence": "medium", "reviewed_by": null }
+}

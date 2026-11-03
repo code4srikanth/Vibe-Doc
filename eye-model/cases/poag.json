@@ -1,0 +1,24 @@
+{
+  "id": "poag",
+  "title": "Primary open-angle glaucoma",
+  "subject": {
+    "age": 64,
+    "sex": "male",
+    "eye": "OD",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [
+    {
+      "id": "disease.glaucoma.poag",
+      "grade": "moderate"
+    }
+  ],
+  "exam_conditions": {
+    "dilated": true
+  },
+  "answer": {
+    "diagnosis": "Primary open-angle glaucoma, right eye (moderate)",
+    "notes": "Vertical cup-to-disc ratio about 0.75, inferotemporal notch, disc haemorrhage at the margin. Examine the disc with the 90D lens through a dilated pupil."
+  }
+}

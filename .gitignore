@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.tmp/
+
+# Renders are reproducible from any commit (npm run render); keep only the text reports and answer keys.
+reviews/**/renders/
+reviews/**/blind/
+__pycache__/
+
+# Review snapshots of the layer build; reproducible, not part of the source.
+layers/
+
+# API keys (see .env.example)
+.env

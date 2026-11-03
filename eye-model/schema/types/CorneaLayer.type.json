@@ -1,0 +1,12 @@
+{
+  "type": "CorneaLayer",
+  "description": "One corneal layer (epithelium, Bowman, stroma, Descemet, endothelium).",
+  "required": {
+    "anatomy": [
+      "thickness"
+    ],
+    "optics": [
+      "scatter"
+    ]
+  }
+}

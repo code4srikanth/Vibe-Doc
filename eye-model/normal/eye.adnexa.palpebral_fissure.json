@@ -1,0 +1,97 @@
+{
+  "id": "eye.adnexa.palpebral_fissure",
+  "type": "Fissure",
+  "summary": "Lid opening: positions of the medial and lateral canthi relative to the iris centre (+x lateral, +y up, mm).",
+  "anatomy": {
+    "medial_canthus_x": {
+      "value": -16.23,
+      "unit": "mm",
+      "normal": [
+        -18,
+        -13
+      ],
+      "hard": [
+        -22,
+        -8
+      ]
+    },
+    "medial_canthus_y": {
+      "value": -4.1,
+      "unit": "mm",
+      "normal": [
+        -6,
+        -1
+      ],
+      "hard": [
+        -9,
+        4
+      ]
+    },
+    "lateral_canthus_x": {
+      "value": 11.8,
+      "unit": "mm",
+      "normal": [
+        10,
+        15
+      ],
+      "hard": [
+        7,
+        20
+      ]
+    },
+    "lateral_canthus_y": {
+      "value": -2.5,
+      "unit": "mm",
+      "normal": [
+        -4,
+        2
+      ],
+      "hard": [
+        -7,
+        6
+      ]
+    },
+    "opening_max_radius": {
+      "value": 14.1,
+      "unit": "mm",
+      "normal": [
+        13,
+        15
+      ],
+      "hard": [
+        11.5,
+        18
+      ],
+      "note": "Largest distance from the iris centre to the edge of the rendered opening (the caruncle border medially). The globe plus the fornix fillet must reach it."
+    },
+    "vertical_height": {
+      "derived": "{eye.adnexa.upper_lid:anatomy.margin_height} + {eye.adnexa.lower_lid:anatomy.margin_height}",
+      "unit": "mm",
+      "normal": [
+        8,
+        11
+      ],
+      "hard": [
+        0,
+        16
+      ],
+      "note": "Vertical palpebral fissure height, MRD1 + MRD2 (Kanski normal 8-11). The reference subject is wide open (about 11.7)."
+    }
+  },
+  "relations": {
+    "parent": "eye.adnexa"
+  },
+  "clinical": {
+    "measured_by": [
+      "ruler (palpebral fissure width)"
+    ],
+    "visible_in": [
+      "diffuse"
+    ]
+  },
+  "provenance": {
+    "source": "Derived from the trace in assets/exterior/fissure.json (iris centre (1421, 875) px, 51.2 px/mm from HVID 11.8); the validator checks these values against the trace within 0.05 mm. Normal ranges: Kanski's Clinical Ophthalmology, 9th ed.",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "Cornea",
+  "description": "Whole cornea: curvature, diameter, overall optics. Thickness is derived from its layers.",
+  "required": {
+    "anatomy": [
+      "anterior_radius",
+      "posterior_radius",
+      "diameter",
+      "central_thickness"
+    ],
+    "optics": [
+      "refractive_index"
+    ]
+  }
+}

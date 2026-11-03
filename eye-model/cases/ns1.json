@@ -1,0 +1,23 @@
+{
+  "id": "ns1",
+  "title": "Mild nuclear cataract",
+  "subject": {
+    "age": 52,
+    "sex": "female",
+    "eye": "OD",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [
+    {
+      "id": "disease.cataract.nuclear",
+      "grade": "1"
+    }
+  ],
+  "exam_conditions": {
+    "dilated": true
+  },
+  "answer": {
+    "diagnosis": "Age-related nuclear cataract, grade 1, right eye"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "disease.cornea.arcus_senilis",
+  "name": "Arcus senilis",
+  "summary": "Grey-white lipid ring in the peripheral corneal stroma with a clear zone at the limbus; common with age.",
+  "affects": ["eye.cornea.stroma"],
+  "severity_scale": "mild / moderate / marked",
+  "grades": {
+    "mild": { "eye.cornea.stroma": { "optics.peripheral_lipid": 0.3 } },
+    "moderate": { "eye.cornea.stroma": { "optics.peripheral_lipid": 0.6 } },
+    "marked": { "eye.cornea.stroma": { "optics.peripheral_lipid": 0.9 } }
+  },
+  "revealed_by": {
+    "diffuse": "Grey-white ring at the corneal periphery, separated from the limbus by a clear lucid interval.",
+    "sclerotic_scatter": "The ring glows when the cornea is lit from the limbus."
+  },
+  "differentials": ["Arcus juvenilis (check lipids if under 50)", "Peripheral corneal degeneration"],
+  "teaching_points": ["In patients under 50, arcus warrants a lipid profile."],
+  "provenance": { "source": "Kanski's Clinical Ophthalmology, 9th ed.; values render-calibrated", "confidence": "low", "reviewed_by": null }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "cc4",
+  "title": "Advanced cortical cataract",
+  "subject": {
+    "age": 74,
+    "sex": "female",
+    "eye": "OS",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [
+    {
+      "id": "disease.cataract.cortical",
+      "grade": "4",
+      "params": {
+        "location": "diffuse"
+      }
+    }
+  ],
+  "exam_conditions": {
+    "dilated": true
+  },
+  "answer": {
+    "diagnosis": "Cortical cataract, grade 4, spokes around the lens, left eye"
+  }
+}

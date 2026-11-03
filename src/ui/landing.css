@@ -1,0 +1,69 @@
+/* Screen 1, the landing (src/ui/landing.ts): a light blueprint grid that forms around the VibeDoc wordmark. */
+#landing {
+  --bg: #f6fbfa;
+  position: fixed; inset: 0; z-index: 300; overflow: hidden;
+  background: var(--bg); color: #2f4a4a; color-scheme: light;
+  cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  transition: opacity .55s ease;
+}
+#landing.out { opacity: 0; pointer-events: none; }
+#landing canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* the wordmark box is sized before the image decodes (aspect ratio from the asset), so nothing shifts */
+#landing .lockup {
+  position: absolute; left: 50%; top: 50%;
+  width: calc(0.7 * min(1400px, max(min(84vw, 300px), 47vw), 230vh));
+  aspect-ratio: var(--logo-ratio);
+  translate: -50% -50%;
+  transition: scale .55s ease;
+}
+#landing.out .lockup { scale: 1.025; }
+#landing .move { position: absolute; inset: 0; will-change: transform; }
+#landing .half { position: absolute; inset: 0; opacity: 0; }
+#landing .half img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; -webkit-user-drag: none; }
+/* each half shows one word of the same artwork; the blur sits outside the clip so it never shows a hard edge */
+#landing .vibe img { clip-path: inset(-20% calc(100% - var(--split)) -20% -20%); }
+/* "Doc" is masked onto a solid fill in the artwork's teal */
+#landing .doc img { opacity: 0; }
+#landing .doc::before {
+  content: ""; position: absolute; inset: 0; background: #0b8693;
+  -webkit-mask: var(--logo) center / 100% 100% no-repeat; mask: var(--logo) center / 100% 100% no-repeat;
+  clip-path: inset(-20% -20% -20% var(--split));
+}
+#landing .vibe { animation: vd-rise .85s cubic-bezier(.2, .75, .25, 1) 1.2s forwards; }
+#landing .doc { animation: vd-rise .85s cubic-bezier(.2, .75, .25, 1) 1.55s forwards; }
+
+/* one light sweep, masked by the wordmark itself so it only lights the letters */
+#landing .sweep {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  -webkit-mask: var(--logo) center / 100% 100% no-repeat; mask: var(--logo) center / 100% 100% no-repeat;
+  background: linear-gradient(100deg, transparent 38%, rgba(255, 255, 255, .85) 50%, transparent 62%) no-repeat;
+  background-size: 260% 100%; background-position: 130% 0;
+  animation: vd-sweep 1s cubic-bezier(.45, 0, .3, 1) 2.3s forwards;
+}
+
+#landing .hint {
+  position: absolute; left: 0; right: 0; bottom: max(7vh, 28px); margin: 0; text-align: center;
+  font: 500 clamp(12px, 1.05vw, 17px)/1.4 system-ui, "Segoe UI", sans-serif; letter-spacing: .06em;
+  color: #4f7371; opacity: 0;
+  animation: vd-hint .8s ease 2.9s forwards, vd-breathe 2.6s ease-in-out 3.7s infinite;
+}
+
+@keyframes vd-rise {
+  from { opacity: 0; transform: translateY(16%); filter: blur(10px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes vd-sweep {
+  0% { opacity: 1; background-position: 130% 0; }
+  100% { opacity: 1; background-position: -30% 0; }
+}
+@keyframes vd-hint { to { opacity: .8; } }
+@keyframes vd-breathe { 0%, 100% { opacity: .8; } 50% { opacity: .45; } }
+
+@media (prefers-reduced-motion: reduce) {
+  #landing .half { animation: vd-fade .6s ease .15s forwards; }
+  #landing .sweep { display: none; }
+  #landing .hint { animation: vd-fade .6s ease .6s forwards; }
+  #landing.out .lockup { scale: none; }
+}
+@keyframes vd-fade { to { opacity: 1; } }

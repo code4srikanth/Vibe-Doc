@@ -1,0 +1,19 @@
+{
+  "id": "normal",
+  "title": "Healthy young adult",
+  "subject": {
+    "age": 28,
+    "sex": "female",
+    "eye": "OD",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [],
+  "exam_conditions": {
+    "dilated": false
+  },
+  "answer": {
+    "diagnosis": "Normal anterior segment",
+    "notes": "Clear cornea and lens, deep quiet chamber."
+  }
+}

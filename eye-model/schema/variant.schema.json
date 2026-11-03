@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "variant.schema.json",
+  "title": "Variant",
+  "description": "A healthy variation of the normal eye (iris colour, skin tone), like a record type. Applied before diseases.",
+  "type": "object",
+  "required": ["id", "summary", "patch"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^variant\\.(iris|skin)\\.[a-z_]+$" },
+    "summary": { "type": "string", "maxLength": 160 },
+    "patch": { "$ref": "disease.schema.json#/definitions/patch" }
+  },
+  "additionalProperties": false
+}

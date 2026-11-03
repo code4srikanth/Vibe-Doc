@@ -1,0 +1,46 @@
+{
+  "name": "eyesim",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Metadata-driven slit-lamp simulator for trainee ophthalmologists",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "start": "tsx server/index.ts",
+    "typecheck": "tsc --noEmit",
+    "export:vessels": "tsx tools/export-vessels.ts",
+    "import:vessels": "tsx tools/import-vessels.ts",
+    "manifest": "tsx tools/manifest.ts",
+    "gen:types": "tsx tools/gen-types.ts",
+    "validate": "tsx tools/manifest.ts && tsx tools/validate.ts",
+    "render": "tsx tools/render.ts",
+    "test:visual": "tsx tools/visual-test.ts",
+    "server": "tsx server/index.ts",
+    "agent": "tsx server/cli.ts",
+    "patient": "tsx server/patient-cli.ts",
+    "review": "tsx tools/review.ts",
+    "test:server": "tsx --test server/*.test.ts"
+  },
+  "dependencies": {
+    "sqlite-vec": "0.1.9",
+    "three": "^0.186.1",
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/pngjs": "^6.0.5",
+    "@types/three": "^0.186.0",
+    "ajv": "^8.20.0",
+    "json-schema-to-typescript": "^16.0.0",
+    "pixelmatch": "^8.0.0",
+    "playwright-core": "^1.64.1",
+    "pngjs": "^7.0.0",
+    "sharp": "^0.35.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

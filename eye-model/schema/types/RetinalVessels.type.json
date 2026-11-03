@@ -1,0 +1,20 @@
+{
+  "type": "RetinalVessels",
+  "description": "The central retinal vessels: calibre at the disc, artery to vein ratio, the temporal arcades and the branching pattern.",
+  "required": {
+    "anatomy": [
+      "vein_calibre",
+      "artery_vein_ratio",
+      "artery_calibre",
+      "arcade_separation"
+    ],
+    "microstructure": [
+      "branch_seed"
+    ],
+    "appearance": [
+      "artery_colour",
+      "vein_colour",
+      "artery_reflex"
+    ]
+  }
+}

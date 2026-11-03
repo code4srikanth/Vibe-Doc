@@ -1,0 +1,30 @@
+{
+  "source": "assets/exterior/source.jpg",
+  "note": "Palpebral fissure traced on the source photo (pixels, y down). The opening runs from the caruncle's outer border (bottom to top), along the upper margin to the lateral canthus, and back along the lower margin. Everything inside (sclera, conjunctiva with the plica semilunaris, cornea, iris, tear meniscus) is cut out and rendered by the eye layers. The skin, lids, lashes and caruncle stay in the photo.",
+  "iris_centre_px": [1421, 875],
+  "pupil_centre_px": [1408, 870],
+  "feather_px": 1.5,
+  "caruncle_feather_px": 7,
+  "medial_canthus": [590, 1085],
+  "caruncle_edge": [[790, 1108], [776, 1086], [763, 1062], [752, 1036], [738, 1008], [721, 986], [708, 975]],
+  "lateral_canthus": [2025, 1003],
+  "lid_fold_note": "Edge of the skin that stays still when the upper lid closes (the folds above the lid at the canthi, traced from the reviewer's marks); between its ends it runs along the slit-lamp crop's top. The lid between its margin and this line moves.",
+  "lid_fold": [[637, 613], [694, 584], [774, 533], [842, 482], [899, 442], [960, 425], [1821, 425], [1901, 471], [1981, 516], [2049, 550], [2100, 596]],
+  "upper": [[750, 915], [800, 870], [850, 830], [900, 792], [950, 757], [1000, 720], [1050, 694], [1100, 672], [1200, 622], [1300, 590], [1400, 575], [1500, 580], [1600, 600], [1700, 634], [1800, 690], [1900, 766], [1950, 820], [1992, 882], [2018, 945]],
+  "slit_lamp": {
+    "note": "Crop to the slit-lamp field (about 32 mm, the whole fissure with the caruncle) and relight the daylight photo to the lamp's diffused beam in a dark room. 51.2 px/mm: the photo spans 50 mm (same calibration as the external view).",
+    "px_per_mm": 51.2,
+    "trace_crop": [520, 333, 1640, 1093],
+    "crop": [637, 425, 1463, 822],
+    "lamp_centre": [1420, 880],
+    "lamp_radius_mm": 11,
+    "lamp_soft_mm": 9,
+    "room": 0.04,
+    "exposure": 0.55,
+    "contrast": 1.12,
+    "warmth": [1, 0.88, 0.7],
+    "side_light": 0.15,
+    "highlight_suppress": 0.75
+  },
+  "lower": [[1950, 1047], [1900, 1077], [1850, 1102], [1800, 1126], [1750, 1142], [1700, 1156], [1600, 1170], [1500, 1176], [1400, 1174], [1300, 1167], [1200, 1152], [1100, 1137], [1000, 1124], [900, 1115], [830, 1112]]
+}

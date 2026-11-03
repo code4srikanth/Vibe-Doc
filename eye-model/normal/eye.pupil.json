@@ -1,0 +1,30 @@
+{
+  "id": "eye.pupil",
+  "type": "Pupil",
+  "summary": "Aperture of the iris; size depends on age, light and dilating drops. A fixed mid-dilated pupil is a key sign of acute angle closure.",
+  "anatomy": {
+    "diameter": { "age": [[20, 3.53], [50, 3.0], [80, 2.47]], "unit": "mm", "normal": [2.2, 4.4], "hard": [0.8, 9.0], "note": "Real (anatomical) pupil in the iris plane under slit-lamp room lighting; senile miosis with age. Winn 1994 measured the entrance pupil, so its values are divided by 1.134 (optics.entrance_magnification). Clinicians see optics.entrance_diameter." },
+    "dilated_diameter": { "age": [[20, 6.2], [80, 5.04]], "unit": "mm", "normal": [4.7, 7.0], "hard": [2.6, 9.0], "note": "Real pupil after tropicamide 1%: entrance-pupil values divided by 1.134, then reduced 12% as a render choice, because the published size looked too large on screen. Render-calibrated, not clinically validated. Used when the case is examined dilated." },
+    "decentration_x": { "value": -0.15, "unit": "mm", "normal": [-0.5, 0.2], "hard": [-1.5, 1.5], "note": "Pupil centre relative to the limbus centre in the iris plane; +x temporal, so negative is nasal. Low confidence." },
+    "decentration_y": { "value": 0.05, "unit": "mm", "normal": [-0.3, 0.3], "hard": [-1.5, 1.5], "note": "Pupil centre relative to the limbus centre; +y up. Low confidence." },
+    "vertical_ratio": { "value": 1.0, "unit": "ratio", "normal": [0.95, 1.05], "hard": [0.6, 1.6], "note": "Vertical over horizontal pupil diameter; diameter is the horizontal one. A vertically oval pupil follows sphincter ischaemia in acute angle closure. Kanski's Clinical Ophthalmology, 9th ed.; render-calibrated (low)." }
+  },
+  "optics": {
+    "entrance_magnification": {
+      "derived": "1 / (1 - ({eye.cornea:anatomy.central_thickness} + {eye.anterior_chamber:anatomy.depth}) * {eye.cornea:optics.power} / {eye.anterior_chamber:optics.refractive_index})",
+      "unit": "ratio", "normal": [1.10, 1.16], "hard": [1.0, 1.3],
+      "note": "Paraxial magnification of the iris plane by the cornea (Atchison & Smith 2000, ch. 5); about 1.135 at age 20."
+    },
+    "entrance_diameter": {
+      "derived": "{eye.pupil:anatomy.diameter} * {eye.pupil:optics.entrance_magnification}",
+      "unit": "mm", "normal": [2.5, 5.0], "hard": [1.0, 10.0],
+      "note": "Apparent pupil seen through the cornea: what a clinician measures with a ruler or pupillometer."
+    }
+  },
+  "physiology": {
+    "light_reflex": "brisk"
+  },
+  "relations": { "parent": "eye.iris" },
+  "clinical": { "measured_by": ["pupillometry", "ruler"], "visible_in": ["diffuse", "retroillumination"] },
+  "provenance": { "source": "Winn et al., Invest Ophthalmol Vis Sci 35:1132 (1994) for age-related pupil size (converted to the real pupil); Yang, Thompson & Burns, Invest Ophthalmol Vis Sci 43:2508 (2002) for decentration (low confidence); Atchison & Smith, Optics of the Human Eye (2000), ch. 5 for entrance-pupil magnification", "confidence": "medium", "reviewed_by": null }
+}

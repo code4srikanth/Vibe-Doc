@@ -1,0 +1,12 @@
+{
+  "type": "Skin",
+  "description": "Periocular skin.",
+  "required": {
+    "appearance": [
+      "albedo"
+    ],
+    "microstructure": [
+      "pores"
+    ]
+  }
+}

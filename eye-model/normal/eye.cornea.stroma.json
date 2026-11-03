@@ -1,0 +1,23 @@
+{
+  "id": "eye.cornea.stroma",
+  "type": "CorneaLayer",
+  "summary": "Ordered collagen lamellae, ~90% of corneal thickness; faint blue-grey in an optic section, hazy when oedematous.",
+  "anatomy": {
+    "thickness": { "value": 0.47, "unit": "mm", "normal": [0.43, 0.51], "hard": [0.2, 1.2] },
+    "arcus_width": { "value": 0.85, "unit": "mm", "normal": [0.5, 1.5], "hard": [0.1, 3], "note": "Radial width of the arcus band (used when peripheral_lipid > 0). Kanski's Clinical Ophthalmology, 9th ed.; render-calibrated (low)." },
+    "lucid_interval": { "value": 0.3, "unit": "mm", "normal": [0.2, 1], "hard": [0, 2], "note": "Clear gap between the arcus band and the limbus. Kanski's Clinical Ophthalmology, 9th ed.; render-calibrated (low)." }
+  },
+  "optics": {
+    "scatter": { "value": 0.5, "unit": "rel", "normal": [0.4, 0.6], "hard": [0, 5], "note": "Bulk backscatter of clear stroma. Render-calibrated." },
+    "scatter_tint": { "value": [0.55, 0.74, 1.12], "unit": "rgb", "note": "Short wavelengths scatter more, so the section looks blue-grey." },
+    "haze": { "value": 0.0, "unit": "rel", "normal": [0, 0], "hard": [0, 1], "note": "Oedema or scarring; also blurs the view of the iris." },
+    "peripheral_lipid": { "value": 0.0, "unit": "rel", "normal": [0, 0], "hard": [0, 1], "note": "Arcus: grey-white peripheral ring with a clear lucid interval at the limbus." }
+  },
+  "microstructure": {
+    "lamellae": { "generator": "lamellae", "seed": 21, "params": { "count": 250 } },
+    "nerves": { "generator": "branching", "seed": 17, "params": { "density": 0.4 } }
+  },
+  "relations": { "parent": "eye.cornea", "attached_to": ["eye.cornea.bowman", "eye.cornea.descemet"] },
+  "clinical": { "visible_in": ["optic_section_cornea", "parallelepiped", "sclerotic_scatter"] },
+  "provenance": { "source": "Thickness: Atchison & Smith (2000). Optical appearance: render calibration against slit-lamp photographs.", "confidence": "medium", "reviewed_by": null }
+}

@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "case.schema.json",
+  "title": "Case",
+  "description": "A training case: a subject plus diseases from the library plus exam conditions. This is what the run-time Case Generator will produce from a trainer's prompt.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "subject",
+    "diseases"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "object",
+      "required": [
+        "age",
+        "eye"
+      ],
+      "properties": {
+        "age": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "sex": {
+          "enum": [
+            "female",
+            "male",
+            "other"
+          ]
+        },
+        "eye": {
+          "enum": [
+            "OD",
+            "OS"
+          ]
+        },
+        "iris_colour": {
+          "enum": [
+            "black_brown"
+          ]
+        },
+        "skin_tone": {
+          "enum": [
+            "light",
+            "medium",
+            "dark"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "diseases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "grade"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "params": {
+            "type": "object",
+            "description": "Disease-specific options, e.g. location of cortical spokes."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "exam_conditions": {
+      "type": "object",
+      "properties": {
+        "dilated": {
+          "type": "boolean",
+          "description": "Pharmacological dilation (e.g. tropicamide 1%)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "overrides": {
+      "$ref": "disease.schema.json#/definitions/patch"
+    },
+    "answer": {
+      "type": "object",
+      "description": "Ground truth for grading; hidden from the trainee and the Doctor agent.",
+      "properties": {
+        "diagnosis": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

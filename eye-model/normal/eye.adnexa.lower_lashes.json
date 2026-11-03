@@ -1,0 +1,49 @@
+{
+  "id": "eye.adnexa.lower_lashes",
+  "type": "Lashes",
+  "summary": "Lower eyelashes; short and sparse.",
+  "anatomy": {
+    "length": {
+      "value": 3.1,
+      "unit": "mm",
+      "normal": [
+        1.5,
+        3.5
+      ],
+      "hard": [
+        0,
+        4
+      ],
+      "note": "Visible length in the frontal view."
+    }
+  },
+  "microstructure": {
+    "strands": {
+      "generator": "instanced_strands",
+      "seed": 9,
+      "params": {
+        "spacing": 0.24,
+        "rows": 2,
+        "droop": 0,
+        "curl": 1,
+        "thickness": 1,
+        "sweep": 0.3,
+        "length_gain": 0.5,
+        "darkness": 0.8
+      }
+    }
+  },
+  "relations": {
+    "parent": "eye.adnexa.lower_lid"
+  },
+  "clinical": {
+    "visible_in": [
+      "diffuse"
+    ]
+  },
+  "provenance": {
+    "source": "Render calibration",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

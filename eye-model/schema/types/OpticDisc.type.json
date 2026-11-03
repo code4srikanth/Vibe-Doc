@@ -1,0 +1,26 @@
+{
+  "type": "OpticDisc",
+  "description": "The optic nerve head: disc size and position, the cup, the neuroretinal rim and its signs (notch, haemorrhage, atrophy, pallor).",
+  "required": {
+    "anatomy": [
+      "vertical_diameter",
+      "horizontal_diameter",
+      "position_x",
+      "position_y",
+      "cup_disc_ratio_vertical",
+      "cup_disc_ratio_horizontal",
+      "cup_decentration_x",
+      "cup_decentration_y",
+      "notch_depth",
+      "notch_angle",
+      "haemorrhage_length",
+      "haemorrhage_angle",
+      "peripapillary_atrophy_width"
+    ],
+    "appearance": [
+      "rim_colour",
+      "cup_colour",
+      "pallor"
+    ]
+  }
+}

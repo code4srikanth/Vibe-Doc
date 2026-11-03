@@ -1,0 +1,12 @@
+{
+  "type": "Fissure",
+  "description": "Palpebral fissure: canthus positions.",
+  "required": {
+    "anatomy": [
+      "medial_canthus_x",
+      "medial_canthus_y",
+      "lateral_canthus_x",
+      "lateral_canthus_y"
+    ]
+  }
+}

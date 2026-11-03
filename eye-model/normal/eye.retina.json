@@ -1,0 +1,14 @@
+{
+  "id": "eye.retina",
+  "type": "Retina",
+  "summary": "The fundus seen through the pupil with a fundus lens (90D): the orange-red background behind the disc, vessels and macula.",
+  "appearance": {
+    "background_colour": {"value": [0.416, 0.028, 0.012], "unit": "rgb", "note": "Linear reflectance of the mid-peripheral fundus; sRGB #ab3322. sRGB sampled from the user's wide-field fundus reference (not in the repo), converted to linear; render calibration."},
+    "peripheral_darkening": {"value": 0.55, "unit": "ratio", "normal": [0.3, 0.7], "hard": [0, 1], "note": "Fraction of linear reflectance lost toward the edge of the field (the reference: 0.18 against 0.42 in red); render calibration."},
+    "tessellation": {"age": [[20, 0.15], [80, 0.45]], "unit": "ratio", "normal": [0, 0.6], "hard": [0, 1], "note": "How visible the choroidal vessels are through the thinning RPE: more with age and in myopia; render calibration (low)."},
+    "nerve_fibre_sheen": {"age": [[20, 1.0], [80, 0.4]], "unit": "ratio", "normal": [0.2, 1], "hard": [0, 1], "note": "Strength of the striated reflex of the retinal nerve-fibre layer along the arcades; fades with age, and is lost in a glaucomatous nerve-fibre defect; render calibration (low)."}
+  },
+  "relations": {"parent": "eye.globe"},
+  "clinical": {"measured_by": ["fundus lens (60D, 78D, 90D)", "ophthalmoscopy", "fundus photography"], "visible_in": ["fundus"], "notes": "Fundus coordinates: millimetres on the retina from the foveal centre, +x temporal, +y up, the same for both eyes (the renderer mirrors the left eye)."},
+  "provenance": {"source": "Colours from the user's fundus reference (render calibration); age trends from Kanski's Clinical Ophthalmology, 9th ed.", "confidence": "low", "reviewed_by": null}
+}

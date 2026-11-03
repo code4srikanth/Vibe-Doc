@@ -1,0 +1,25 @@
+{
+  "id": "reference_black_brown",
+  "title": "Healthy eye, black-brown iris",
+  "subject": {
+    "age": 28,
+    "sex": "female",
+    "eye": "OS",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [],
+  "exam_conditions": {
+    "dilated": false
+  },
+  "overrides": {
+    "eye.pupil": {
+      "anatomy.diameter": 2.57,
+      "anatomy.decentration_x": -0.13,
+      "anatomy.decentration_y": -0.02
+    }
+  },
+  "answer": {
+    "diagnosis": "Healthy eye (black-brown iris, visual reference)"
+  }
+}

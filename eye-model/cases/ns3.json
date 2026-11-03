@@ -1,0 +1,23 @@
+{
+  "id": "ns3",
+  "title": "Advanced nuclear cataract",
+  "subject": {
+    "age": 72,
+    "sex": "male",
+    "eye": "OS",
+    "iris_colour": "black_brown",
+    "skin_tone": "medium"
+  },
+  "diseases": [
+    {
+      "id": "disease.cataract.nuclear",
+      "grade": "3"
+    }
+  ],
+  "exam_conditions": {
+    "dilated": true
+  },
+  "answer": {
+    "diagnosis": "Age-related nuclear cataract, grade 3, left eye"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "eye.cornea.bowman",
+  "type": "CorneaLayer",
+  "summary": "Acellular collagen layer beneath the epithelium; not seen separately at routine magnification.",
+  "anatomy": {
+    "thickness": { "value": 0.012, "unit": "mm", "normal": [0.008, 0.015], "hard": [0.0, 0.03] }
+  },
+  "optics": {
+    "scatter": { "value": 0.0, "unit": "rel", "normal": [0, 0.1], "hard": [0, 3] }
+  },
+  "relations": { "parent": "eye.cornea", "attached_to": ["eye.cornea.epithelium", "eye.cornea.stroma"] },
+  "clinical": { "visible_in": [] },
+  "provenance": { "source": "Atchison & Smith, Optics of the Human Eye (2000), ch. 2", "confidence": "medium", "reviewed_by": null }
+}

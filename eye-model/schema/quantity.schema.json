@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "quantity.schema.json",
+  "title": "Quantity",
+  "description": "A measured or modelled value. Exactly one of value, age or derived supplies it. Units are mandatory for physical values; ranges let the validator flag abnormal or impossible eyes.",
+  "type": "object",
+  "properties": {
+    "value": {
+      "description": "Scalar, or an RGB triple for per-colour optical properties.",
+      "oneOf": [
+        { "type": "number" },
+        { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+      ]
+    },
+    "age": {
+      "description": "Piecewise-linear function of the subject's age in years: [[age, value], ...], ascending by age.",
+      "type": "array",
+      "items": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+      "minItems": 2
+    },
+    "derived": {
+      "description": "Expression computed from other quantities. Reference values as {component.id:facet.property}; supports + - * / ( ) and min, max, sum.",
+      "type": "string"
+    },
+    "unit": { "type": "string", "description": "SI-style unit, e.g. mm, 1/mm, deg, cells/mm2, grade, ratio, rgb." },
+    "normal": {
+      "description": "Healthy adult range [min, max]. Outside it the eye is abnormal but possible.",
+      "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2
+    },
+    "hard": {
+      "description": "Physically possible range [min, max]. Outside it the eye is invalid.",
+      "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2
+    },
+    "note": { "type": "string" }
+  },
+  "oneOf": [
+    { "required": ["value"], "not": { "anyOf": [{ "required": ["age"] }, { "required": ["derived"] }] } },
+    { "required": ["age"], "not": { "anyOf": [{ "required": ["value"] }, { "required": ["derived"] }] } },
+    { "required": ["derived"], "not": { "anyOf": [{ "required": ["value"] }, { "required": ["age"] }] } }
+  ],
+  "required": ["unit"],
+  "additionalProperties": false
+}

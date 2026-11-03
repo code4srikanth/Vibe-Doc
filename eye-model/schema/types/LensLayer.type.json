@@ -1,0 +1,9 @@
+{
+  "type": "LensLayer",
+  "description": "One lens zone (capsule, cortex, nucleus) with its scattering and absorption.",
+  "required": {
+    "optics": [
+      "scatter"
+    ]
+  }
+}

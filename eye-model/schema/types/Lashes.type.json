@@ -1,0 +1,12 @@
+{
+  "type": "Lashes",
+  "description": "Eyelashes on one lid.",
+  "required": {
+    "anatomy": [
+      "length"
+    ],
+    "microstructure": [
+      "strands"
+    ]
+  }
+}

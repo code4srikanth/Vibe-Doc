@@ -1,0 +1,22 @@
+{
+  "id": "eye.retinal_vessels",
+  "type": "RetinalVessels",
+  "summary": "Central retinal artery and vein branches: four arcades from the disc around the macula; arteries lighter and narrower than veins.",
+  "anatomy": {
+    "vein_calibre": {"value": 0.15, "unit": "mm", "normal": [0.12, 0.18], "hard": [0.05, 0.3], "note": "Main vein branch width within one disc diameter of the disc margin."},
+    "artery_vein_ratio": {"value": 0.67, "unit": "ratio", "normal": [0.6, 0.8], "hard": [0.3, 1.2], "note": "Artery over vein calibre, about 2:3; lower in hypertensive narrowing."},
+    "artery_calibre": {"derived": "{eye.retinal_vessels:anatomy.vein_calibre} * {eye.retinal_vessels:anatomy.artery_vein_ratio}", "unit": "mm", "normal": [0.08, 0.13], "hard": [0.03, 0.3], "note": "Main artery branch width near the disc."},
+    "arcade_separation": {"value": 7.0, "unit": "mm", "normal": [5.5, 9.0], "hard": [3.0, 12.0], "note": "Vertical distance between the superior and inferior temporal arcades above and below the fovea; render calibration (low)."}
+  },
+  "microstructure": {
+    "branch_seed": {"value": 7, "unit": "seed", "normal": [0, 1000000], "hard": [0, 1000000], "note": "Seed of the generated branching pattern: each patient has their own vessels; render parameter."}
+  },
+  "appearance": {
+    "artery_colour": {"value": [0.13, 0.016, 0.01], "unit": "rgb", "note": "Linear; arteries are bright red. Render calibration (low)."},
+    "vein_colour": {"value": [0.065, 0.008, 0.007], "unit": "rgb", "note": "Linear; veins are darker, purplish red. Render calibration (low)."},
+    "artery_reflex": {"age": [[20, 0.6], [80, 0.35]], "unit": "ratio", "normal": [0.2, 0.8], "hard": [0, 1], "note": "Central light reflex along the arteries, about a third of their width; render calibration (low)."}
+  },
+  "relations": {"parent": "eye.retina", "attached_to": ["eye.optic_disc"]},
+  "clinical": {"measured_by": ["fundus lens", "fundus photography"], "visible_in": ["fundus"], "notes": "Fundus coordinates: millimetres on the retina from the foveal centre, +x temporal, +y up, the same for both eyes (the renderer mirrors the left eye)."},
+  "provenance": {"source": "Kanski's Clinical Ophthalmology, 9th ed.; Hubbard et al., Ophthalmology 106:2269 (1999) for vessel calibres and the artery to vein ratio", "confidence": "medium", "reviewed_by": null}
+}

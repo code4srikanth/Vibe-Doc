@@ -1,0 +1,16 @@
+{
+  "version": "1",
+  "note": "Weights are percentages of the total. 'stored' is a validated scenario, where finding the diagnosis is the point. 'prompt' is a case the trainee described: the diagnosis is known from the description, so history and observation carry the score. Not yet reviewed by a clinician.",
+  "weights": {
+    "stored": { "diagnosis": 30, "observations": 25, "history": 20, "technique": 15, "safety": 10 },
+    "prompt": { "diagnosis": 10, "observations": 30, "history": 30, "technique": 20, "safety": 10 }
+  },
+  "dimensions": {
+    "diagnosis": "The main diagnosis and differentials on the case sheet against the answer key. Full marks need the right diagnosis; a related but wrong one earns part; a dangerous miss earns little.",
+    "observations": "The slit-lamp findings the trainee wrote, structure by structure, against the signs actually present in this eye. Credit each sign found; deduct for signs claimed that are not there.",
+    "history": "The questions the trainee asked the patient against the history topics worth asking for this condition, especially the red flags.",
+    "technique": "How the slit lamp was used (views, magnification, beam, filters, eye movements asked for) against what reveals this condition's signs.",
+    "safety": "Avoiding harm: for example dilating an eye at risk of angle closure, and a safe plan."
+  },
+  "safetyCap": 20
+}

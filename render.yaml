@@ -1,0 +1,14 @@
+# Render Blueprint: one web service serves the app and the API (see README, Deploying).
+services:
+  - type: web
+    name: eyesim
+    runtime: node
+    plan: starter            # always on; the free plan sleeps after 15 minutes idle
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: META_API_KEY
+        sync: false          # set in the Render dashboard, never in the repo
+      - key: NODE_VERSION
+        value: "24"

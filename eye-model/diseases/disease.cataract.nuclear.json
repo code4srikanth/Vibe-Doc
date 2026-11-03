@@ -1,0 +1,35 @@
+{
+  "id": "disease.cataract.nuclear",
+  "name": "Age-related nuclear cataract",
+  "summary": "Nuclear sclerosis: the lens nucleus yellows then browns, scatters more light and absorbs blue; the red reflex dims.",
+  "affects": ["eye.lens.nucleus"],
+  "severity_scale": "Nuclear sclerosis 1-4 (approximately LOCS III NO/NC 2, 3-4, 4-5, 5-6)",
+  "grades": {
+    "1": { "eye.lens.nucleus": { "optics.density": 0.19, "optics.scatter_colour": [0.9, 0.81, 0.62] } },
+    "2": { "eye.lens.nucleus": { "optics.density": 0.44, "optics.scatter_colour": [0.94, 0.71, 0.33] } },
+    "3": { "eye.lens.nucleus": { "optics.density": 0.71, "optics.scatter_colour": [0.82, 0.57, 0.23] } },
+    "4": { "eye.lens.nucleus": { "optics.density": 1.0, "optics.scatter_colour": [0.49, 0.26, 0.09] } }
+  },
+  "co_findings": [
+    { "disease": "disease.cataract.cortical", "grade": "1", "likelihood": "common" },
+    { "disease": "disease.cornea.arcus_senilis", "grade": "mild", "likelihood": "common" }
+  ],
+  "revealed_by": {
+    "optic_section_lens": "Nucleus yellow (grades 1-2) to brown (3-4) with rising backscatter; in dense nuclei the deep part of the section fades.",
+    "diffuse": "Pupil looks yellow to amber-brown instead of black.",
+    "retroillumination": "Red reflex dims with grade; dense nuclei give a dull reflex with a darker centre."
+  },
+  "differentials": ["Cortical cataract", "Posterior subcapsular cataract", "Normal age-related lens yellowing"],
+  "teaching_points": [
+    "Grade nuclear colour and opalescence in the optic section, not in diffuse light.",
+    "Colour darkens and dulls with grade; dense nuclei are brown, not bright orange.",
+    "A dense nucleus needs more phaco energy and puts the endothelium at risk; check endothelial count."
+  ],
+  "further_reading": [
+    { "source": "National Eye Institute", "title": "Cataracts", "url": "https://www.nei.nih.gov/learn-about-eye-health/eye-conditions-and-diseases/cataracts", "sections": ["diagnosis"] },
+    { "source": "MedlinePlus", "title": "Cataract", "url": "https://medlineplus.gov/cataract.html", "sections": ["diagnosis"] },
+    { "source": "EyeWiki", "title": "Cataract", "url": "https://eyewiki.org/Cataract", "sections": ["diagnosis", "signs"] },
+    { "source": "Moran CORE", "title": "Cataracts", "url": "https://morancore.utah.edu/basic-ophthalmology-review/cataracts/", "sections": ["signs", "technique"] }
+  ],
+  "provenance": { "source": "LOCS III: Chylack et al., Arch Ophthalmol 111:831 (1993); values render-calibrated", "confidence": "low", "reviewed_by": null }
+}

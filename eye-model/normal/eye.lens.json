@@ -1,0 +1,19 @@
+{
+  "id": "eye.lens",
+  "type": "Lens",
+  "summary": "Crystalline lens behind the iris; thickens and steepens with age. Cataract findings live in its capsule, cortex and nucleus.",
+  "anatomy": {
+    "thickness": { "age": [[20, 3.6], [50, 4.2], [80, 4.8]], "unit": "mm", "normal": [3.4, 5.0], "hard": [2.5, 6.5] },
+    "anterior_radius": { "age": [[20, 11.0], [80, 8.8]], "unit": "mm", "normal": [8.5, 12.5], "hard": [6.0, 15.0] },
+    "posterior_radius": { "value": 6.0, "unit": "mm", "normal": [5.4, 6.8], "hard": [4.0, 9.0] },
+    "equatorial_diameter": { "age": [[20, 9.0], [80, 9.8]], "unit": "mm", "normal": [8.8, 10.2], "hard": [7.0, 11.0] }
+  },
+  "optics": {
+    "refractive_index": { "value": 1.42, "unit": "ratio", "normal": [1.40, 1.43], "hard": [1.38, 1.46], "note": "Equivalent index; the real lens has a gradient index." },
+    "surface_reflectance": { "derived": "(({eye.lens.cortex:optics.refractive_index} - {eye.anterior_chamber:optics.refractive_index}) / ({eye.lens.cortex:optics.refractive_index} + {eye.anterior_chamber:optics.refractive_index})) * (({eye.lens.cortex:optics.refractive_index} - {eye.anterior_chamber:optics.refractive_index}) / ({eye.lens.cortex:optics.refractive_index} + {eye.anterior_chamber:optics.refractive_index}))", "unit": "ratio", "normal": [0.0001, 0.0006], "hard": [0, 0.005], "note": "Normal-incidence Fresnel reflectance of the front and back lens surfaces (Purkinje III and IV), about 3.4e-4. Vitreous index taken equal to aqueous." },
+    "diffuse_scatter_gain": { "value": 0.18, "unit": "rel", "normal": [0.1, 0.6], "hard": [0, 2], "note": "Room light the lens's scatter returns through the pupil in the external view, so a cataract colours the pupil there. Render-calibrated, not clinically validated." }
+  },
+  "relations": { "parent": "eye", "borders": ["eye.iris", "eye.anterior_chamber"] },
+  "clinical": { "measured_by": ["optical biometry"], "visible_in": ["optic_section_lens", "retroillumination", "diffuse"] },
+  "provenance": { "source": "Atchison & Smith (2000), ch. 2; Dubbelman & van der Heijde, Vision Res 41:1867 (2001) for age changes", "confidence": "high", "reviewed_by": null }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "Retina",
+  "description": "The fundus background seen through a fundus lens: pigment colour, choroidal pattern and nerve-fibre sheen.",
+  "required": {
+    "appearance": [
+      "background_colour",
+      "peripheral_darkening",
+      "tessellation",
+      "nerve_fibre_sheen"
+    ]
+  }
+}

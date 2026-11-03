@@ -1,0 +1,71 @@
+{
+  "id": "disease.glaucoma.poag",
+  "name": "Primary open-angle glaucoma",
+  "summary": "Chronic optic neuropathy: the cup enlarges, the rim thins and notches, with disc haemorrhages and nerve-fibre loss; the front of the eye looks normal.",
+  "affects": [
+    "eye.optic_disc",
+    "eye.retina"
+  ],
+  "severity_scale": "stage",
+  "grades": {
+    "early": {
+      "eye.optic_disc": {
+        "anatomy.cup_disc_ratio_vertical": 0.6,
+        "anatomy.cup_disc_ratio_horizontal": 0.5,
+        "anatomy.cup_decentration_y": -0.06,
+        "anatomy.notch_depth": 0.2
+      },
+      "eye.retina": {
+        "appearance.nerve_fibre_sheen": 0.7
+      }
+    },
+    "moderate": {
+      "eye.optic_disc": {
+        "anatomy.cup_disc_ratio_vertical": 0.75,
+        "anatomy.cup_disc_ratio_horizontal": 0.6,
+        "anatomy.cup_decentration_y": -0.1,
+        "anatomy.notch_depth": 0.6,
+        "anatomy.haemorrhage_length": 0.4,
+        "anatomy.peripapillary_atrophy_width": 0.3
+      },
+      "eye.retina": {
+        "appearance.nerve_fibre_sheen": 0.45
+      }
+    },
+    "advanced": {
+      "eye.optic_disc": {
+        "anatomy.cup_disc_ratio_vertical": 0.9,
+        "anatomy.cup_disc_ratio_horizontal": 0.85,
+        "anatomy.cup_decentration_y": -0.12,
+        "anatomy.notch_depth": 0.9,
+        "anatomy.haemorrhage_length": 0.4,
+        "anatomy.peripapillary_atrophy_width": 0.5,
+        "appearance.pallor": 0.4
+      },
+      "eye.retina": {
+        "appearance.nerve_fibre_sheen": 0.25
+      }
+    }
+  },
+  "revealed_by": {
+    "fundus": "Through the 90D lens: a large vertically oval cup, the inferior rim thinner than the superior (ISNT broken), an inferotemporal notch, a splinter haemorrhage at the disc margin, peripapillary atrophy; in advanced disease a pale disc with almost no rim.",
+    "tonometry": "IOP often above 21 mmHg, but normal-tension glaucoma is common.",
+    "gonioscopy": "Open angle."
+  },
+  "differentials": [
+    "Physiological large cup (large disc)",
+    "Normal-tension glaucoma",
+    "Compressive optic neuropathy",
+    "Optic disc coloboma or pit"
+  ],
+  "teaching_points": [
+    "Judge the rim, not just the cup: follow the ISNT rule and look for a notch.",
+    "A disc haemorrhage is a sign of progression.",
+    "A large disc has a large cup: relate the cup to the disc size before calling glaucoma."
+  ],
+  "provenance": {
+    "source": "Kanski's Clinical Ophthalmology, 9th ed.; EGS Terminology and Guidelines for Glaucoma, 5th ed.; Jonas et al., Surv Ophthalmol 43:293 (1999) for cup and rim changes",
+    "confidence": "medium",
+    "reviewed_by": null
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "frames": 24,
+  "threshold": 0.1,
+  "max_diff_ratio": 0.005,
+  "renders": [
+    { "case": "normal", "view": "optic_section_cornea" },
+    { "case": "ns4", "view": "optic_section_lens" },
+    { "case": "ns4", "view": "retroillumination" },
+    { "case": "aacg", "view": "diffuse" }
+  ]
+}

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VibeDoc Slit Lamp</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* The exam screen (src/ui/exam.ts) builds the page; these rules only cover the first paint. */
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #eef3f5; }
+/* the intro scene (src/intro.ts) covers the app; hide the app until it ends so it never flashes on load */
+html.intro body { background: #eceeef; }
+html.intro #exam { visibility: hidden; }
+/* the landing (src/ui/landing.ts) comes first: its light page shows from the first paint */
+html.landing body { background: #f6fbfa; }
+html.landing #exam { visibility: hidden; }
+</style>
+<script>
+  // same condition as main.ts: no intro for ?bare renders or ?intro=0
+  // and the landing first, unless ?bare or ?landing=0; neither on the /disclaimer page
+  { const q = new URLSearchParams(location.search), app = location.pathname.replace(/\/+$/, "") !== "/disclaimer";
+    if (app && !q.has("bare") && q.get("intro") !== "0") document.documentElement.classList.add("intro");
+    if (app && !q.has("bare") && q.get("landing") !== "0") document.documentElement.classList.add("landing"); }
+  // a script error must never leave the page blank: show the app (the intro, if it runs, still covers it)
+  addEventListener("error", () => document.documentElement.classList.remove("intro", "landing"));
+</script>
+</head>
+<body>
+<script type="module" src="/src/entry.ts"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "$comment": "Walk-in clips for the intro (src/intro.ts), chosen by the case's subject.sex and subject.age (inclusive range, years). All clips share one framing: a fixed camera, the chair centred, the seated face at about 30% of the frame height, so the slit lamp sits in the same place over each.",
+  "videos": [
+    { "file": "Replace_video_subject_with_woman_7912ec4b_1080p.mp4", "sex": "female", "age": [20, 40] },
+    { "file": "Man_sitting_in_examination_chair_b7580d8b_5d41592c_1080p.mp4", "sex": "male", "age": [18, 40] },
+    { "file": "Man_sitting_in_examination_chair_b7580d8b_5d41592c_1080p_4f7817ac.mp4", "sex": "male", "age": [41, 60] },
+    { "file": "Man_sitting_in_examination_chair_b7580d8b_5d41592c_1080p_b781f9a2_1080p.mp4", "sex": "male", "age": [61, 100] }
+  ]
+}

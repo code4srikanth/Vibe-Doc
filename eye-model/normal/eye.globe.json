@@ -1,0 +1,61 @@
+{
+  "id": "eye.globe",
+  "type": "Globe",
+  "summary": "The eyeball as a whole: size and direction of gaze, which places the cornea within the lid opening.",
+  "anatomy": {
+    "radius": {
+      "derived": "{eye.sclera:anatomy.radius}",
+      "unit": "mm",
+      "normal": [
+        11.5,
+        12.5
+      ],
+      "hard": [
+        9,
+        15
+      ],
+      "note": "Globe radius; the same sphere as the sclera, stored once there."
+    }
+  },
+  "physiology": {
+    "gaze_horizontal": {
+      "value": 0,
+      "unit": "deg",
+      "normal": [
+        -5,
+        5
+      ],
+      "hard": [
+        -40,
+        40
+      ],
+      "note": "Positive = toward the lateral canthus."
+    },
+    "gaze_vertical": {
+      "value": 0,
+      "unit": "deg",
+      "normal": [
+        -5,
+        5
+      ],
+      "hard": [
+        -30,
+        30
+      ],
+      "note": "Positive = up."
+    }
+  },
+  "relations": {
+    "parent": "eye"
+  },
+  "clinical": {
+    "visible_in": [
+      "diffuse"
+    ]
+  },
+  "provenance": {
+    "source": "Radius from eye.sclera (Atchison & Smith 2000); gaze: render calibration",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

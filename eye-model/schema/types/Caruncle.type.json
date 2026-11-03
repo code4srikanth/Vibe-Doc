@@ -1,0 +1,12 @@
+{
+  "type": "Caruncle",
+  "description": "Caruncle and plica at the medial canthus.",
+  "required": {
+    "anatomy": [
+      "size"
+    ],
+    "appearance": [
+      "colour"
+    ]
+  }
+}

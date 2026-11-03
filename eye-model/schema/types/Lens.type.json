@@ -1,0 +1,15 @@
+{
+  "type": "Lens",
+  "description": "Whole crystalline lens: shape and position.",
+  "required": {
+    "anatomy": [
+      "thickness",
+      "anterior_radius",
+      "posterior_radius",
+      "equatorial_diameter"
+    ],
+    "optics": [
+      "refractive_index"
+    ]
+  }
+}

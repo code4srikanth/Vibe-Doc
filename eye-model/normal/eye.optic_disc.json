@@ -1,0 +1,28 @@
+{
+  "id": "eye.optic_disc",
+  "type": "OpticDisc",
+  "summary": "Optic nerve head: a vertically oval disc with a central cup and an orange-pink rim. Cupping and rim loss are the signs of glaucoma.",
+  "anatomy": {
+    "vertical_diameter": {"value": 1.88, "unit": "mm", "normal": [1.5, 2.3], "hard": [0.8, 4.0], "note": "Jonas et al. 1988 (planimetry, corrected for magnification)."},
+    "horizontal_diameter": {"value": 1.77, "unit": "mm", "normal": [1.4, 2.2], "hard": [0.8, 4.0], "note": "Jonas et al. 1988; the disc is slightly vertically oval."},
+    "position_x": {"value": -4.72, "unit": "mm", "normal": [-5.4, -4.1], "hard": [-7.0, -3.0], "note": "Disc centre from the foveal centre, +x temporal (the disc is nasal). Rohrschneider 2004: 4.76 mm apart, the fovea 7.7 degrees below the disc centre."},
+    "position_y": {"value": 0.64, "unit": "mm", "normal": [0.0, 1.2], "hard": [-1.5, 2.5], "note": "Disc centre above the fovea; Rohrschneider 2004."},
+    "cup_disc_ratio_vertical": {"value": 0.3, "unit": "ratio", "normal": [0.0, 0.6], "hard": [0.0, 0.98], "note": "Vertical cup diameter over vertical disc diameter. Normal is mostly 0.3 or less; 0.7 or more, or a difference of more than 0.2 between eyes, is suspicious of glaucoma (Kanski 9th ed.)."},
+    "cup_disc_ratio_horizontal": {"value": 0.35, "unit": "ratio", "normal": [0.0, 0.65], "hard": [0.0, 0.98], "note": "The normal cup is horizontally oval, so its horizontal ratio exceeds the vertical one (Jonas et al. 1988); glaucoma enlarges it vertically first."},
+    "cup_decentration_x": {"value": 0.05, "unit": "mm", "normal": [-0.1, 0.15], "hard": [-0.6, 0.6], "note": "Cup centre from the disc centre, +x temporal: the temporal rim is the narrowest (ISNT rule); render calibration (low)."},
+    "cup_decentration_y": {"value": 0.03, "unit": "mm", "normal": [-0.05, 0.1], "hard": [-0.6, 0.6], "note": "Cup centre above the disc centre: the inferior rim is the widest (ISNT rule: inferior, superior, nasal, temporal); render calibration (low)."},
+    "notch_depth": {"value": 0, "unit": "ratio", "normal": [0, 0], "hard": [0, 1], "note": "Focal rim loss: fraction of the rim width lost at notch_angle. 0 in a healthy disc; a notch is a sign of glaucoma."},
+    "notch_angle": {"value": 290, "unit": "deg", "normal": [0, 360], "hard": [0, 360], "note": "Where a notch sits, degrees counter-clockwise from temporal on the right eye (270 = inferior). Glaucomatous notches favour the inferotemporal (about 290) and superotemporal poles."},
+    "haemorrhage_length": {"value": 0, "unit": "mm", "normal": [0, 0], "hard": [0, 2], "note": "Splinter (Drance) haemorrhage at the disc margin, radial length. 0 in a healthy disc; common in normal-tension and progressing glaucoma."},
+    "haemorrhage_angle": {"value": 285, "unit": "deg", "normal": [0, 360], "hard": [0, 360], "note": "Position of a disc haemorrhage, as notch_angle; most are inferotemporal."},
+    "peripapillary_atrophy_width": {"value": 0.1, "unit": "mm", "normal": [0, 0.4], "hard": [0, 2.0], "note": "Width of the pale crescent of chorioretinal atrophy at the disc margin (beta zone), widest temporally; larger in glaucoma and myopia; render calibration (low)."}
+  },
+  "appearance": {
+    "rim_colour": {"value": [0.72, 0.21, 0.04], "unit": "rgb", "note": "Linear; the healthy neuroretinal rim is orange-pink, sRGB #db8038. sRGB sampled from the user's wide-field fundus reference (not in the repo), converted to linear; render calibration."},
+    "cup_colour": {"value": [0.91, 0.6, 0.17], "unit": "rgb", "note": "Linear; the cup floor (lamina cribrosa) is pale yellow, sRGB #f5cc73. sRGB sampled from the user's wide-field fundus reference (not in the repo), converted to linear; render calibration."},
+    "pallor": {"value": 0, "unit": "ratio", "normal": [0, 0.1], "hard": [0, 1], "note": "Loss of the rim's pink toward white (atrophy): 0 healthy, 1 a white disc."}
+  },
+  "relations": {"parent": "eye.retina"},
+  "clinical": {"measured_by": ["fundus lens (90D) with a narrow slit", "OCT", "Heidelberg retina tomograph"], "visible_in": ["fundus"], "grading_scales": ["cup-to-disc ratio", "ISNT rule", "DDLS (disc damage likelihood scale)"], "notes": "Fundus coordinates: millimetres on the retina from the foveal centre, +x temporal, +y up, the same for both eyes (the renderer mirrors the left eye)."},
+  "provenance": {"source": "Jonas, Gusek & Naumann, Invest Ophthalmol Vis Sci 29:1151 (1988) for disc and cup size; Rohrschneider, Invest Ophthalmol Vis Sci 45:3257 (2004) for the disc-fovea distance and angle; Kanski's Clinical Ophthalmology, 9th ed. for cupping and glaucomatous signs", "confidence": "medium", "reviewed_by": null}
+}

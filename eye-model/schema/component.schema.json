@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "component.schema.json",
+  "title": "EyeComponent",
+  "description": "One anatomical structure of the eye, the equivalent of a Salesforce object definition plus its record. Every component has the same facets so agents and render modules always know where to look.",
+  "type": "object",
+  "required": ["id", "type", "summary", "relations", "provenance"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^eye(\\.[a-z][a-z0-9_]*)+$",
+      "description": "Stable path ID, e.g. eye.cornea.stroma. Patches and agents refer to components by this ID."
+    },
+    "type": {
+      "type": "string",
+      "description": "Component type. Must match a file in schema/types/ and a render module in src/render/modules/."
+    },
+    "summary": { "type": "string", "maxLength": 160, "description": "One line for the manifest; what the structure is and why it matters at the slit lamp." },
+    "anatomy": { "$ref": "#/definitions/facet", "description": "Shape, dimensions, position." },
+    "optics": { "$ref": "#/definitions/facet", "description": "Refractive index, scattering and absorption (per colour channel), transparency." },
+    "appearance": { "$ref": "#/definitions/facet", "description": "Colour, surface finish, procedural texture parameters." },
+    "microstructure": { "$ref": "#/definitions/facet", "description": "Fine detail that matters clinically: cells, fibres, nerves, vessels." },
+    "physiology": { "$ref": "#/definitions/facet", "description": "Behaviour over time: reflexes, blinking, tear dynamics." },
+    "relations": {
+      "type": "object",
+      "properties": {
+        "parent": { "type": "string" },
+        "attached_to": { "type": "array", "items": { "type": "string" } },
+        "borders": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "clinical": {
+      "type": "object",
+      "properties": {
+        "measured_by": { "type": "array", "items": { "type": "string" } },
+        "visible_in": {
+          "type": "array",
+          "items": { "enum": ["diffuse", "optic_section_cornea", "optic_section_lens", "parallelepiped", "retroillumination", "cobalt_blue", "specular_reflection", "sclerotic_scatter", "gonioscopy", "fundus"] }
+        },
+        "grading_scales": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source", "confidence"],
+      "properties": {
+        "source": { "type": "string", "description": "Textbook chapter, paper or standard the values come from." },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "reviewed_by": { "type": ["string", "null"], "description": "Clinician who signed off, or null." }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "facet": {
+      "type": "object",
+      "description": "Map of property name to a quantity, an enum-like string, a flag, or a procedural generator.",
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_]*$" },
+      "additionalProperties": {
+        "anyOf": [
+          { "$ref": "quantity.schema.json" },
+          { "type": "string" },
+          { "type": "boolean" },
+          { "$ref": "#/definitions/generator" }
+        ]
+      }
+    },
+    "generator": {
+      "type": "object",
+      "description": "Procedural pattern (fibres, vessels, nerves, crypts). The render module interprets the parameters.",
+      "required": ["generator", "seed"],
+      "properties": {
+        "generator": { "enum": ["radial_fibres", "branching", "noise", "lamellae", "instanced_strands", "spots", "radial_lozenges", "zigzag_ring", "concentric_arcs", "parallel_folds", "fibre_bundles", "fbm"] },
+        "seed": { "type": "integer" },
+        "params": { "type": "object", "additionalProperties": { "type": "number" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "type": "Iris",
+  "description": "Iris stroma and pigment; its surface pattern is procedural. The limbal ring is darkening plus geometry, not a painted colour.",
+  "required": {
+    "anatomy": [
+      "diameter",
+      "ruff_width",
+      "limbal_ring_width",
+      "limbal_ring_ramp",
+      "limbal_blend_width"
+    ],
+    "appearance": [
+      "albedo_dark",
+      "albedo_light",
+      "border_layer_albedo",
+      "ciliary_albedo",
+      "trabecula_albedo",
+      "limbal_darkening",
+      "limbal_veil",
+      "limbal_texture_fade"
+    ],
+    "microstructure": [
+      "fibres",
+      "mottling",
+      "collarette",
+      "crypts",
+      "contraction_furrows",
+      "collarette_position"
+    ]
+  }
+}

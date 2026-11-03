@@ -1,0 +1,49 @@
+{
+  "id": "eye.adnexa.upper_lashes",
+  "type": "Lashes",
+  "summary": "Upper eyelashes; longer and denser than the lower ones.",
+  "anatomy": {
+    "length": {
+      "value": 2.4,
+      "unit": "mm",
+      "normal": [
+        2,
+        4.5
+      ],
+      "hard": [
+        0,
+        7
+      ],
+      "note": "Visible length in the frontal view, not the true lash length."
+    }
+  },
+  "microstructure": {
+    "strands": {
+      "generator": "instanced_strands",
+      "seed": 3,
+      "params": {
+        "spacing": 0.14,
+        "rows": 2,
+        "droop": 0,
+        "curl": 1,
+        "thickness": 1.4,
+        "sweep": 1.25,
+        "length_gain": 2.2,
+        "darkness": 1
+      }
+    }
+  },
+  "relations": {
+    "parent": "eye.adnexa.upper_lid"
+  },
+  "clinical": {
+    "visible_in": [
+      "diffuse"
+    ]
+  },
+  "provenance": {
+    "source": "Render calibration",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

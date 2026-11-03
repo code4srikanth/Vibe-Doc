@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "rules.schema.json",
+  "title": "AnatomyRules",
+  "description": "Cross-component validation rules, the equivalent of Salesforce validation rules. Each assert must be true for a resolved eye.",
+  "type": "object",
+  "required": ["rules"],
+  "properties": {
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "assert", "severity", "message"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+          "assert": { "type": "string", "description": "Expression over {component.id:facet.property} references; comparison operators allowed." },
+          "severity": { "enum": ["error", "warning"] },
+          "message": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,160 @@
+<!doctype html>
+<!-- The demo video's scene: the eye's 28 components on planes along one line. tools/assembly-video.ts seeks it frame by frame. -->
+<meta charset="utf-8">
+<title>Eye assembly</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #060a18; }
+  canvas { position: fixed; inset: 0; }
+  .tag { position: fixed; left: 0; top: 0; white-space: nowrap; transform-origin: 0 50%; color: #5fdcc4; font: 500 22px/1 Consolas, monospace; will-change: transform; }
+  #title, #caption { position: fixed; left: 0; right: 0; text-align: center; color: #fff; font-family: "Segoe UI", system-ui, sans-serif; font-weight: 600; }
+  #title { top: 42px; font-size: 42px; }
+  #caption { bottom: 62px; font-size: 44px; text-shadow: 0 2px 22px #000, 0 0 6px #000; }
+  #caption b { color: #5fdcc4; font-weight: 600; }
+</style>
+<div id="title"></div>
+<div id="caption"></div>
+<script type="module">
+  import * as THREE from "three";
+
+  const params = new URLSearchParams(location.search);
+  const dir = params.get("dir"), COMPONENTS = params.get("components"), QUANTITIES = params.get("quantities");
+  const W = innerWidth, H = innerHeight, PLANE_H = 9, PLANE_W = PLANE_H*W/H, GAP = 2.5;
+  // Lens and framing, assembled then apart: a long lens apart keeps the parts evenly spaced. The assembled view crops 3%,
+  // past the streak at the render's top edge.
+  const FOV = [30, 11], VIEW_H = [PLANE_H*.97, 17.5];
+  // Apart, the frame holds half the parts, so their names can be read: the camera starts on the front half and moves to
+  // the back half. This is how far from the middle of the line each half's centre lies.
+  const HALF = 7.5*GAP;
+
+  // Every component, front to back along the optical axis. light: added on top, not laid over; joined: its strength
+  // once the eye is whole (a faint layer is brought up only while it is apart); outline: no pixels of its own;
+  // lift: lightens a dark part while it is apart, or it would vanish against the background.
+  const light = { additive: true }, outline = { joined: 0 };
+  const PARTS = [
+    { image: "upper_lashes", name: "adnexa.upper_lashes", lift: .4 },
+    { image: "lower_lashes", name: "adnexa.lower_lashes", lift: .4 },
+    { image: "upper_lid", name: "adnexa.upper_lid" },
+    { image: "lower_lid", name: "adnexa.lower_lid" },
+    { image: "caruncle", name: "caruncle" },
+    { image: "skin", name: "adnexa.skin" },
+    { image: "palpebral_fissure", name: "adnexa.palpebral_fissure", ...outline },
+    { image: "tear_film", name: "tear_film", ...light, joined: 0 },
+    { image: "cornea", name: "cornea", ...outline },
+    { image: "epithelium", name: "cornea.epithelium", ...light, joined: .03 },
+    { image: "bowman", name: "cornea.bowman", ...outline },
+    { image: "stroma", name: "cornea.stroma", ...light, joined: .05 },
+    { image: "descemet", name: "cornea.descemet", ...outline },
+    { image: "endothelium", name: "cornea.endothelium", ...light, joined: .03 },
+    { image: "anterior_chamber", name: "anterior_chamber", ...outline },
+    { image: "iris", name: "iris" },
+    { image: "pupil", name: "pupil", lift: .12 },
+    { image: "lens_shape", name: "lens", ...outline },
+    { image: "capsule", name: "lens.capsule", ...light, joined: 0 },
+    { image: "cortex", name: "lens.cortex", ...light, joined: 0 },
+    { image: "nucleus", name: "lens.nucleus", ...light, joined: 0 },
+    { image: "conjunctiva", name: "conjunctiva" },
+    { image: "sclera", name: "sclera" },
+    { image: "globe", name: "globe", ...outline },
+    { image: "retinal_vessels", name: "retinal_vessels", scale: .75 },
+    { image: "optic_disc", name: "optic_disc", scale: .75 },
+    { image: "macula", name: "macula", scale: .75, lift: .16 },
+    { image: "retina", name: "retina", scale: .75 }
+  ];
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const ease = (a, b, t) => { const x = clamp((t - a)/(b - a)); return x*x*x*(x*(6*x - 15) + 10); };   // eases in and out
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setSize(W, H);
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  document.body.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color("#060a18");
+  const camera = new THREE.PerspectiveCamera(FOV[0], W/H, .1, 900);
+
+  const loader = new THREE.TextureLoader();
+  const load = name => new Promise((ok, no) => loader.load(`/${dir}/${name}.png`, t => {
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    ok(t);
+  }, undefined, no));
+
+  /** A plane whose edges can feather away, so a full-frame part doesn't read as a hard rectangle while apart. */
+  const planeOf = (map, additive) => new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: false,
+    blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,
+    uniforms: { map: { value: map }, feather: { value: 0 }, opacity: { value: 1 }, lift: { value: 0 } },
+    vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix*modelViewMatrix*vec4(position, 1.); }",
+    fragmentShader: `varying vec2 vUv; uniform sampler2D map; uniform float feather, opacity, lift;
+      void main(){
+        vec4 c = texture2D(map, vUv);
+        vec2 e = min(vUv, 1. - vUv)/vec2(.09, .16);
+        float k = mix(1., smoothstep(0., 1., e.x)*smoothstep(0., 1., e.y), feather);
+        gl_FragColor = vec4(c.rgb + lift, c.a*k*opacity);
+        #include <colorspace_fragment>
+      }`
+  });
+
+  const axis = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, -60), new THREE.Vector3(0, 0, 60)]),
+    new THREE.LineBasicMaterial({ color: "#5fdcc4", transparent: true, opacity: 0, depthTest: false })
+  );
+  axis.renderOrder = -1;
+  scene.add(axis);
+
+  const textures = await Promise.all([...PARTS.map(p => load(p.image)), load("full")]);
+  const count = PARTS.length;
+  for (const [i, p] of PARTS.entries()) {
+    const s = p.scale ?? 1;
+    p.mesh = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_H*s*(p.scale ? 1 : W/H), PLANE_H*s), planeOf(textures[i], p.additive));
+    p.mesh.renderOrder = count - i;   // back to front
+    scene.add(p.mesh);
+    p.home = (count - 1)/2*GAP - i*GAP;
+    p.tag = document.createElement("div");
+    p.tag.className = "tag";
+    p.tag.textContent = p.name;
+    document.body.append(p.tag);
+  }
+  const full = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_W, PLANE_H), planeOf(textures[count]));
+  full.renderOrder = count + 1;
+  scene.add(full);
+
+  const title = document.getElementById("title"), caption = document.getElementById("caption");
+  title.textContent = `${COMPONENTS} metadata components`;
+  caption.innerHTML = `<b>${COMPONENTS}</b> components &nbsp;·&nbsp; <b>${QUANTITIES}</b> quantities &nbsp;·&nbsp; one eye`;
+
+  const project = (x, y, z) => { const v = new THREE.Vector3(x, y, z).project(camera); return [(v.x + 1)/2*W, (1 - v.y)/2*H]; };
+
+  window.seek = t => {
+    // The eye holds, comes apart along the line, holds, and joins again; its real render then takes over.
+    const apart = ease(.9, 3.2, t)*(1 - ease(9.8, 12.2, t));
+    const whole = 1 - ease(.5, .9, t) + ease(12.2, 12.7, t);
+    const along = clamp((t - 3.4)/6.2), pan = along*along*(3 - 2*along);   // gradually, front half to back half
+    const target = HALF*(1 - 2*pan)*apart;
+    const yaw = 62*apart*Math.PI/180, pitch = 6*apart*Math.PI/180;
+    camera.fov = FOV[0] + (FOV[1] - FOV[0])*apart;
+    camera.updateProjectionMatrix();
+    const dist = (VIEW_H[0] + (VIEW_H[1] - VIEW_H[0])*apart)/2/Math.tan(camera.fov/2*Math.PI/180);
+    camera.position.set(dist*Math.sin(yaw)*Math.cos(pitch), dist*Math.sin(pitch), target + dist*Math.cos(yaw)*Math.cos(pitch));
+    camera.lookAt(0, 0, target);
+    camera.updateMatrixWorld();
+    axis.material.opacity = .4*apart;
+    full.material.uniforms.opacity.value = whole;
+
+    for (const [i, p] of PARTS.entries()) {
+      p.mesh.position.z = p.home*apart;
+      p.mesh.material.uniforms.feather.value = apart;
+      p.mesh.material.uniforms.lift.value = (p.lift ?? 0)*apart;
+      p.mesh.material.uniforms.opacity.value = 1 + ((p.joined ?? 1) - 1)*(1 - apart);
+      // the names run down from each plane's foot, in order, one for every part
+      const show = ease(2.2 + i*.04, 2.6 + i*.04, t)*(1 - ease(9.8, 10.3, t));
+      const [x, y] = project(0, -PLANE_H/2 - .3, p.mesh.position.z);
+      p.tag.style.opacity = show;
+      p.tag.style.transform = `translate(${x}px, ${y}px) rotate(36deg)`;
+    }
+    title.style.opacity = ease(2.6, 3.2, t)*(1 - ease(9.8, 10.3, t));
+    caption.style.opacity = ease(12.8, 13.3, t);
+    renderer.render(scene, camera);
+  };
+  window.seek(0);
+  window.sceneReady = true;
+</script>

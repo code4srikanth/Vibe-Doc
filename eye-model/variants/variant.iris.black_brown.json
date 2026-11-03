@@ -1,0 +1,34 @@
+{
+  "id": "variant.iris.black_brown",
+  "summary": "Black-brown iris (common in South Asia). Colours sampled from assets/refs/iris/gen-brown-01.png, scaled to the project sclera; crests browned.",
+  "patch": {
+    "eye.iris": {
+      "appearance.colour": "black_brown",
+      "appearance.albedo_dark": [
+        0.026,
+        0.0125,
+        0.008
+      ],
+      "appearance.albedo_light": [
+        0.06,
+        0.032,
+        0.022
+      ],
+      "appearance.ciliary_albedo": [
+        0.072,
+        0.039,
+        0.027
+      ],
+      "appearance.border_layer_albedo": [
+        0.05,
+        0.027,
+        0.019
+      ],
+      "appearance.trabecula_albedo": [
+        0.125,
+        0.07,
+        0.05
+      ]
+    }
+  }
+}

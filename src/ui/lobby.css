@@ -1,0 +1,76 @@
+/* Screen 2, the lobby (src/ui/lobby.ts): the waiting-room clip with the two modes on the frosted cabin-door glass. */
+#lobby {
+  position: fixed; inset: 0; z-index: 300; background: #eef3f3; color-scheme: light;
+  overflow: hidden; transition: opacity .45s ease;
+  animation: lb-in .6s ease both;
+}
+#lobby.out { opacity: 0; pointer-events: none; }
+/* the stage (clip and doors) appears as one, once the clip can play */
+#lobby .stage { transition: opacity .35s ease; }
+#lobby.wait .stage { opacity: 0; pointer-events: none; }
+html:has(#lobby) { overflow: hidden; }
+/* 16:9 stage that covers the window, centred (the ceiling and floor are cropped equally on wide windows, so the logo stays in view and the doors sit higher); cqw units scale the text with it */
+#lobby .stage {
+  --w: max(100vw, calc((100vh + 2cm) * 1.7778)); position: absolute; left: calc((100vw - var(--w)) / 2); top: calc((100vh - var(--w) * .5625) / 2 - 1cm); container-type: inline-size;
+  width: var(--w); aspect-ratio: 16 / 9; overflow: hidden; background: #fff;
+}
+#lobby .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* the two frosted cabin doors in lobby.mp4 (1280x720, fills the 16:9 stage, fixed camera): left x 34.3-45.3, right x 53.6-64.6, both y 31.7-82.2 */
+#lobby .door {
+  --ink: #0b1230; --teal: #0b8f86; --teal-2: #14b394;
+  position: absolute; top: 31.7%; width: 11%; height: 50.5%; overflow: hidden; isolation: isolate;
+  display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center;
+  padding: 0 .75cqw; gap: .4cqw;
+  border: 1px solid rgba(255, 255, 255, .7); border-radius: 0; color: var(--ink); cursor: pointer;
+  /* same frosted glass as the prompt card (casePrompt.css), a little lighter so the lobby still shows through */
+  background: radial-gradient(ellipse at 85% 65%, rgba(103, 232, 249, .09), rgba(204, 251, 241, .05) 35%, transparent 72%),
+    radial-gradient(ellipse at 15% 15%, rgba(207, 250, 254, .12), transparent 58%), rgba(255, 255, 255, .05);
+  backdrop-filter: blur(2px) saturate(1.2); -webkit-backdrop-filter: blur(2px) saturate(1.2);
+  box-shadow: 0 1.2cqw 3.4cqw rgba(16, 42, 67, .16), 0 0 1.7cqw rgba(94, 234, 212, .14), inset 0 1px 0 rgba(255, 255, 255, .95);
+  font: 400 .62cqw/1.35 "Barlow", "Segoe UI", system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent; transition: box-shadow .3s ease;
+}
+#lobby .door.prompt { left: 34.3%; }
+#lobby .door.random { left: 53.6%; }
+/* faint light streaks across the glass, as on the prompt card */
+#lobby .door::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800' preserveAspectRatio='none'><defs><linearGradient id='f' x1='0' y1='1' x2='1' y2='0'><stop offset='0' stop-color='white' stop-opacity='0'/><stop offset='.5' stop-color='white' stop-opacity='.9'/><stop offset='1' stop-color='white' stop-opacity='0'/></linearGradient><linearGradient id='c' x1='0' y1='1' x2='1' y2='0'><stop offset='0' stop-color='%2367e8f9' stop-opacity='0'/><stop offset='.5' stop-color='%2367e8f9' stop-opacity='.8'/><stop offset='1' stop-color='%2367e8f9' stop-opacity='0'/></linearGradient></defs><g fill='none' stroke-linecap='round'><path d='M0 760 C120 560 280 380 400 250' stroke='url(%23f)' stroke-width='3'/><path d='M0 700 C140 600 300 430 400 330' stroke='url(%23c)' stroke-width='2.4'/><path d='M0 560 C140 480 280 330 400 170' stroke='url(%23f)' stroke-width='2'/><path d='M0 800 C160 700 330 560 400 480' stroke='url(%23f)' stroke-width='4' opacity='.7'/><path d='M0 400 C130 340 300 230 400 90' stroke='url(%23c)' stroke-width='1.8'/></g></svg>") 0 0 / 100% 100% no-repeat;
+}
+#lobby .door > * { pointer-events: none; }
+#lobby .icon {
+  display: grid; place-items: center; width: 2.6cqw; height: 2.6cqw; margin-bottom: .4cqw;
+  border-radius: 50%; background: rgba(20, 179, 148, .16); color: var(--teal);
+}
+#lobby .icon svg { width: 1.2cqw; height: 1.2cqw; }
+#lobby svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+#lobby .title { font: 700 1.02cqw/1.15 "Barlow", "Segoe UI", system-ui, sans-serif; letter-spacing: -.005em; }
+#lobby .text { color: #2d3a4c; font-size: .63cqw; padding: 0 .1cqw; }
+#lobby .enter {
+  position: relative; isolation: isolate; overflow: hidden; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; gap: .35cqw; width: 100%; margin-top: .45cqw;
+  padding: .75cqw 0; border-radius: 99px; color: #7df3d9; font: 600 .8cqw/1 "Barlow", "Segoe UI", system-ui, sans-serif;
+  box-shadow: 0 0 .8cqw rgba(20, 179, 148, .4);
+  transition: box-shadow .2s ease;
+}
+/* the rim: a gradient turning behind the button face, so only the edge shows (a rotate transform, which stays off the paint path) */
+#lobby .enter::before {
+  content: ""; position: absolute; z-index: -2; left: 50%; top: 50%; width: 200%; aspect-ratio: 1; translate: -50% -50%;
+  background: conic-gradient(#fff, #5eead4 18%, #14b394 38%, #fff 55%, #67e8f9 78%, #fff);
+  animation: lb-spin 3.2s linear infinite; will-change: rotate;
+}
+#lobby .enter::after {
+  content: ""; position: absolute; z-index: -1; inset: .07cqw; border-radius: inherit;
+  background: linear-gradient(180deg, #16264f, var(--ink));
+}
+#lobby .door.random .enter::before { animation-delay: -1.6s; }
+#lobby .enter svg { width: .8cqw; height: .8cqw; transition: translate .2s ease; }
+#lobby .door:hover, #lobby .door:focus-visible { box-shadow: 0 1.6cqw 4cqw rgba(16, 42, 67, .2), 0 0 2.6cqw rgba(94, 234, 212, .4), inset 0 1px 0 #fff; }
+#lobby .door:hover .enter, #lobby .door:focus-visible .enter { box-shadow: 0 0 1.7cqw .2cqw rgba(24, 214, 186, .75); }
+#lobby .door:hover .enter svg, #lobby .door:focus-visible .enter svg { translate: .25cqw 0; }
+#lobby .door:focus-visible { outline: .18cqw solid var(--teal); outline-offset: .15cqw; }
+
+@keyframes lb-in { from { opacity: 0; } }
+@keyframes lb-spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { #lobby { animation: none; } #lobby .enter::before { animation: none; } }

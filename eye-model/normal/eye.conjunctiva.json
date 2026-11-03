@@ -1,0 +1,425 @@
+{
+  "id": "eye.conjunctiva",
+  "type": "Conjunctiva",
+  "summary": "Thin transparent membrane over the sclera with fine vessels; red when injected, with a limbal ring (ciliary flush) in intraocular inflammation or angle closure.",
+  "anatomy": {
+    "fornix_fillet_width": {
+      "value": 3,
+      "unit": "mm",
+      "normal": [2.5, 4],
+      "hard": [0, 8],
+      "note": "Radial width of the fornix fillet: a concave skirt (quarter circle) that curls back from the globe silhouette and fills the canthal ends of the opening (plica, lacus, lateral fornix)."
+    },
+    "fornix_blush_width": {
+      "value": 2.5,
+      "unit": "mm",
+      "normal": [1.5, 4],
+      "hard": [0, 8],
+      "note": "Width (in globe radius r, inside the silhouette) over which the conjunctival blood wash rises from basal_vascularity to fornix_vascularity toward the canthi. Measured on gen-brown-01 (tint starts at r about 9). Render calibration."
+    },
+    "margin_blush_width": {
+      "value": 0.7,
+      "unit": "mm",
+      "normal": [0.3, 1.2],
+      "hard": [0, 3],
+      "note": "Width of the pink band where the bulbar conjunctiva meets the lower lid margin (0.6-0.9 measured on gen-brown-01). Render calibration."
+    },
+    "plica_width": {
+      "value": 2.0,
+      "unit": "mm",
+      "normal": [0.8, 2],
+      "hard": [0, 4],
+      "note": "Width of the plica semilunaris crescent at mid-height, medial edge to free lateral edge (Wolff's; 1.2 on gen-brown-01, about 1.6 on assets/exterior/source.jpg)."
+    },
+    "plica_height": {
+      "value": 0.55,
+      "unit": "mm",
+      "normal": [0.2, 0.8],
+      "hard": [0, 1.5],
+      "note": "Height of the plica fold above the bulbar surface; profile height × sin(pi·d/width) with a steep lip at the free edge. No section measured: render calibration."
+    },
+    "plica_offset": {
+      "value": 3.7,
+      "unit": "mm",
+      "normal": [3.5, 6],
+      "hard": [2, 8],
+      "note": "Distance along the canthal line from the medial canthus to the plica's free lateral edge (measured on gen-brown-01). Render calibration."
+    },
+    "plica_length": {
+      "value": 7.5,
+      "unit": "mm",
+      "normal": [4, 8],
+      "hard": [0, 14],
+      "note": "Tip-to-tip length of the plica crescent seen in the opening (its tips lie inside the opening, short of the lid margins). Its width follows an ellipse along the length (widest at mid-height, rounded tips). Render calibration on assets/exterior/source.jpg."
+    },
+    "plica_centre_height": {
+      "value": 1.8,
+      "unit": "mm",
+      "normal": [0.5, 3],
+      "hard": [-3, 5],
+      "note": "Height of the plica's mid-point above the canthal line (it sits at the opening's mid-height: margins at +0.6 and -4.6 mm on assets/exterior/source.jpg). Render calibration."
+    },
+    "plica_curvature": {
+      "value": 0.7,
+      "unit": "mm",
+      "normal": [0.2, 1],
+      "hard": [0, 3],
+      "note": "Sagitta of the free edge: the crescent is concave toward the cornea (Gray's Anatomy: its concavity directed to the cornea), its tips lying this far lateral of the mid-height edge. Render calibration on assets/exterior/source.jpg."
+    },
+    "plica_tilt": {
+      "value": -8,
+      "unit": "deg",
+      "normal": [-15, 15],
+      "hard": [-45, 45],
+      "note": "Tilt of the plica's long axis from vertical, positive with the lower tip medial. Render calibration on assets/exterior/source.jpg (lower end lateral there)."
+    },
+    "vessel_limbal_reach": {
+      "value": 1.2,
+      "unit": "mm",
+      "normal": [0.5, 2],
+      "hard": [0, 3],
+      "note": "How far the superficial vessel map is pulled in at the limbus: the map leaves an empty ring there (median 1.6 mm; 0.7-1.1 temporal, 1.4 nasal, measured on assets/conjunctiva/vessel-map.png), and real conjunctival vessels run on up to the corneal edge. Render calibration (low)."
+    },
+    "vessel_reach_blend": {
+      "value": 5,
+      "unit": "mm",
+      "normal": [3, 8],
+      "hard": [0.5, 15],
+      "note": "Distance from the limbus over which that inward pull tapers to nothing, so the vessels further out stay where the map has them. Render calibration (low)."
+    }
+  },
+  "appearance": {
+    "injection": {
+      "value": 0,
+      "unit": "rel",
+      "normal": [0, 0.1],
+      "hard": [0, 1],
+      "note": "Engorgement of conjunctival vessels, worst away from the limbus."
+    },
+    "ciliary_flush": {
+      "value": 0,
+      "unit": "rel",
+      "normal": [0, 0],
+      "hard": [0, 1],
+      "note": "Diffuse violaceous redness concentrated around the limbus."
+    },
+    "ciliary_flush_width": {
+      "value": 2.5,
+      "unit": "mm",
+      "normal": [1.5, 4],
+      "hard": [0.5, 8],
+      "note": "Distance from the limbus over which the ciliary flush falls to 1/e: the circumcorneal band of the engorged deep limbal plexus. Kanski's Clinical Ophthalmology, 9th ed. (circumcorneal injection); render-calibrated (low)."
+    },
+    "basal_vascularity": {
+      "value": 0.11,
+      "unit": "ratio",
+      "normal": [0.05, 0.2],
+      "hard": [0, 1],
+      "note": "Blood-wash absorber strength over the mid sclera: transmittance T(a) = 1 - a·(1 - vessel_colour/max). Gives the faint pink of the white (G/R 0.96-1.00 on gen-brown-01). Render calibration."
+    },
+    "fornix_vascularity": {
+      "value": 0.5,
+      "unit": "ratio",
+      "normal": [0.3, 0.7],
+      "hard": [0, 1],
+      "note": "Blood-wash absorber strength at the globe silhouette and on the fornix fillet (canthal pink). Render calibration on gen-brown-01."
+    },
+    "margin_vascularity": {
+      "value": 0.35,
+      "unit": "ratio",
+      "normal": [0.2, 0.5],
+      "hard": [0, 1],
+      "note": "Extra blood wash at the lower-lid contact, fading linearly over margin_blush_width. Render calibration on gen-brown-01."
+    },
+    "injection_blush_gain": {
+      "value": 0.8,
+      "unit": "ratio",
+      "normal": [0.3, 1],
+      "hard": [0, 2],
+      "note": "How far injection raises the blood wash, weighted toward the fornix (injected trunks run from the fornices). Render calibration."
+    },
+    "injection_ramp_width": {
+      "value": 6,
+      "unit": "mm",
+      "normal": [2, 8],
+      "hard": [0.5, 15],
+      "note": "Surface distance from the limbus over which injection rises to its full blood wash: conjunctival injection is palest at the limbus and worst toward the fornices. Render calibration (low)."
+    },
+    "injection_limbal_fraction": {
+      "value": 0.35,
+      "unit": "ratio",
+      "normal": [0.2, 0.5],
+      "hard": [0, 1],
+      "note": "Share of the injection blood wash already present at the limbus: injection is least there but does not stop, so the redness tapers up to the cornea. Render calibration (low)."
+    },
+    "mottle": {
+      "value": 0.03,
+      "unit": "ratio",
+      "normal": [0, 0.06],
+      "hard": [0, 0.2],
+      "note": "Relative luma std of the fine scleral/conjunctival mottle (value-noise fBm, 2 octaves) at mottle_scale. Render calibration."
+    },
+    "mottle_scale": {
+      "value": 0.2,
+      "unit": "mm",
+      "normal": [0.1, 0.5],
+      "hard": [0.02, 2],
+      "note": "Feature size of the conjunctival mottle. Render calibration."
+    },
+    "vessel_colour": {
+      "value": [0.6, 0.07, 0.05],
+      "unit": "rgb",
+      "note": "Oxygenated blood in superficial conjunctival vessels; normalised to its max it is also the absorber of the blood wash."
+    },
+    "deep_vessel_colour": {
+      "value": [0.4, 0.13, 0.15],
+      "unit": "rgb",
+      "note": "Episcleral vessels seen through the conjunctiva: muted reddish-purple (about #a65b63) and blurred."
+    },
+    "vessel_vis_limbal": {
+      "value": 0.15,
+      "unit": "ratio",
+      "normal": [0.1, 0.2],
+      "hard": [0, 1],
+      "note": "Relative visibility of the superficial vessels at the limbus: low but never zero, since healthy eyes keep subtle perilimbal vessels. A rendering target from a reviewer's artistic guidance, not a measured value (low)."
+    },
+    "vessel_vis_mid": {
+      "value": 0.42,
+      "unit": "ratio",
+      "normal": [0.35, 0.5],
+      "hard": [0, 1],
+      "note": "Relative vessel visibility in the mid conjunctiva (at vessel_vis_mid_at from the limbus). Rendering target (low)."
+    },
+    "vessel_vis_peripheral": {
+      "value": 0.62,
+      "unit": "ratio",
+      "normal": [0.55, 0.7],
+      "hard": [0, 1],
+      "note": "Relative vessel visibility in the peripheral conjunctiva and near the lid margins (at vessel_vis_peripheral_at). Rendering target (low)."
+    },
+    "vessel_vis_canthal_nasal": {
+      "value": 0.82,
+      "unit": "ratio",
+      "normal": [0.75, 0.9],
+      "hard": [0, 1],
+      "note": "Relative vessel visibility in the nasal canthal region. Rendering target (low)."
+    },
+    "vessel_vis_canthal_temporal": {
+      "value": 0.7,
+      "unit": "ratio",
+      "normal": [0.6, 0.8],
+      "hard": [0, 1],
+      "note": "Relative vessel visibility in the temporal canthal region. Rendering target (low)."
+    },
+    "vessel_vis_mid_at": {
+      "value": 3,
+      "unit": "mm",
+      "normal": [2, 4],
+      "hard": [0.5, 8],
+      "note": "Surface distance from the limbus at which vessel_vis_mid applies. Render calibration (low)."
+    },
+    "vessel_vis_peripheral_at": {
+      "value": 6,
+      "unit": "mm",
+      "normal": [4, 8],
+      "hard": [1, 12],
+      "note": "Surface distance from the limbus at which vessel_vis_peripheral applies. Render calibration (low)."
+    },
+    "vessel_gain": {
+      "value": 2.4,
+      "unit": "ratio",
+      "normal": [1.5, 3],
+      "hard": [0, 4],
+      "note": "Overall gain on the superficial vessels after the visibility profile, so that the profile (which is below 1 everywhere) keeps the vessels at the measured contrast. Render calibration (low)."
+    },
+    "vessel_fade": {
+      "value": 0.35,
+      "unit": "ratio",
+      "normal": [0.2, 0.5],
+      "hard": [0, 1],
+      "note": "How far a vessel's visibility varies along its length (it dips where it lies deeper or is thinner). Render calibration (low)."
+    },
+    "vessel_fade_scale": {
+      "value": 1.2,
+      "unit": "mm",
+      "normal": [0.6, 2.5],
+      "hard": [0.1, 6],
+      "note": "Length over which that visibility varies. Render calibration (low)."
+    },
+    "deep_vessel_opacity": {
+      "value": 0.24,
+      "unit": "ratio",
+      "normal": [0.1, 0.4],
+      "hard": [0, 1],
+      "note": "Strength of the episcleral vessels seen through the conjunctiva (was a fixed 0.5): sparse, deep and muted in a healthy eye. Render calibration (low)."
+    },
+    "deep_vessel_blur": {
+      "value": 2.6,
+      "unit": "rel",
+      "normal": [2, 3.5],
+      "hard": [0, 6],
+      "note": "Mip levels of blur on the episcleral vessels, so they lie beneath the conjunctiva instead of on it. Render calibration (low)."
+    },
+    "capillary_opacity": {
+      "value": 0.07,
+      "unit": "ratio",
+      "normal": [0.03, 0.12],
+      "hard": [0, 1],
+      "note": "Strength of the barely perceptible capillary network that gives the conjunctiva its natural fine texture; scaled by the vessel visibility profile. Render calibration (low)."
+    },
+    "capillary_scale": {
+      "value": 0.18,
+      "unit": "mm",
+      "normal": [0.1, 0.4],
+      "hard": [0.03, 1],
+      "note": "Mesh size of that capillary network. Render calibration (low)."
+    },
+    "venule_colour": {
+      "value": [0.5, 0.11, 0.09],
+      "unit": "rgb",
+      "note": "Thicker conjunctival vessels (venules) absorb a little more green and blue than the arterioles (vessel_colour): deeper, darker red. Blended in by vessel calibre. Render calibration (low)."
+    },
+    "plica_colour": {
+      "value": [0.26, 0.055, 0.04],
+      "unit": "rgb",
+      "note": "Linear albedo of the plica semilunaris (2026-11-01: set to the dark maroon #53231e of the user's third close-up (earlier #80392a from the second), divided by the 0.25 lamp-grade factor measured on the render; earlier salmon [0.95, 0.5, 0.47] read too pale): a fleshy salmon pink, darker and more saturated than the bulbar conjunctiva (matched to a clinical close-up supplied by the user; the earlier gen-brown-01 measurement [0.88, 0.49, 0.48] read grey in the shaded corner). Render-calibrated (low)."
+    },
+    "plica_gloss": {
+      "value": 1,
+      "unit": "rel",
+      "normal": [0, 1],
+      "hard": [0, 1],
+      "note": "Scale of the small wet lamp specular on the plica crest. Render calibration."
+    },
+    "plica_texture": {
+      "value": 0.5,
+      "unit": "rel",
+      "normal": [0.1, 0.5],
+      "hard": [0, 1],
+      "note": "Strength of the plica's mucosal surface grain and faint lengthwise folds, as relative albedo variation. Render calibration (low)."
+    },
+    "plica_texture_scale": {
+      "value": 0.12,
+      "unit": "mm",
+      "normal": [0.06, 0.25],
+      "hard": [0.02, 1],
+      "note": "Size of the plica's surface grain (its crypts and goblet-cell clusters). Render calibration (low)."
+    },
+    "plica_opacity": {
+      "value": 0.2,
+      "unit": "ratio",
+      "normal": [0.4, 0.9],
+      "hard": [0, 1],
+      "note": "How far the plica's thicker, fleshier tissue hides the bulbar vessels beneath it (0: they show through fully). Render calibration (low)."
+    },
+    "fornix_occlusion": {
+      "value": 0.35,
+      "unit": "rel",
+      "normal": [0.2, 0.6],
+      "hard": [0, 1],
+      "note": "Cavity shading at the outer edge of the fornix fillet (1 = none at the globe silhouette); render calibration."
+    },
+    "plica_edge_softness": {
+      "value": 0.2,
+      "unit": "mm",
+      "normal": [0.05, 0.3],
+      "hard": [0, 1],
+      "note": "Half-width of the blend at the plica's outline (the fold's colour fades in over this distance, no hard edge). Render calibration."
+    },
+    "plica_foot_shadow": {
+      "value": 0.3,
+      "unit": "rel",
+      "normal": [0, 0.5],
+      "hard": [0, 1],
+      "note": "Fraction of the diffuse light lost at the plica's foot, where the raised fold meets the bulbar and recess surface (fades out over plica_shadow_width). Render calibration."
+    },
+    "plica_shadow_width": {
+      "value": 0.35,
+      "unit": "mm",
+      "normal": [0.15, 0.8],
+      "hard": [0, 2],
+      "note": "Width of the soft contact shadow at the plica's foot. Render calibration."
+    },
+    "recess_vascularity": {
+      "value": 0.6,
+      "unit": "ratio",
+      "normal": [0.3, 0.9],
+      "hard": [0, 1],
+      "note": "Extra blood-wash absorber in the medial recess (lacus) between the plica's free edge and the caruncle, rising to this value at the caruncle; same absorber as the vessels. Render calibration on assets/exterior/source.jpg (moist dusky pink)."
+    },
+    "recess_occlusion": {
+      "value": 0.6,
+      "unit": "rel",
+      "normal": [0.4, 0.9],
+      "hard": [0, 1],
+      "note": "Light left at the deepest point of the medial recess, beside the caruncle (1 = no cavity shading); rises to 1 at the plica's free edge. Render calibration."
+    },
+    "recess_contact_shadow": {
+      "value": 0.4,
+      "unit": "rel",
+      "normal": [0, 0.6],
+      "hard": [0, 1],
+      "note": "Fraction of the light lost where the lid margins and the caruncle meet the medial recess (soft contact shadow, medial of the plica only). Render calibration."
+    },
+    "recess_contact_width": {
+      "value": 0.3,
+      "unit": "mm",
+      "normal": [0.1, 0.6],
+      "hard": [0, 2],
+      "note": "Width of the recess contact shadow from the opening's edge. Render calibration."
+    }
+  },
+  "microstructure": {
+    "vessels": {
+      "generator": "branching",
+      "seed": 3,
+      "params": {
+        "density": 0.6,
+        "width": 0.6,
+        "nasal_bias": 0.2,
+        "branch_depth": 4,
+        "taper": 0.9,
+        "tortuosity": 0.5,
+        "limbal_clear_zone": 0.3,
+        "deep_fraction": 0.3,
+        "dilation": 1.2,
+        "mesh_width": 2.0,
+        "mesh_cell": 0.5,
+        "anastomosis": 0.5,
+        "kink_length": 0.2,
+        "kink_angle": 35,
+        "min_calibre": 0.015,
+        "thick_vessel_width": 0.5
+      }
+    },
+    "medial_folds": {
+      "generator": "parallel_folds",
+      "seed": 17,
+      "params": {
+        "count": 2,
+        "spacing": 0.5,
+        "depth": 0.05,
+        "length": 3
+      }
+    }
+  },
+  "relations": {
+    "parent": "eye",
+    "attached_to": [
+      "eye.sclera"
+    ],
+    "borders": [
+      "eye.cornea"
+    ]
+  },
+  "clinical": {
+    "visible_in": [
+      "diffuse"
+    ]
+  },
+  "provenance": {
+    "source": "Structure and plica: Bron, Tripathi & Tripathi, Wolff's Anatomy of the Eye and Orbit, 8th ed., ch. on the conjunctiva; clinical patterns: Kanski's Clinical Ophthalmology, 9th ed., ch. 5. Vessel calibre: Wang et al., Eye Contact Lens 2016;42:135. Blush, plica size and colour, vessel density, mesh and kink parameters: render calibration on the user reference assets/refs/iris/gen-brown-01.png (AI-generated; docs/realism/L3-conjunctiva.md).",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

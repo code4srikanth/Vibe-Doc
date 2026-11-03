@@ -1,0 +1,20 @@
+#preparing { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: #f6fbfa; color: #2f4a4a; color-scheme: light; font-family: system-ui, sans-serif; }
+#preparing canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#preparing .box { position: relative; display: grid; justify-items: center; gap: 14px; text-align: center; padding: 24px; }
+#preparing .brand { margin-bottom: 18px; }
+#preparing .spin { width: 54px; height: 54px; border-radius: 50%; border: 5px solid rgba(47, 74, 74, .15); border-top-color: #2c9c92; animation: preparing-spin 0.9s linear infinite; }
+#preparing h1 { margin: 6px 0 0; font-size: 22px; font-weight: 600; }
+#preparing p { margin: 0; max-width: 420px; color: #4f7371; font-size: 14px; line-height: 1.5; }
+#preparing p.term { max-width: 540px; color: #2f4a4a; font-size: 15px; }
+#preparing .accept { margin-top: 12px; padding: 12px 28px; border: 0; border-radius: 999px; background: #1f8f85; color: #fff; font: 600 15px system-ui, sans-serif; cursor: pointer; }
+#preparing .accept:hover { background: #177a71; }
+#preparing .accept:focus-visible { outline: 3px solid #2f4a4a; outline-offset: 2px; }
+@keyframes preparing-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { #preparing .spin { animation-duration: 3s; } }
+#preparing .steps { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; text-align: left; font-size: 14px; color: #4f7371; }
+#preparing .steps li { display: flex; align-items: center; gap: 10px; }
+#preparing .steps li::before { content: ""; width: 12px; height: 12px; flex: none; border-radius: 50%; border: 2px solid rgba(47, 74, 74, .25); border-top-color: #2c9c92; animation: preparing-spin 0.9s linear infinite; }
+#preparing .steps li.done { color: #2f4a4a; }
+#preparing .steps li.done::before { content: "✓"; border: 0; animation: none; color: #2c9c92; font-size: 14px; line-height: 12px; text-align: center; }
+#preparing .steps li.failed { color: #c26a12; }
+#preparing .steps li.failed::before { content: "!"; border: 0; animation: none; color: #c26a12; font-weight: 700; line-height: 12px; text-align: center; }

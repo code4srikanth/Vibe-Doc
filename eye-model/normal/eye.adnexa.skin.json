@@ -1,0 +1,66 @@
+{
+  "id": "eye.adnexa.skin",
+  "type": "Skin",
+  "summary": "Periocular skin of the lids; tone comes from the subject's variant.",
+  "appearance": {
+    "tone": "medium",
+    "albedo": {
+      "value": [
+        0.46,
+        0.25,
+        0.16
+      ],
+      "unit": "rgb"
+    },
+    "oedema_blood": {
+      "value": 0.25,
+      "unit": "1/mm",
+      "normal": [
+        0.1,
+        0.4
+      ],
+      "hard": [
+        0,
+        1
+      ],
+      "note": "Blood absorber strength in swollen lid skin per mm of local lid swelling (inflammatory hyperaemia); the absorber spectrum is the blood colour eye.conjunctiva:appearance.vessel_colour. Render-calibrated (low confidence)."
+    }
+  },
+  "relations": {
+    "parent": "eye.adnexa"
+  },
+  "clinical": {
+    "visible_in": [
+      "diffuse"
+    ]
+  },
+  "provenance": {
+    "source": "Render calibration",
+    "confidence": "low",
+    "reviewed_by": null
+  },
+  "microstructure": {
+    "pores": {
+      "generator": "spots",
+      "seed": 5,
+      "params": {
+        "density": 0.35,
+        "contrast": 0.12
+      }
+    },
+    "wrinkles": {
+      "generator": "noise",
+      "seed": 2,
+      "params": {
+        "strength": 1
+      }
+    },
+    "vellus_hair": {
+      "generator": "instanced_strands",
+      "seed": 4,
+      "params": {
+        "density": 0.1
+      }
+    }
+  }
+}

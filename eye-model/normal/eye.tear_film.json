@@ -1,0 +1,204 @@
+{
+  "id": "eye.tear_film",
+  "type": "TearFilm",
+  "summary": "Precorneal tear film and lid-margin menisci; the wet surface that makes the corneal reflex and the glassy strip along the lower lid.",
+  "anatomy": {
+    "thickness": {
+      "value": 0.003,
+      "unit": "mm",
+      "normal": [
+        0.002,
+        0.006
+      ],
+      "hard": [
+        0,
+        0.04
+      ],
+      "note": "Total precorneal film (lipid 40-100 nm plus aqueous-mucin). King-Smith et al., Curr Eye Res 29:357 (2004)."
+    },
+    "lower_meniscus_height": {
+      "value": 0.3,
+      "unit": "mm",
+      "normal": [
+        0.2,
+        0.5
+      ],
+      "hard": [
+        0,
+        1.5
+      ],
+      "note": "Central lower tear meniscus height (TMH). Slit lamp 0.21-0.26, SS-OCT about 0.33; no age change. Imamura et al., Int Ophthalmol 38:679 (2018); Borselli et al., Diagnostics 14:316 (2024)."
+    },
+    "upper_meniscus_height": {
+      "value": 0.22,
+      "unit": "mm",
+      "normal": [
+        0.15,
+        0.35
+      ],
+      "hard": [
+        0,
+        1
+      ],
+      "note": "Central upper tear meniscus height. Borselli et al. (2024)."
+    },
+    "meniscus_taper": {
+      "value": 0.85,
+      "unit": "ratio",
+      "normal": [
+        0.6,
+        1
+      ],
+      "hard": [
+        0.2,
+        1
+      ],
+      "note": "Meniscus height 3 mm from the centre relative to the central height; applied as taper^(|x| / 3 mm). Imamura (2018) gives only the direction; value fitted to the reference photo (band about 0.21 mm at x 6.1). Render-calibrated."
+    },
+    "lower_meniscus_radius": {
+      "derived": "{eye.tear_film:anatomy.lower_meniscus_height}",
+      "unit": "mm",
+      "normal": [
+        0.2,
+        0.5
+      ],
+      "hard": [
+        0,
+        1.5
+      ],
+      "note": "Radius of the concave fillet; r ~ h for a meniscus filling a ~90 deg lid-globe angle (Yokoi et al., Br J Ophthalmol 83:92, 1999). Low confidence."
+    },
+    "upper_meniscus_radius": {
+      "derived": "{eye.tear_film:anatomy.upper_meniscus_height}",
+      "unit": "mm",
+      "normal": [
+        0.15,
+        0.35
+      ],
+      "hard": [
+        0,
+        1
+      ],
+      "note": "As the lower radius: r ~ h. Low confidence."
+    },
+    "irregularity_scale": {
+      "value": 0.1,
+      "unit": "mm",
+      "normal": [
+        0.05,
+        0.3
+      ],
+      "hard": [
+        0.01,
+        2
+      ],
+      "note": "Spatial scale of the surface slope noise used with surface_irregularity. Render-calibrated."
+    },
+    "discharge_band_width": {
+      "value": 1.2,
+      "unit": "mm",
+      "normal": [
+        0.5,
+        2
+      ],
+      "hard": [
+        0.1,
+        4
+      ],
+      "note": "How far from the lower lid margin discharge strands spread at full amount. Render-calibrated (low)."
+    }
+  },
+  "optics": {
+    "refractive_index": {
+      "value": 1.337,
+      "unit": "ratio",
+      "normal": [
+        1.336,
+        1.338
+      ],
+      "hard": [
+        1.33,
+        1.36
+      ],
+      "note": "Craig et al., Optom Vis Sci 72:718 (1995)."
+    },
+    "normal_reflectance": {
+      "derived": "(({eye.tear_film:optics.refractive_index} - 1) / ({eye.tear_film:optics.refractive_index} + 1)) * (({eye.tear_film:optics.refractive_index} - 1) / ({eye.tear_film:optics.refractive_index} + 1))",
+      "unit": "ratio",
+      "normal": [
+        0.0205,
+        0.0212
+      ],
+      "hard": [
+        0.00001,
+        0.026
+      ],
+      "note": "Fresnel reflectance at normal incidence, ((n-1)/(n+1))^2 = 0.0208. Schlick F0 for the corneal reflex and menisci. Hard lower bound is wide so a case may dilute the corneal reflex for display; the physical value stays 0.0208."
+    },
+    "surface_irregularity": {
+      "value": 0,
+      "unit": "rad",
+      "normal": [
+        0,
+        0.005
+      ],
+      "hard": [
+        0,
+        0.2
+      ],
+      "note": "RMS slope error of the tear surface (break-up, epithelial oedema); roughens the reflex and meniscus glint. Render-calibrated."
+    },
+    "discharge": {
+      "value": 0,
+      "unit": "rel",
+      "normal": [
+        0,
+        0
+      ],
+      "hard": [
+        0,
+        1
+      ],
+      "note": "Mucopurulent discharge: strands in the lower tear meniscus and a pool in the lower medial angle; a cloudy diffuser on the tear film. 0 in a healthy eye; watery discharge stays 0."
+    }
+  },
+  "appearance": {
+    "discharge_albedo": {
+      "value": [
+        0.84,
+        0.8,
+        0.6
+      ],
+      "unit": "rgb",
+      "note": "Linear albedo of mucopus (mucus, neutrophils and debris): cream to yellow-white. Render-calibrated (low)."
+    }
+  },
+  "relations": {
+    "parent": "eye",
+    "attached_to": [
+      "eye.cornea.epithelium",
+      "eye.conjunctiva"
+    ],
+    "borders": [
+      "eye.adnexa.upper_lid",
+      "eye.adnexa.lower_lid"
+    ]
+  },
+  "clinical": {
+    "measured_by": [
+      "slit-lamp graticule (TMH)",
+      "AS-OCT meniscometry",
+      "fluorescein break-up time"
+    ],
+    "visible_in": [
+      "diffuse",
+      "specular_reflection",
+      "cobalt_blue"
+    ]
+  },
+  "provenance": {
+    "source": "King-Smith et al., Curr Eye Res 29:357 (2004); Craig et al., Optom Vis Sci 72:718 (1995); Imamura et al., Int Ophthalmol 38:679 (2018); Borselli et al., Diagnostics 14:316 (2024); Yokoi et al., Br J Ophthalmol 83:92 (1999). Taper, radius and irregularity are render-calibrated.",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

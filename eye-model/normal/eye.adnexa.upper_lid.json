@@ -1,0 +1,152 @@
+{
+  "id": "eye.adnexa.upper_lid",
+  "type": "Eyelid",
+  "summary": "Upper eyelid; its margin normally covers 1-2 mm of the upper cornea. Ptosis lowers it.",
+  "anatomy": {
+    "margin_height": {
+      "value": 5.73,
+      "unit": "mm",
+      "normal": [
+        3.5,
+        5
+      ],
+      "hard": [
+        0,
+        8
+      ],
+      "note": "Height of the lid margin above the pupil centre (margin reflex distance 1)."
+    },
+    "fissure_half_width": {
+      "derived": "({eye.adnexa.palpebral_fissure:anatomy.lateral_canthus_x} - {eye.adnexa.palpebral_fissure:anatomy.medial_canthus_x}) / 2",
+      "unit": "mm",
+      "normal": [
+        12.5,
+        15
+      ],
+      "hard": [
+        9,
+        17
+      ],
+      "note": "Half the horizontal fissure width, from the canthi."
+    },
+    "fissure_centre_offset": {
+      "derived": "({eye.adnexa.palpebral_fissure:anatomy.lateral_canthus_x} + {eye.adnexa.palpebral_fissure:anatomy.medial_canthus_x}) / 2",
+      "unit": "mm",
+      "normal": [
+        -3,
+        -0.5
+      ],
+      "hard": [
+        -3,
+        4
+      ],
+      "note": "Horizontal offset of the fissure centre from the iris centre (+ = toward the lateral canthus), from the canthi. Negative: the fissure centre lies nasal to the cornea."
+    },
+    "apex_offset": {
+      "value": -0.41,
+      "unit": "mm",
+      "normal": [
+        -4,
+        2
+      ],
+      "hard": [
+        -10,
+        10
+      ],
+      "note": "Horizontal position of the highest point of the lid margin."
+    },
+    "apex_height": {
+      "value": 9.06,
+      "unit": "mm",
+      "normal": [
+        6,
+        11
+      ],
+      "hard": [
+        0,
+        16
+      ],
+      "note": "Height of the margin apex above the line joining the canthi."
+    },
+    "apex_shape": {
+      "value": 3,
+      "unit": "ratio",
+      "normal": [
+        2,
+        4
+      ],
+      "hard": [
+        1,
+        6
+      ],
+      "note": "How full the arch is; higher = squarer."
+    },
+    "crease_height": {
+      "value": 4.1,
+      "unit": "mm",
+      "normal": [
+        3,
+        7
+      ],
+      "hard": [
+        0,
+        12
+      ],
+      "note": "Lid crease above the margin at the apex."
+    },
+    "margin_thickness": {
+      "value": 0.6,
+      "unit": "mm",
+      "normal": [
+        0.3,
+        1
+      ],
+      "hard": [
+        0,
+        2
+      ]
+    },
+    "margin_depth": {
+      "value": 2,
+      "unit": "mm",
+      "normal": [
+        1.5,
+        2.5
+      ],
+      "hard": [
+        0.5,
+        4
+      ],
+      "note": "Front-to-back depth of the lid margin slab; its anterior edge casts the lid shadow onto the globe."
+    },
+    "swelling": {
+      "value": 0,
+      "unit": "mm",
+      "normal": [
+        0,
+        0.3
+      ],
+      "hard": [
+        0,
+        3
+      ],
+      "note": "How far oedema pushes the upper lid margin toward the eye (mm), with the swelling fading over the 4 mm of lid next to the margin; 0 in a healthy lid. Render-calibrated (low confidence)."
+    }
+  },
+  "relations": {
+    "parent": "eye.adnexa"
+  },
+  "clinical": {
+    "measured_by": [
+      "MRD1"
+    ],
+    "visible_in": [
+      "diffuse"
+    ]
+  },
+  "provenance": {
+    "source": "Margin and apex values derived from the trace in assets/exterior/fissure.json (51.2 px/mm; MRD from the pupil centre (1408, 870) px), checked by the validator within 0.05 mm. Normal ranges: Kanski's Clinical Ophthalmology, 9th ed. Margin depth: Gray's Anatomy (1918) fig. 893; Bron, Tripathi & Tripathi, Wolff's Anatomy of the Eye and Orbit, 8th ed.",
+    "confidence": "low",
+    "reviewed_by": null
+  }
+}

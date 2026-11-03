@@ -1,0 +1,13 @@
+{
+  "type": "Globe",
+  "description": "The eyeball: size and gaze.",
+  "required": {
+    "anatomy": [
+      "radius"
+    ],
+    "physiology": [
+      "gaze_horizontal",
+      "gaze_vertical"
+    ]
+  }
+}
