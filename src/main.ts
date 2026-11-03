@@ -317,7 +317,7 @@ const RANDOM_CASES = ["aacg", "ns2", "ns4"];
  *  runs on its own, with no patient. Resolves true when the patient is ready. */
 async function openPatient(request: CaseRequest | undefined): Promise<boolean> {
   try {
-    const id = await openSession(request ? { prompt: request.prompt, sex: request.sex, age: request.age } : { caseId: caseId });
+    const id = await openSession(request ? { prompt: request.prompt, vision: request.vision, sex: request.sex, age: request.age } : { caseId: caseId });
     const data = await (await fetch(`/api/sessions/${id}/eye`)).json();
     remote = { id, base: data.base, edits: data.edits };
     caseOrigin = data.origin;

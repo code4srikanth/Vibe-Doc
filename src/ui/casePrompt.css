@@ -30,7 +30,7 @@ html:has(#caseprompt) { overflow: hidden; }
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800' preserveAspectRatio='none'><defs><linearGradient id='f' x1='0' y1='1' x2='1' y2='0'><stop offset='0' stop-color='white' stop-opacity='0'/><stop offset='.5' stop-color='white' stop-opacity='.9'/><stop offset='1' stop-color='white' stop-opacity='0'/></linearGradient><linearGradient id='c' x1='0' y1='1' x2='1' y2='0'><stop offset='0' stop-color='%2367e8f9' stop-opacity='0'/><stop offset='.5' stop-color='%2367e8f9' stop-opacity='.8'/><stop offset='1' stop-color='%2367e8f9' stop-opacity='0'/></linearGradient></defs><g fill='none' stroke-linecap='round'><path d='M40 760 C180 560 300 380 400 250' stroke='url(%23f)' stroke-width='1.6'/><path d='M90 780 C220 600 320 430 400 330' stroke='url(%23c)' stroke-width='1.2'/><path d='M0 640 C140 500 280 330 400 170' stroke='url(%23f)' stroke-width='1'/><path d='M140 800 C260 650 350 520 400 440' stroke='url(%23f)' stroke-width='2.2' opacity='.7'/><path d='M20 520 C160 400 300 230 400 90' stroke='url(%23c)' stroke-width='.9'/><path d='M200 800 C300 700 360 620 400 560' stroke='url(%23c)' stroke-width='1.4'/><path d='M0 420 C130 320 260 190 360 40' stroke='url(%23f)' stroke-width='.8'/></g></svg>") right / 55% 100% no-repeat;
 }
-#caseprompt button, #caseprompt select, #caseprompt textarea { font-family: inherit; }
+#caseprompt button, #caseprompt select, #caseprompt input, #caseprompt textarea { font-family: inherit; }
 #caseprompt .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1em; }
 #caseprompt .back {
   display: inline-flex; align-items: center; gap: .45em; padding: .55em 1em;
@@ -67,17 +67,8 @@ html:has(#caseprompt) { overflow: hidden; }
   font-family: inherit; font-size: .74em; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #176b83;
 }
 #caseprompt .label svg { width: 1.35em; height: 1.35em; color: #176b83; }
-#caseprompt .chips { display: flex; flex-wrap: wrap; gap: .6em .5em; }
-#caseprompt .chip {
-  display: inline-flex; align-items: center; gap: .5em; padding: .6em 1.05em;
-  border: 1px solid #d0e5eb; border-radius: 99px; background: rgba(255, 255, 255, .85);
-  color: #183153; font-size: .8em; font-weight: 500; line-height: 1; cursor: pointer;
-  transition: background .25s, border-color .25s, box-shadow .25s, transform .25s;
-}
-#caseprompt .chip svg { width: 1.25em; height: 1.25em; color: var(--teal-dark); }
-#caseprompt .chip:hover { background: #e0f7f4; border-color: var(--teal); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(13, 148, 136, .12); }
-#caseprompt .chip.on { background: linear-gradient(135deg, #d4fffb, #a5f3fc); border-color: #2dd4bf; color: var(--teal-dark); font-weight: 600; }
 #caseprompt .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; margin-top: 1.6em; }
+#caseprompt .row.vision { margin-top: 0; }
 #caseprompt label { display: grid; gap: .6em; font-weight: 700; font-size: .92em; color: var(--ink); }
 #caseprompt label > span:first-child { display: block; }
 #caseprompt label b { color: #ef4444; font-weight: 600; }
@@ -85,12 +76,14 @@ html:has(#caseprompt) { overflow: hidden; }
 #caseprompt .field svg { position: absolute; top: 50%; translate: 0 -50%; width: 1.15em; height: 1.15em; pointer-events: none; color: #183153; }
 #caseprompt .field svg:first-child { left: .9em; }
 #caseprompt .field .chev { right: .9em; }
-#caseprompt select {
-  width: 100%; appearance: none; -webkit-appearance: none; height: 3.5em; padding: 0 2.6em 0 2.7em;
+#caseprompt :is(select, input) {
+  box-sizing: border-box; width: 100%; appearance: none; -webkit-appearance: none; height: 3.5em; padding: 0 2.6em 0 2.7em;
   border: 1px solid var(--line); border-radius: 99px; background: rgba(255, 255, 255, .9);
   color: #183153; font-size: .88em; cursor: pointer; transition: border-color .15s, background .15s;
 }
-#caseprompt select:hover, #caseprompt select:focus { background: #fff; border-color: var(--teal); box-shadow: 0 0 0 4px rgba(13, 148, 136, .1); }
+#caseprompt input { padding-right: 1em; cursor: text; }
+#caseprompt input::placeholder { color: #7a8898; }
+#caseprompt :is(select, input):hover, #caseprompt :is(select, input):focus { background: #fff; border-color: var(--teal); box-shadow: 0 0 0 4px rgba(13, 148, 136, .1); }
 #caseprompt .err { margin: .9em 0 0; color: #b42318; font-size: .82em; }
 #caseprompt .go {
   display: flex; align-items: center; justify-content: center; gap: .7em; width: 100%; margin-top: 1.8em; min-height: 3.4em;
@@ -102,10 +95,10 @@ html:has(#caseprompt) { overflow: hidden; }
 #caseprompt .go:hover svg { transform: translateX(4px); }
 #caseprompt .go:hover { transform: translateY(-2px); background: linear-gradient(180deg, #20d8c9, #0da89b, #087f8c); box-shadow: 0 14px 35px rgba(13, 148, 136, .35), 0 0 30px rgba(94, 234, 212, .35); }
 #caseprompt .go:active { transform: scale(.99); }
-#caseprompt :is(button, select):focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+#caseprompt :is(button, select, input):focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 @media (max-width: 800px) {
   #caseprompt .card { width: 100%; min-width: 0; padding: 1.2em 1.2em 1.6em; font-size: 14px; }
 }
 @media (max-width: 480px) { #caseprompt .row { grid-template-columns: 1fr; } }
 @keyframes cp-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { #caseprompt { animation: none; } #caseprompt :is(.back, .chip, select, textarea, .go, .go svg) { transition: none; } }
+@media (prefers-reduced-motion: reduce) { #caseprompt { animation: none; } #caseprompt :is(.back, select, input, textarea, .go, .go svg) { transition: none; } }

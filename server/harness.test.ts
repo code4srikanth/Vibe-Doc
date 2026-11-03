@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { loadLibrary } from "../tools/lib/library.ts";
 import { resolveCase } from "../src/model/resolve.ts";
 import { Harness, baseCase } from "./harness.ts";
-import { runCaseAgent } from "./case-agent.ts";
+import { runCaseAgent, withVision } from "./case-agent.ts";
 import type { ChatReply, Model } from "./gateway.ts";
 
 const lib = loadLibrary();
@@ -100,6 +100,14 @@ test("agent loop: a rejected value comes back as an error, the agent corrects it
   assert.equal(r.diagnosis, "Nuclear cataract");
   assert.equal(r.intent.age, 70);
   assert.deepEqual(r.edits.map(e => [e.property, e.value]), [["optics.density", 0.6]]);
+});
+
+test("withVision adds the entered vision to the description, and leaves it alone without any", () => {
+  assert.equal(withVision("Blurred vision.", { right: " 6/18 ", left: "6/6" }), "Blurred vision.\nMeasured vision: right eye 6/18; left eye 6/6.");
+  assert.equal(withVision("Blurred vision.", { right: "counting\nfingers" }), "Blurred vision.\nMeasured vision: right eye counting fingers; left eye not recorded.");
+  assert.equal(withVision("Blurred vision.", undefined), "Blurred vision.");
+  assert.equal(withVision("Blurred vision.", { right: 6, left: "" }), "Blurred vision.");
+  assert.ok(withVision("x", { right: "a".repeat(500) }).length < 100);
 });
 
 function call(id: string, name: string, args: object) {

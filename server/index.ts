@@ -6,7 +6,7 @@ import { pipeline } from "node:stream/promises";
 import type { ReadableStream as NodeReadableStream } from "node:stream/web";
 import { loadLibrary } from "../tools/lib/library.ts";
 import { meta, metaStream, transcribe } from "./gateway.ts";
-import { buildFailed, readIntent, runCaseAgent, type Intent } from "./case-agent.ts";
+import { buildFailed, readIntent, runCaseAgent, withVision, type Intent } from "./case-agent.ts";
 import { CaseIndex } from "./case-match.ts";
 import { cleanSheet, evaluate, type LampEvent } from "./examiner.ts";
 import { createPatient, greet, talk, writeFacts, type PatientState } from "./patient.ts";
@@ -89,7 +89,7 @@ const server = createServer(async (req, res) => {
   try {
     if (req.method === "GET" && url.pathname === "/api/health") return send(res, 200, { ok: true, components: lib.components.length });
 
-    // {prompt}: the Case agent builds the eye; {caseId}: a stored case (validated scenarios, fallback)
+    // {prompt, vision?}: the Case agent builds the eye, with severity read from the vision; {caseId}: a stored case (validated scenarios, fallback)
     if (req.method === "POST" && url.pathname === "/api/sessions") {
       if (!allow(clientIp(req), "sessions", LIMITS.sessionsPerHour, 3_600_000)) return tooMany(res);
       const started = Date.now();
@@ -103,7 +103,7 @@ const server = createServer(async (req, res) => {
       const prompt = String(body.prompt ?? "").trim();
       if (!prompt || prompt.length > MAX_PROMPT) return send(res, 400, { error: `A prompt of 1-${MAX_PROMPT} characters is required.` });
       const age = Number(body.age), chosen = body.sex === "male" || body.sex === "female" ? { sex: body.sex as "male" | "female", age: Math.min(100, Math.max(18, Math.round(age) || 60)) } : undefined;
-      const { session: s, eye } = await promptSession(prompt, chosen);
+      const { session: s, eye } = await promptSession(withVision(prompt, body.vision), chosen);
       await headStart(patientOf(s, eye), started);
       return send(res, 201, { id: s.id, valid: s.result.valid, origin: s.origin, subject: s.base.subject });
     }

@@ -56,12 +56,23 @@ const INTENT_SCHEMA = {
   additionalProperties: false
 };
 
+const MAX_VISION = 40;
+
+/** The case description with the vision the author entered, so every agent reading the description sees it. */
+export function withVision(prompt: string, vision: unknown): string {
+  const raw = (vision ?? {}) as { right?: unknown; left?: unknown };
+  const read = (v: unknown) => (typeof v === "string" ? v.replace(/\s+/g, " ").trim().slice(0, MAX_VISION) : "");
+  const right = read(raw.right), left = read(raw.left);
+  if (!right && !left) return prompt;
+  return `${prompt}\nMeasured vision: right eye ${right || "not recorded"}; left eye ${left || "not recorded"}.`;
+}
+
 export async function readIntent(prompt: string, model: Model): Promise<Intent> {
   const { message } = await model({
     purpose: "case.intent", model: MODELS.case, temperature: 0, reasoning: "low",
     json: { name: "intent", schema: INTENT_SCHEMA },
     messages: [
-      { role: "system", content: "Extract a patient description for an eye-clinic training case as JSON. If age or sex is not given, choose a plausible adult for the condition. 'condition' is the eye condition the description names or most likely implies, in plain clinical words. Use 'unknown' when the eye or severity is not stated. 'signs' scores how strongly a slit lamp would show each sign in this eye: 0 absent, 0.3 mild, 0.6 moderate, 1 the most severe form; use 0 for a sign this condition does not cause." },
+      { role: "system", content: "Extract a patient description for an eye-clinic training case as JSON. If age or sex is not given, choose a plausible adult for the condition. 'condition' is the eye condition the description names or most likely implies, in plain clinical words. Use 'unknown' when the eye or severity is not stated. 'signs' scores how strongly a slit lamp would show each sign in this eye: 0 absent, 0.3 mild, 0.6 moderate, 1 the most severe form; use 0 for a sign this condition does not cause. When the description gives measured vision, judge what that vision means for this condition and let it decide 'severity' and the sign scores, even where the description's words suggest otherwise. If the description names no affected eye, the clearly worse-seeing eye is the affected one." },
       { role: "user", content: prompt }
     ]
   });
@@ -91,7 +102,7 @@ function systemPrompt(lib: Library): string {
 The eye starts healthy. You change it only through the tools, by setting physical properties: scatter, absorption, opacity, thickness, depth, position, vessel engorgement. Never paint colours. Every finding must come from a property, so it looks right in every slit-lamp view.
 
 Work like this:
-1. Decide which signs the condition shows at the slit lamp at the given severity.
+1. Decide which signs the condition shows at the slit lamp at the given severity. When the description gives measured vision, the severity already reflects it, and the signs you place must plausibly explain that vision.
 2. For each sign, search_properties or read_component to find the property that carries it. Use only properties that exist; if a sign has no property, leave it out and do not fake it with another.
 3. set_property with a value inside the hard range, sized to the severity, and a one-sentence reason naming the sign. Where a property lists library values, those are calibrated disease grades: size yours against them, not against the hard range, which is only what is physically possible.
 4. validate, fix every error, then finish.

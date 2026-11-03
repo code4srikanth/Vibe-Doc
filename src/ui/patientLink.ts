@@ -9,7 +9,7 @@ import type { CaseSheet, LampEvent, Report } from "../../server/examiner.ts";
 
 const API = "/api/sessions";
 
-export async function openSession(body: { prompt: string; sex?: string; age?: number } | { caseId: string }): Promise<string> {
+export async function openSession(body: { prompt: string; vision?: { right: string; left: string }; sex?: string; age?: number } | { caseId: string }): Promise<string> {
   const res = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error ?? `Server answered ${res.status}`);

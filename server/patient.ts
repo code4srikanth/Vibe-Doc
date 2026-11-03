@@ -81,6 +81,7 @@ export async function writeFacts(brief: CaseBrief, model: Model): Promise<Patien
 Rules:
 - Every symptom must agree with the eye signs given. Symptoms the condition would not cause are denied ("No, nothing like that").
 - Write each answer in the first person, as the patient would say it aloud, in plain words. The patient does not know the diagnosis and never uses its name or clinical terms.
+- If the case description gives measured vision, what the patient says about their sight must fit it, in everyday terms of what they can and cannot do, never as chart figures.
 - Give one fact for every topic in the schema. Mark red_flag true for answers that point strongly to the diagnosis or to danger (for example halos with headache and vomiting).
 - chief_complaint is one or two sentences: what the patient says first when asked why they came.
 - persona.speech describes how this person talks, fitting their age and background.`
