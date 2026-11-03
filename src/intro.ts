@@ -109,9 +109,7 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
 #intro .start.on { opacity: 1; pointer-events: auto; }
 #intro .start::before { content: ""; position: absolute; z-index: -2; left: 50%; top: 50%; width: 200%; aspect-ratio: 1; translate: -50% -50%; background: conic-gradient(#fff, #5eead4 18%, #14b394 38%, #fff 55%, #67e8f9 78%, #fff); animation: intro-spin 3.2s linear infinite; will-change: rotate; }
 #intro .start::after { content: ""; position: absolute; z-index: -1; inset: 1.5px; border-radius: inherit; background: linear-gradient(180deg, #16264f, var(--ink)); }
-#intro .start svg { position: absolute; bottom: .9em; left: 50%; transform: translateX(-50%); width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: translate .2s ease; }
 #intro .start:hover, #intro .start:focus-visible { box-shadow: 0 0 30px 4px rgba(24, 214, 186, .75); }
-#intro .start:hover svg, #intro .start:focus-visible svg { translate: 4px 0; }
 #intro .start:focus-visible { outline: 3px solid #0b8f86; outline-offset: 3px; }
 @keyframes intro-spin { to { rotate: 360deg; } }
 @media (prefers-reduced-motion: reduce) { #intro .start::before { animation: none; } }
@@ -120,7 +118,7 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
 
   const root = document.createElement("div");
   root.id = "intro";
-  root.innerHTML = `<div class="scene"><div class="stage"><video muted playsinline preload="auto"></video><div class="fx ambient"><img alt=""></div><canvas width="480" height="214"></canvas><img class="lamp" alt="Slit lamp"><div class="fx contact"></div><div class="fx wrap"></div><div class="fx grain"></div></div><button type="button" class="start" tabindex="-1">Start Simulation <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`;
+  root.innerHTML = `<div class="scene"><div class="stage"><video muted playsinline preload="auto"></video><div class="fx ambient"><img alt=""></div><canvas width="480" height="214"></canvas><img class="lamp" alt="Slit lamp"><div class="fx contact"></div><div class="fx wrap"></div><div class="fx grain"></div></div><button type="button" class="start" tabindex="-1">Start Simulation</button></div>`;
   document.body.append(root);
   const scene = root.querySelector<HTMLDivElement>(".scene")!, stage = root.querySelector<HTMLDivElement>(".stage")!, video = root.querySelector("video")!, cv = root.querySelector("canvas")!;
   const lamp = root.querySelector<HTMLImageElement>(".lamp")!;
