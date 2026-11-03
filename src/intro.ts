@@ -26,7 +26,7 @@ function pickClip(subject: { sex?: string; age: number }): string {
 
 const W = 1280, H = 720, CHAT_W = 360, CHAT_GAP = 10;
 // the Start button's centre and text size on the stage: over the clips' corner mark (about 50 px across), which it covers once shown
-const START = { x: 1160, y: 600, font: 22 };
+const START = { x: 1160, y: 600, font: 16 };
 // the seated patient in the clips (all share one framing): chin point and head width on the stage, measured on the last frames
 const CHIN = [639, 266], HEAD = 84;
 // 1 cm = HEAD / 15 px (a head is about 15 cm wide); the lamp is lowered 3 cm from the eye line
@@ -105,11 +105,11 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
 @keyframes grain { 0% { background-position: 0 0; } 100% { background-position: 77px 53px; } }
 #intro canvas { transform-origin: 0 0; filter: blur(.35px) contrast(.92); }
 /* the same button as the lobby's "Enter Cabin" (lobby.css): navy face, mint text, a turning rim */
-#intro .start { --ink: #0b1230; position: absolute; translate: -50% -50%; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; gap: .4em; height: 2.9em; padding: 0 1.4em; border: 0; border-radius: 99px; background: none; color: #7df3d9; white-space: nowrap; font: 600 18px/1 "Barlow", "Segoe UI", system-ui, sans-serif; box-shadow: 0 0 14px rgba(20, 179, 148, .4); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .4s ease, box-shadow .2s ease; }
+#intro .start { --ink: #0b1230; position: absolute; translate: -50% -50%; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3em; width: 7em; height: 7em; padding: 0 .6em; border: 0; border-radius: 50%; background: none; color: #7df3d9; white-space: normal; text-align: center; font: 600 18px/1.15 "Barlow", "Segoe UI", system-ui, sans-serif; box-shadow: 0 0 14px rgba(20, 179, 148, .4); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .4s ease, box-shadow .2s ease; }
 #intro .start.on { opacity: 1; pointer-events: auto; }
 #intro .start::before { content: ""; position: absolute; z-index: -2; left: 50%; top: 50%; width: 200%; aspect-ratio: 1; translate: -50% -50%; background: conic-gradient(#fff, #5eead4 18%, #14b394 38%, #fff 55%, #67e8f9 78%, #fff); animation: intro-spin 3.2s linear infinite; will-change: rotate; }
 #intro .start::after { content: ""; position: absolute; z-index: -1; inset: 1.5px; border-radius: inherit; background: linear-gradient(180deg, #16264f, var(--ink)); }
-#intro .start svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: translate .2s ease; }
+#intro .start svg { position: absolute; bottom: .9em; left: 50%; transform: translateX(-50%); width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: translate .2s ease; }
 #intro .start:hover, #intro .start:focus-visible { box-shadow: 0 0 30px 4px rgba(24, 214, 186, .75); }
 #intro .start:hover svg, #intro .start:focus-visible svg { translate: 4px 0; }
 #intro .start:focus-visible { outline: 3px solid #0b8f86; outline-offset: 3px; }
