@@ -14,6 +14,7 @@ import { briefFor, caseSession, createSession, getSession, publicEye, type Sessi
 import { allow, clientIp, LIMITS } from "./limits.ts";
 import { MAX_SPEECH, speech, voiceConfigured, voiceFor } from "./voice.ts";
 import { hasBuild, serveStatic } from "./static.ts";
+import { attachListen } from "./listen.ts";
 
 const lib = loadLibrary();
 const PORT = Number(process.env.PORT ?? 8787);
@@ -172,6 +173,8 @@ const server = createServer(async (req, res) => {
     if (!res.headersSent) send(res, 500, { error: (e as Error).message }); else res.end();
   }
 });
+
+attachListen(server);
 
 server.listen(PORT, () => {
   console.log(`EyeSim server on http://localhost:${PORT} (${lib.components.length} components)`);

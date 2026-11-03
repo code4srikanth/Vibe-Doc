@@ -4,6 +4,6 @@ import { defineConfig } from "vite";
 export default defineConfig({
   server: {
     fs: { allow: ["."] },
-    proxy: { "/api": { target: `http://localhost:${process.env.PORT ?? 8787}`, changeOrigin: true } }
+    proxy: { "/api": { target: `http://localhost:${process.env.PORT ?? 8787}`, changeOrigin: true, ws: true } }
   }
 });

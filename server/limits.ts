@@ -33,5 +33,6 @@ export const LIMITS = {
   sessionsPerHour: Number(process.env.LIMIT_SESSIONS_PER_HOUR ?? 20),
   chatPerMinute: Number(process.env.LIMIT_CHAT_PER_MINUTE ?? 30),
   transcribePerMinute: Number(process.env.LIMIT_TRANSCRIBE_PER_MINUTE ?? 30),
+  listenPerMinute: Number(process.env.LIMIT_LISTEN_PER_MINUTE ?? 10),
   speakPerMinute: Number(process.env.LIMIT_SPEAK_PER_MINUTE ?? 40)
 };

@@ -16,11 +16,16 @@ export async function openSession(body: { prompt: string; vision?: { right: stri
   return data.id as string;
 }
 
+/** Times within one turn, from when the trainee stopped talking (or sent a typed line). */
+interface TurnClock { start: number; heard?: number; words?: number }
+
 export class PatientLink {
   constructor(readonly sessionId: string, private persona: { age: number; sex?: string }) {}
 
   /** The patient's reply to something the trainee said or typed, as it arrives. */
   async *chat(text: string, signal?: AbortSignal): AsyncGenerator<PatientEvent> {
+    const clock = this.clock = this.heardClock ?? { start: performance.now() };
+    this.heardClock = null;
     const res = await fetch(`${API}/${this.sessionId}/chat`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }), signal });
     if (!res.ok || !res.body) throw new Error((await res.json().catch(() => ({}))).error ?? `Server answered ${res.status}`);
     const reader = res.body.getReader(), decoder = new TextDecoder();
@@ -36,6 +41,7 @@ export class PatientLink {
         const event = /^event: (.+)$/m.exec(block)?.[1], data = /^data: (.+)$/m.exec(block)?.[1];
         if (!event || !data) continue;
         if (event === "error") throw new Error(JSON.parse(data).error);
+        if (event === "say") clock.words ??= performance.now();
         yield JSON.parse(data) as PatientEvent;
       }
     }
@@ -57,13 +63,91 @@ export class PatientLink {
     return data as Report;
   }
 
-  /** A recording (any format the browser records) to words. */
-  async transcribe(recording: Blob): Promise<string> {
+  /** A recording (any format the browser records) to words. `endedAt` is when the speaker stopped, for the turn's timing. */
+  async transcribe(recording: Blob, endedAt = performance.now()): Promise<string> {
     const wav = await toWav(recording);
     const res = await fetch(`${API}/${this.sessionId}/transcribe`, { method: "POST", headers: { "Content-Type": "audio/wav" }, body: wav });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error ?? `Server answered ${res.status}`);
+    this.heardClock = { start: endedAt, heard: performance.now() };
     return data.text as string;
+  }
+
+  /**
+   * Live listening: streams the microphone to the server and reports the words as they are spoken. The service decides
+   * where each turn ends. While the patient talks it hears silence, so the patient's voice is never taken for the trainee.
+   * Rejects when it cannot start, and calls onLost if it cannot reconnect later: the caller then uses listenHandsFree.
+   */
+  async listenLive(opts: { onStart(): void; onPartial(text: string): void; onFinal(text: string): void; onLost(): void; paused(): boolean }): Promise<{ stop(): void }> {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+    const ctx = new AudioContext({ sampleRate: LIVE_RATE });
+    let stopped = false, socket: WebSocket | null = null, lastLoud = 0, resumeAt = 0, fill = 0, frame = new Int16Array(LIVE_FRAME), waiting: ArrayBuffer[] = [];
+    const release = () => {
+      stopped = true;
+      socket?.close();
+      stream.getTracks().forEach(t => t.stop());
+      void ctx.close();
+    };
+    const connect = () => new Promise<void>((ready, failed) => {
+      const ws = socket = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}${API}/${this.sessionId}/listen`);
+      const timer = setTimeout(() => ws.close(), LIVE_CONNECT_MS);
+      let up = false;
+      ws.onopen = () => { for (const f of waiting) ws.send(f); waiting = []; };
+      ws.onmessage = m => {
+        const e = JSON.parse(m.data as string) as { type: string; text?: string };
+        if (e.type === "ready") { up = true; clearTimeout(timer); ready(); }
+        else if (e.type === "start") opts.onStart();
+        else if (e.type === "partial") opts.onPartial(e.text ?? "");
+        else if (e.type === "final") {
+          this.heardClock = { start: lastLoud || performance.now(), heard: performance.now() };
+          opts.onFinal(e.text ?? "");
+        }
+      };
+      ws.onclose = () => {
+        clearTimeout(timer);
+        if (!up) { failed(new Error("Live listening is unavailable.")); return; }
+        if (stopped) return;
+        // the service ends a session at its time limit, and networks drop: carry on with a new one
+        connect().catch(() => { if (!stopped) { release(); opts.onLost(); } });
+      };
+    });
+    try {
+      await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([MIC_TAP], { type: "text/javascript" })));
+      const tap = new AudioWorkletNode(ctx, "mic-tap", { numberOfOutputs: 0 });
+      ctx.createMediaStreamSource(stream).connect(tap);
+      tap.port.onmessage = (m: MessageEvent<Float32Array>) => {
+        if (stopped) return;
+        const now = performance.now();
+        const mute = opts.paused();
+        if (mute) resumeAt = now + AFTER_PATIENT_MS;
+        const silent = mute || now < resumeAt;
+        let sum = 0;
+        for (const s of m.data) {
+          sum += s * s;
+          frame[fill++] = silent ? 0 : Math.max(-1, Math.min(1, s)) * 0x7fff;
+          if (fill === LIVE_FRAME) {
+            if (socket?.readyState === WebSocket.OPEN) socket.send(frame.buffer);
+            else if (waiting.length < LIVE_WAITING) waiting.push(frame.buffer);
+            frame = new Int16Array(LIVE_FRAME); fill = 0;
+          }
+        }
+        if (!silent && Math.sqrt(sum / m.data.length) > LOUD_LEVEL) lastLoud = now;
+      };
+      if (ctx.state === "suspended") await ctx.resume();
+      await connect();
+    } catch (e) { release(); throw e; }
+    return { stop: release };
+  }
+
+  // One turn's stopwatch, printed once when the patient's voice starts: where the wait went, in the browser console.
+  private heardClock: TurnClock | null = null;
+  private clock: TurnClock | null = null;
+  private reportClock() {
+    const c = this.clock;
+    if (!c) return;
+    this.clock = null;
+    const at = (t?: number) => t === undefined ? "-" : `${Math.round(t - c.start)} ms`;
+    console.info(`[voice] after you stopped: words ${at(c.heard)}, reply ${at(c.words)}, sound ${at(performance.now())}`);
   }
 
   private queue: Promise<void> = Promise.resolve();
@@ -110,6 +194,7 @@ export class PatientLink {
       const audio = new Audio(url);
       const done = () => { URL.revokeObjectURL(url); if (this.audio === audio) this.audio = null; resolve(); };
       audio.onended = audio.onerror = done;
+      audio.onplaying = () => this.reportClock();
       if (generation !== this.generation) return done();
       this.audio = audio;
       if (source) source.addEventListener("sourceopen", () => void feed(source, res.body!), { once: true });
@@ -121,6 +206,7 @@ export class PatientLink {
     if (!("speechSynthesis" in window)) return Promise.resolve();
     return new Promise(resolve => {
       const u = new SpeechSynthesisUtterance(text);   // the browser's standard voice
+      u.onstart = () => this.reportClock();
       u.onend = u.onerror = () => resolve();
       speechSynthesis.speak(u);
     });
@@ -150,15 +236,21 @@ async function feed(source: MediaSource, body: ReadableStream<Uint8Array<ArrayBu
   if (source.readyState === "open") source.endOfStream();
 }
 
-// Hands-free listening: the microphone stays open and the level decides where each utterance starts and ends.
-const TICK_MS = 50, END_SILENCE_MS = 1000, MIN_VOICED_MS = 350, MAX_UTTERANCE_MS = 30000, AFTER_PATIENT_MS = 500;
+// Live listening: 80 ms frames of 16 kHz audio, the service's own pacing. The tap copies each block of samples out of the audio thread.
+const LIVE_RATE = 16000, LIVE_FRAME = 1280, LIVE_CONNECT_MS = 5000, LIVE_WAITING = 60, LOUD_LEVEL = 0.02;
+const MIC_TAP = `registerProcessor("mic-tap", class extends AudioWorkletProcessor {
+  process(inputs) { const c = inputs[0][0]; if (c) this.port.postMessage(c.slice(0)); return true; }
+});`;
+
+// Hands-free listening, the fallback: the microphone stays open and the level decides where each utterance starts and ends.
+const TICK_MS = 50, END_SILENCE_MS = 700, MIN_VOICED_MS = 350, MAX_UTTERANCE_MS = 30000, AFTER_PATIENT_MS = 250;
 
 /**
- * Keeps the microphone open and calls onUtterance with one recording per spoken phrase. A phrase ends after a second of
- * silence. Nothing is recorded while `paused()` is true (the patient is speaking), so the patient's voice from the
+ * Keeps the microphone open and calls onUtterance with one recording per spoken phrase. A phrase ends after END_SILENCE_MS
+ * of silence: longer makes every reply later, shorter cuts people off when they pause mid-sentence. Nothing is recorded while `paused()` is true (the patient is speaking), so the patient's voice from the
  * speakers is not mistaken for the trainee. The speech threshold follows the room's background noise.
  */
-export async function listenHandsFree(opts: { onUtterance(recording: Blob): void; onState(state: "idle" | "hearing"): void; paused(): boolean }): Promise<{ stop(): void }> {
+export async function listenHandsFree(opts: { onUtterance(recording: Blob, endedAt: number): void; onState(state: "idle" | "hearing"): void; paused(): boolean }): Promise<{ stop(): void }> {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
   const ctx = new AudioContext(), analyser = ctx.createAnalyser();
   analyser.fftSize = 1024;
@@ -167,10 +259,10 @@ export async function listenHandsFree(opts: { onUtterance(recording: Blob): void
   let floor = 0.01, rec: MediaRecorder | null = null, parts: Blob[] = [], voicedMs = 0, silentMs = 0, lengthMs = 0, resumeAt = 0, hearing = false;
 
   const finish = (keep: boolean) => {
-    const r = rec, got = parts, voiced = voicedMs;
+    const r = rec, got = parts, voiced = voicedMs, endedAt = performance.now() - silentMs;
     rec = null; parts = []; voicedMs = silentMs = lengthMs = 0;
     if (!r) return;
-    r.onstop = () => { if (keep && voiced >= MIN_VOICED_MS) opts.onUtterance(new Blob(got, { type: r.mimeType })); };
+    r.onstop = () => { if (keep && voiced >= MIN_VOICED_MS) opts.onUtterance(new Blob(got, { type: r.mimeType }), endedAt); };
     r.ondataavailable = e => { if (e.data.size) got.push(e.data); };
     r.stop();
   };

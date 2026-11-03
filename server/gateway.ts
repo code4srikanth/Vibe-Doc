@@ -163,6 +163,65 @@ export async function editImage(prompt: string, png: Buffer): Promise<Buffer> {
   return Buffer.from(data.data[0].b64_json, "base64");
 }
 
+/** What live transcription reports: someone began talking, the words so far, and the finished turn. */
+export type LiveEvent = { type: "start" } | { type: "partial"; text: string } | { type: "final"; text: string };
+
+/** One message from the realtime service in our terms; null for those the browser does not need. */
+export function readLiveEvent(data: { type?: string; transcript?: string; final?: boolean }): LiveEvent | null {
+  if (data.type === "speechStart") return { type: "start" };
+  if (data.type === "transcript" && !data.final) return { type: "partial", text: data.transcript ?? "" };
+  if (data.type === "speechComplete") return { type: "final", text: (data.transcript ?? "").trim() };
+  return null;
+}
+
+export interface LiveTranscription { send(pcm: Uint8Array<ArrayBuffer>): void; close(): void }
+
+const LIVE_URL = process.env.META_LIVE_URL ?? "wss://api.meta.ai/v1/asr/realtime";
+const MAX_LIVE_BACKLOG = 125;   // frames held while connecting, 10 s at 80 ms each; the service takes at most 5 s ahead, so older ones go first
+
+/**
+ * Live speech to text: 16 kHz mono 16-bit PCM in, words out while the person talks, and the service finds where each
+ * turn ends. The session stays open between turns, as opening one takes about a second. Audio sent while it opens is
+ * held, so the first words are not lost.
+ */
+export function liveTranscribe(on: { ready(): void; event(e: LiveEvent): void; closed(): void }): LiveTranscription {
+  const ws = new WebSocket(LIVE_URL), started = Date.now();
+  ws.binaryType = "arraybuffer";
+  let held: Uint8Array<ArrayBuffer>[] | null = [];
+  ws.onopen = () => ws.send(JSON.stringify({
+    authorization: { accessToken: `Bearer ${apiKey()}` },
+    audioEncoding: "PCM_16KHZ", model: MODELS.transcribe, mode: "ENDPOINTING", languageBias: ["English"], emitAudioProgress: false
+  }));
+  ws.onmessage = m => {
+    const data = JSON.parse(String(m.data)) as { type?: string; sessionId?: string; message?: string; transcript?: string; final?: boolean };
+    if (!data.type && data.sessionId) {
+      console.log(`[gateway] live transcribe ${MODELS.transcribe} open in ${Date.now() - started} ms`);
+      for (const frame of held ?? []) ws.send(frame);
+      held = null;
+      on.ready();
+      return;
+    }
+    if (data.type === "error") console.error(`Live transcription: ${data.message}`);
+    const event = readLiveEvent(data);
+    if (event) on.event(event);
+  };
+  let closing = false;
+  ws.onerror = () => { if (!closing) console.error("Live transcription: connection failed."); };
+  ws.onclose = e => { console.log(`[gateway] live transcribe closed ${e.code} after ${Date.now() - started} ms`); on.closed(); };
+  return {
+    send(pcm) {
+      if (!held) { if (ws.readyState === WebSocket.OPEN) ws.send(pcm); return; }
+      held.push(pcm);
+      if (held.length > MAX_LIVE_BACKLOG) held.shift();
+    },
+    close() {
+      closing = true;
+      if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: "endStream" }));
+      ws.close();
+    }
+  };
+}
+
 /** Speech to text (Muse Voice Transcribe): one recorded utterance, a mono 16-bit WAV at 16 or 24 kHz. */
 export async function transcribe(wav: Uint8Array<ArrayBuffer>): Promise<string> {
   const form = new FormData();

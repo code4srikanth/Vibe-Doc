@@ -392,12 +392,16 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): Ex
 
   // ---- patient conversation ----
   const msgs = q(".msgs");
-  const say = (who: "You" | "Patient", text: string) => {
+  const bubble = (who: "You" | "Patient", text: string) => {
     const li = document.createElement("li");
     li.className = who === "You" ? "you" : "patient";
     li.innerHTML = `<span class="avatar">${svg("person")}</span><div><p class="meta"><b></b><time></time></p><p class="text"></p></div>`;
     li.querySelector("b")!.textContent = who; li.querySelector("time")!.textContent = time(); li.querySelector(".text")!.textContent = text;
     msgs.append(li); msgs.scrollTop = msgs.scrollHeight;
+    return li;
+  };
+  const say = (who: "You" | "Patient", text: string) => {
+    const li = bubble(who, text);
     log("say", text);
     return li.querySelector<HTMLElement>(".text")!;
   };
@@ -505,7 +509,12 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): Ex
     q(".spk svg").innerHTML = ICON[on ? "muted" : "speaker"];
   };
   q(".spk").onclick = () => mute.click();
-  const stopListening = bindSpeech(q(".ptt"), q(".ptt-label"), ask, () => hooks.patient?.());
+  // while a phrase is being turned into words, a placeholder shows them as they come; it is not part of the session log
+  const hearing = () => {
+    const li = bubble("You", "…"), words = li.querySelector<HTMLElement>(".text")!;
+    return { show(text: string) { words.textContent = text; msgs.scrollTop = msgs.scrollHeight; }, clear() { li.remove(); } };
+  };
+  const stopListening = bindSpeech(q(".ptt"), q(".ptt-label"), ask, () => hooks.patient?.(), hearing);
 
   // ---- reflect the lamp in every control ----
   function sync() {
@@ -592,13 +601,14 @@ function knob(parent: HTMLElement, k: KnobSpec) {
   };
 }
 
-// Speech input. With a voice patient the microphone button turns hands-free listening on and off: each phrase is cut
-// at a pause, transcribed by the server (Muse Voice Transcribe) and sent, and listening waits while the patient talks.
+// Speech input. With a voice patient the microphone button turns hands-free listening on and off. Normally the audio
+// streams to the server, the words appear as they are spoken, and the transcription service decides where a turn ends.
+// If that cannot run, each phrase is cut at a pause and sent as a recording. Either way the patient's own voice is not heard.
 // Without a recording microphone the browser's own speech recognition is used, held like a push-to-talk button.
 interface Recognition { lang: string; interimResults: boolean; start(): void; stop(): void; onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null; onend: (() => void) | null }
 const OFF_LABEL = "Tap to Talk", HANDS_FREE_ON = "Listening: just speak";
 // Returns a function that closes the microphone for good when the conversation ends: what it was still hearing is dropped.
-function bindSpeech(button: HTMLElement, label: HTMLElement, onText: (t: string) => void, link: () => PatientLink | undefined): () => void {
+function bindSpeech(button: HTMLElement, label: HTMLElement, onText: (t: string) => void, link: () => PatientLink | undefined, hearing: () => { show(text: string): void; clear(): void }): () => void {
   const Ctor = (window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition });
   const Rec = Ctor.SpeechRecognition ?? Ctor.webkitSpeechRecognition;
   const canRecord = !!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== "undefined";
@@ -611,25 +621,47 @@ function bindSpeech(button: HTMLElement, label: HTMLElement, onText: (t: string)
     const patientTalking = () => !!link()?.speaking;
     const listening = () => session !== null;
     // utterances are transcribed one at a time, so the questions reach the patient in the order they were asked
-    const handle = (recording: Blob) => {
+    const handle = (recording: Blob, endedAt: number) => {
+      const heard = hearing();
       queue = queue.then(async () => {
-        const patient = link();
-        if (!patient || !session) return;
         try {
-          const text = (await patient.transcribe(recording)).trim();
+          const patient = link();
+          if (!patient || !session) return;
+          const text = (await patient.transcribe(recording, endedAt)).trim();
+          heard.clear();
           if (listening() && text) onText(text);
-        } catch (e) { console.warn(e); }
+        } catch (e) { console.warn(e); } finally { heard.clear(); }
       });
     };
-    const toggle = async () => {
-      if (session) { const s = session; session = null; (await s).stop(); off(); return; }
-      if (!link()) { label.textContent = "Patient not ready yet"; return; }
-      button.classList.add("on"); button.setAttribute("aria-pressed", "true"); label.textContent = HANDS_FREE_ON;
-      const mine: Promise<{ stop(): void }> = session = listenHandsFree({
-        onUtterance: handle, paused: patientTalking,
-        onState: s => { if (session) label.textContent = s === "hearing" ? "Hearing you…" : HANDS_FREE_ON; }
-      });
+    const recorded = () => listenHandsFree({
+      onUtterance: handle, paused: patientTalking,
+      onState: s => { if (session) label.textContent = s === "hearing" ? "Hearing you…" : HANDS_FREE_ON; }
+    });
+    const begin = (start: Promise<{ stop(): void }>) => {
+      const mine = session = start;
       mine.catch(() => { if (session === mine) session = null; off("Microphone blocked: type below"); });
+    };
+    // the words of the turn being spoken, shown live
+    let speaking: ReturnType<typeof hearing> | null = null;
+    const endTurn = () => { speaking?.clear(); speaking = null; };
+    const live = (patient: PatientLink) => patient.listenLive({
+      paused: patientTalking,
+      onStart() { if (session) { speaking ??= hearing(); label.textContent = "Hearing you…"; } },
+      onPartial(text) { if (session && text) (speaking ??= hearing()).show(text); },
+      onFinal(text) {
+        endTurn();
+        if (!session) return;
+        label.textContent = HANDS_FREE_ON;
+        if (text) onText(text);
+      },
+      onLost() { endTurn(); if (session) begin(recorded()); }
+    });
+    const toggle = async () => {
+      if (session) { const s = session; session = null; endTurn(); (await s).stop(); off(); return; }
+      const patient = link();
+      if (!patient) { label.textContent = "Patient not ready yet"; return; }
+      button.classList.add("on"); button.setAttribute("aria-pressed", "true"); label.textContent = HANDS_FREE_ON;
+      begin(live(patient).catch(e => { console.warn(e); return recorded(); }));
     };
     off();
     button.addEventListener("click", () => void toggle());
