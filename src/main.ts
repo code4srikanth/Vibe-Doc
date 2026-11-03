@@ -5,7 +5,7 @@ import { checkRules, resolveCase, type ResolvedEye } from "./model/resolve.ts";
 import { eyeUniforms } from "./render/modules/index.ts";
 import { EyeRenderer, SHADERS } from "./render/renderer.ts";
 import { EXTERIOR, VIEWS, frame, fundusLensView, lampUniforms, settingsFor, type LampSettings, type ViewId } from "./exam/views.ts";
-import { examLog, mountExam } from "./ui/exam.ts";
+import { examLog, mountExam, type ExamScreen } from "./ui/exam.ts";
 import vesselMapUrl from "../assets/conjunctiva/vessel-map.png?url";
 import { useVesselImage } from "./render/vessels.ts";
 import { buildRetinalVessels, VESSEL_HALF } from "./render/fundusVessels.ts";
@@ -37,7 +37,7 @@ const bare = qs.has("bare");
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 if (bare) document.body.classList.add("bare");
 const exam = mountExam();   // creates #view and #cv, which the renderer needs at once
-let screen: { sync(): void } | undefined;
+let screen: ExamScreen | undefined;
 
 // The app shows only the eye built in the realism layers (docs/realism); ?case= still opens any case for renders.
 const APP_CASES = ["reference_black_brown"];
@@ -57,7 +57,7 @@ let lamp: LampSettings;
 let remote: { id: string; base: Case; edits: Edit[] } | undefined = bare && window.__eyesimRemote ? { id: "0000", ...window.__eyesimRemote } : undefined;
 let patient: PatientLink | undefined;
 let caseOrigin: CaseOrigin | undefined;   // where the server's case came from, which the exam screen states
-let bindable = false;   // the exam screen is bound once the session says whose eye it is (after the walk-in); ?bare binds nothing
+let bindable = false;   // the exam screen is bound once the session says whose eye it is (before the walk-in, which shares its conversation); ?bare binds nothing
 
 let renderer: EyeRenderer | undefined;   // created in start(), at page load; undefined when WebGL is unavailable
 let live = false;            // frames are drawn only once the intro has ended (see the flow below)
@@ -290,7 +290,7 @@ function renderInspector() {
 }
 
 if (!bare) buildInstructor();
-// Landing -> lobby -> the walk-in scene, which plays over the app until the trainee clicks the lamp's screen.
+// Landing -> lobby -> the walk-in scene, which plays over the app until the trainee presses Start Simulation.
 // ?bare renders and ?intro=0 skip the whole flow. The simulator loads at once, behind the flow: the shader compiles in the
 // background and the textures load while the trainee is on the first screens. It draws no frames until the flow ends
 // (live), because running the ray-march shader under the videos can stall or reset the GPU.
@@ -343,12 +343,12 @@ async function openPatient(request: CaseRequest | undefined): Promise<boolean> {
         ["Preparing the slit lamp", renderer ? renderer.whenReady() : Promise.resolve(false)]
       ], skipFlow ? undefined : PROTOTYPE_TERMS);
   }
-  if (!skipFlow) {
-    const subject = library.cases.find(c => c.id === caseId)!.subject;
-    await playIntro(request ? { ...subject, sex: request.sex, age: request.age } : subject, patient);
-  }
   bindable = true;
   load();
+  if (!skipFlow) {
+    const subject = library.cases.find(c => c.id === caseId)!.subject;
+    await playIntro(request ? { ...subject, sex: request.sex, age: request.age } : subject, screen!.conversation);
+  }
   live = true;
   showCaseLabel(caseOrigin);
 })();

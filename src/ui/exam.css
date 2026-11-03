@@ -148,6 +148,16 @@
 #exam .type button { display: grid; place-items: center; width: 32px; height: 30px; border: 0; border-radius: 8px; background: var(--teal-soft); color: var(--teal); }
 @keyframes ex-pulse { 50% { box-shadow: 0 0 0 8px rgba(19, 167, 160, .2); } }
 
+#exam .chat [inert] { opacity: .5; }
+/* during the walk-in (src/intro.ts) only this panel shows, over the scene; then the rest of the screen fades in round it */
+#exam.over-intro { position: fixed; z-index: 101; background: none; pointer-events: none; }
+#exam.over-intro > :not(.chat) { visibility: hidden; }
+#exam.over-intro .chat { position: fixed; margin: 0; visibility: visible; pointer-events: auto; }
+#exam.intro-reveal { z-index: 101; animation: ex-reveal-bg .6s both; }
+#exam.intro-reveal > :not(.chat) { animation: ex-reveal .6s both; }
+@keyframes ex-reveal-bg { from { background-color: transparent; } }
+@keyframes ex-reveal { from { opacity: 0; } }
+
 /* ---- bottom row: filters and knobs share the view's column; kept low so the view gets the height ---- */
 #exam .filters, #exam .dials { grid-row: 3; }
 #exam :is(.filters, .dials, .instructions) { padding: 9px 10px; }

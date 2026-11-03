@@ -1,8 +1,8 @@
 // Intro scene: the patient walks in, sits behind the slit lamp and greets the doctor; Start Simulation opens the simulator.
-// The scene sits on the left and the conversation panel is open on the right from the start; the trainee can talk to the
-// patient once seated.
-// The scene is a fixed 1280x720 stage (the video's pixels) scaled to fit the window; the lamp image has its screen
-// cut out and graded to the clips' room light (tools/prepare-slit-lamp.py) and a blank screen canvas is warped into the
+// The scene fills the window's height on the left. On the right is the exam screen's own conversation panel, lifted over
+// the scene, so the talk taken here simply carries on in the exam; the trainee can talk to the patient once seated.
+// The scene is a fixed 1280x720 stage (the video's pixels) scaled to cover its area; the lamp image has its screen
+// cut out and graded to the clips' room light (tools/prepare-slit-lamp.py) and a dark screen canvas is warped into the
 // hole. The lamp stands in front of the seated patient at its real size; soft edges, grain, a light wrap and contact and
 // ambient shadows set it into the clip (see playIntro's styles). The walk-in clip is picked
 // from videos/videos.json by the case subject's sex and age. index.html hides the app (html.intro) from the first
@@ -11,8 +11,7 @@ import lampUrl from "../assets/scene/slit-lamp-cut.png?url";
 import wrapUrl from "../assets/scene/slit-lamp-wrap.png?url";
 import lampInfo from "../assets/scene/slit-lamp.json";
 import registry from "../videos/videos.json";
-import { bindSpeech } from "./ui/exam.ts";
-import type { PatientLink } from "./ui/patientLink.ts";
+import type { ExamConversation } from "./ui/exam.ts";
 
 type Clip = { file: string; sex: string; age: [number, number] };
 const clipUrls = import.meta.glob("../videos/*.mp4", { query: "?url", import: "default", eager: true }) as Record<string, string>;
@@ -25,7 +24,9 @@ function pickClip(subject: { sex?: string; age: number }): string {
   return clipUrls[`../videos/${(same[0] ?? clips[0]).file}`];
 }
 
-const W = 1280, H = 720, CHAT_W = 360;
+const W = 1280, H = 720, CHAT_W = 360, CHAT_GAP = 10;
+// the Start button's centre and text size on the stage: over the clips' corner mark (about 50 px across), which it covers once shown
+const START = { x: 1160, y: 600, font: 22 };
 // the seated patient in the clips (all share one framing): chin point and head width on the stage, measured on the last frames
 const CHIN = [639, 266], HEAD = 84;
 // 1 cm = HEAD / 15 px (a head is about 15 cm wide); the lamp is lowered 3 cm from the eye line
@@ -65,17 +66,17 @@ function grainTile(n = 128): string {
   return cv.toDataURL();
 }
 
-/** The lamp's screen: blank white, with the room's reflection on the glass, a faint diagonal sheen brighter towards the top. */
-function blankScreen(cv: HTMLCanvasElement) {
+/** The lamp's screen, switched off: dark glass with the room's reflection, a faint diagonal sheen brighter towards the top. */
+function darkScreen(cv: HTMLCanvasElement) {
   const c = cv.getContext("2d")!, w = cv.width, h = cv.height;
-  c.fillStyle = "#fff"; c.fillRect(0, 0, w, h);
+  c.fillStyle = "#0a0d10"; c.fillRect(0, 0, w, h);
   const sheen = c.createLinearGradient(0, 0, w * 0.6, h);
   sheen.addColorStop(0, "rgba(255,255,255,.10)"); sheen.addColorStop(0.45, "rgba(255,255,255,.03)"); sheen.addColorStop(1, "rgba(255,255,255,0)");
   c.fillStyle = sheen; c.fillRect(0, 0, w, h);
 }
 
-/** Shows the intro over the app; resolves once the trainee has pressed Start Simulation (or skipped). */
-export function playIntro(subject: { sex?: string; age: number }, patient?: PatientLink): Promise<void> {
+/** Shows the intro over the app; resolves once the trainee has pressed Start Simulation. */
+export function playIntro(subject: { sex?: string; age: number }, conversation: ExamConversation): Promise<void> {
   // depth: the room and patient sit a little softer than the lamp; the lamp body casts a faint ambient shadow on the patient
   // only (masked to the head and torso, the wall is metres behind); the base gets a contact shadow on the table
   const box = `left: ${LAMP.x}px; top: ${LAMP.y}px; width: ${LAMP.w * LAMP.scale}px; height: ${LAMP.h * LAMP.scale}px;`;
@@ -86,7 +87,10 @@ export function playIntro(subject: { sex?: string; age: number }, patient?: Pati
   css.textContent = `
 #intro { position: fixed; inset: 0; z-index: 100; background: #eceeef; overflow: hidden; transition: opacity .6s ease; }
 #intro.out { opacity: 0; pointer-events: none; }
-#intro .stage { position: absolute; left: 50%; top: 50%; width: ${W}px; height: ${H}px; transform-origin: 0 0; opacity: 0; transition: transform 1s cubic-bezier(.6,0,.3,1), left 1s cubic-bezier(.6,0,.3,1), opacity .25s ease; }
+#intro .scene { position: absolute; left: 0; top: 0; bottom: 0; overflow: hidden; }
+#intro .scene.zoom { transition: width 1s cubic-bezier(.6,0,.3,1); }
+#intro .stage { position: absolute; left: 50%; top: 50%; width: ${W}px; height: ${H}px; transform-origin: 0 0; opacity: 0; transition: opacity .25s ease; }
+#intro .scene.zoom .stage { transition: transform 1s cubic-bezier(.6,0,.3,1), left 1s cubic-bezier(.6,0,.3,1), opacity .25s ease; }
 #intro .stage.shown { opacity: 1; }
 #intro video, #intro .lamp, #intro canvas, #intro .fx { position: absolute; left: 0; top: 0; user-select: none; -webkit-user-drag: none; pointer-events: none; }
 #intro video { width: ${W}px; height: ${H}px; filter: blur(.6px); }
@@ -100,32 +104,25 @@ export function playIntro(subject: { sex?: string; age: number }, patient?: Pati
 #intro .stage.playing .grain { animation: grain .5s steps(6) infinite; }
 @keyframes grain { 0% { background-position: 0 0; } 100% { background-position: 77px 53px; } }
 #intro canvas { transform-origin: 0 0; filter: blur(.35px) contrast(.92); }
-#intro .start { position: absolute; right: 60px; bottom: 58px; width: 112px; height: 112px; padding: 10px; border: 3px solid #fff; border-radius: 50%; background: #1f8f85; color: #fff; font: 700 16px/1.15 var(--f-display, sans-serif); letter-spacing: .02em; box-shadow: 0 4px 18px rgba(0,12,46,.35); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .4s ease, background .15s ease; }
+/* the same button as the lobby's "Enter Cabin" (lobby.css): navy face, mint text, a turning rim */
+#intro .start { --ink: #0b1230; position: absolute; translate: -50% -50%; isolation: isolate; overflow: hidden; display: inline-flex; align-items: center; gap: .4em; height: 2.9em; padding: 0 1.4em; border: 0; border-radius: 99px; background: none; color: #7df3d9; white-space: nowrap; font: 600 18px/1 "Barlow", "Segoe UI", system-ui, sans-serif; box-shadow: 0 0 14px rgba(20, 179, 148, .4); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .4s ease, box-shadow .2s ease; }
 #intro .start.on { opacity: 1; pointer-events: auto; }
-#intro .start:hover { background: #177a71; }
-#intro .start:focus-visible { outline: 3px solid #000c2e; outline-offset: 2px; }
-#intro .skip { position: absolute; top: 14px; right: 16px; font: 500 14px var(--f-display, sans-serif); letter-spacing: .05em; background: rgba(15,18,21,.55); color: #fff; border: 1px solid rgba(255,255,255,.3); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
-#intro .chat { position: absolute; top: 60px; right: 16px; bottom: 16px; width: ${CHAT_W}px; display: flex; flex-direction: column; background: #fff; border-radius: 12px; box-shadow: 0 6px 28px rgba(0,12,46,.18); color: #000c2e; font: 400 15px/1.4 var(--f-body, system-ui, sans-serif); transition: opacity .6s ease; }
-#intro .chat:not(.open) { opacity: 0; pointer-events: none; }
-#intro .chat h2 { margin: 0; padding: 14px 16px; font: 600 18px var(--f-display, sans-serif); letter-spacing: .03em; border-bottom: 1px solid #e3e7ec; }
-#intro .chat ol { flex: 1; margin: 0; padding: 12px 14px; list-style: none; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-#intro .chat li { max-width: 86%; padding: 8px 12px; border-radius: 12px; background: #eef1f5; align-self: flex-start; }
-#intro .chat li.you { background: #00b386; color: #fff; align-self: flex-end; }
-#intro .chat li.note { max-width: 100%; background: none; padding: 0; color: #5b6575; font-size: 13px; }
-#intro .chat li b { display: block; font: 600 12px var(--f-display, sans-serif); letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
-#intro .chat form { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid #e3e7ec; }
-#intro .chat input { flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid #cfd6df; border-radius: 8px; font: inherit; }
-#intro .chat .ptt { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border: 0; border-radius: 8px; background: #000c2e; color: #fff; font: 600 13px var(--f-display, sans-serif); cursor: pointer; white-space: nowrap; }
-#intro .chat .ptt.on { background: #d6334a; }
-#intro .chat .ptt:disabled { opacity: .5; cursor: default; }
+#intro .start::before { content: ""; position: absolute; z-index: -2; left: 50%; top: 50%; width: 200%; aspect-ratio: 1; translate: -50% -50%; background: conic-gradient(#fff, #5eead4 18%, #14b394 38%, #fff 55%, #67e8f9 78%, #fff); animation: intro-spin 3.2s linear infinite; will-change: rotate; }
+#intro .start::after { content: ""; position: absolute; z-index: -1; inset: 1.5px; border-radius: inherit; background: linear-gradient(180deg, #16264f, var(--ink)); }
+#intro .start svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: translate .2s ease; }
+#intro .start:hover, #intro .start:focus-visible { box-shadow: 0 0 30px 4px rgba(24, 214, 186, .75); }
+#intro .start:hover svg, #intro .start:focus-visible svg { translate: 4px 0; }
+#intro .start:focus-visible { outline: 3px solid #0b8f86; outline-offset: 3px; }
+@keyframes intro-spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { #intro .start::before { animation: none; } }
 #intro .tap { position: absolute; inset: 0; display: grid; place-items: center; font: 600 22px var(--f-display, sans-serif); color: #fff; background: rgba(0,0,0,.35); cursor: pointer; }`;
   document.head.append(css);
 
   const root = document.createElement("div");
   root.id = "intro";
-  root.innerHTML = `<div class="stage"><video muted playsinline preload="auto"></video><div class="fx ambient"><img alt=""></div><canvas width="480" height="214"></canvas><img class="lamp" alt="Slit lamp"><div class="fx contact"></div><div class="fx wrap"></div><div class="fx grain"></div><button type="button" class="start" tabindex="-1">Start Simulation</button></div><button type="button" class="skip">Skip intro ▸</button><aside class="chat open"><h2>Conversation with the patient</h2><ol><li class="note">Once seated, the patient will greet you. Take the history by holding the button to speak, or by typing. Press Start Simulation when you are ready to examine.</li></ol><form><button type="button" class="ptt"><span class="ptt-label">Hold to Speak</span></button><input type="text" placeholder="Type to the patient" aria-label="Type to the patient"></form></aside>`;
+  root.innerHTML = `<div class="scene"><div class="stage"><video muted playsinline preload="auto"></video><div class="fx ambient"><img alt=""></div><canvas width="480" height="214"></canvas><img class="lamp" alt="Slit lamp"><div class="fx contact"></div><div class="fx wrap"></div><div class="fx grain"></div></div><button type="button" class="start" tabindex="-1">Start Simulation <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>`;
   document.body.append(root);
-  const stage = root.querySelector<HTMLDivElement>(".stage")!, video = root.querySelector("video")!, cv = root.querySelector("canvas")!;
+  const scene = root.querySelector<HTMLDivElement>(".scene")!, stage = root.querySelector<HTMLDivElement>(".stage")!, video = root.querySelector("video")!, cv = root.querySelector("canvas")!;
   const lamp = root.querySelector<HTMLImageElement>(".lamp")!;
   lamp.src = root.querySelector<HTMLImageElement>(".ambient img")!.src = lampUrl;
   root.querySelector<HTMLDivElement>(".grain")!.style.backgroundImage = `url(${grainTile()})`;
@@ -138,99 +135,81 @@ export function playIntro(subject: { sex?: string; age: number }, patient?: Pati
   const grown = quad.map(([x, y]) => { const dx = x - ctr[0], dy = y - ctr[1], l = Math.hypot(dx, dy); return [x + 2.5 * dx / l, y + 2.5 * dy / l] as [number, number]; });
   cv.style.transform = rectToQuad(cv.width, cv.height, grown);
 
-  let fit = 1;
-  // the scene leaves room for the transcript on the right
-  const chatOpen = true;
+  const start = root.querySelector<HTMLButtonElement>(".start")!;
+  // the exam's conversation panel stands over the scene's right side for the whole walk-in
+  const { panel, greet, holdTalk } = conversation, exam = panel.closest<HTMLElement>("#exam")!;
+  root.style.background = getComputedStyle(exam).getPropertyValue("--bg");
+  exam.classList.add("over-intro");
+  holdTalk(true);   // talking starts once the patient is seated
+
+  // the video covers its area, with no gaps; the lamp is on the same stage, so it keeps its place on the video
   const layout = () => {
-    const avail = innerWidth - (chatOpen ? CHAT_W + 32 : 0);
-    fit = Math.min(avail / W, innerHeight / H);
+    const chatW = Math.min(CHAT_W, innerWidth * 0.42), avail = innerWidth - chatW - 2 * CHAT_GAP;
+    Object.assign(panel.style, { top: `${CHAT_GAP}px`, right: `${CHAT_GAP}px`, bottom: `${CHAT_GAP}px`, width: `${chatW}px` });
+    const fit = Math.max(avail / W, innerHeight / H);
+    scene.style.width = `${avail}px`;
     stage.style.left = `${avail / 2}px`;
     stage.style.transform = `translate(${-W * fit / 2}px, ${-H * fit / 2}px) scale(${fit})`;
+    // the button sits on its mark in the video and grows with it, but stays inside the scene when the sides are cropped
+    start.style.fontSize = `${START.font * fit}px`;
+    const halfW = start.offsetWidth / 2, halfH = start.offsetHeight / 2;
+    start.style.left = `${Math.max(halfW + 12, Math.min(avail - halfW - 12, avail / 2 + (START.x - W / 2) * fit))}px`;
+    start.style.top = `${Math.min(innerHeight - halfH - 28, innerHeight / 2 + (START.y - H / 2) * fit)}px`;
   };
   layout();
   addEventListener("resize", layout);
 
-  blankScreen(cv);
+  darkScreen(cv);
 
-  // the voice conversation: the trainee speaks first; the patient's sentences appear as they arrive and are spoken
-  const chat = root.querySelector<HTMLElement>(".chat");
-  let turn: AbortController | undefined, stopListening: (() => void) | undefined, greetDoctor: (() => Promise<void>) | undefined;
-  const unsupported = new Set<Element>();
-  if (chat) {
-    const msgs = chat.querySelector("ol")!, input = chat.querySelector("input")!;
-    const add = (who: string, text: string) => {
-      const li = document.createElement("li");
-      li.className = who === "You" ? "you" : "";
-      li.innerHTML = "<b></b><span></span>";
-      li.querySelector("b")!.textContent = who; li.querySelector("span")!.textContent = text;
-      msgs.append(li); msgs.scrollTop = msgs.scrollHeight;
-      return li.querySelector("span")!;
-    };
-    // the patient speaks first; if the trainee speaks before the history is ready, that turn takes over
-    greetDoctor = async () => {
-      if (!patient) return;
-      const mine = turn = new AbortController(), line = add("Patient", "…");
-      try {
-        const hello = await patient.greet(mine.signal);
-        line.textContent = hello;
-        patient.speak(hello);
-        msgs.scrollTop = msgs.scrollHeight;
-      } catch {
-        line.closest("li")?.remove();
-      }
-    };
-    const ask = async (text: string) => {
-      add("You", text);
-      if (!patient) { add("Patient", "(The voice patient is not connected. Start the server with npm run server.)"); return; }
-      turn?.abort(); patient.stopSpeaking();
-      const mine = turn = new AbortController(), reply = add("Patient", "…");
-      let first = true;
-      try {
-        for await (const ev of patient.chat(text, mine.signal)) {
-          if (ev.type !== "say") continue;
-          reply.textContent = first ? ev.text : `${reply.textContent} ${ev.text}`; first = false;
-          patient.speak(ev.text);
-          msgs.scrollTop = msgs.scrollHeight;
-        }
-        if (first) reply.textContent = "(no reply)";
-      } catch (e) {
-        if (!mine.signal.aborted) reply.textContent = `(The patient could not answer: ${(e as Error).message})`;
-      }
-    };
-    chat.querySelector("form")!.addEventListener("submit", e => { e.preventDefault(); const t = input.value.trim(); if (t) { input.value = ""; void ask(t); } });
-    stopListening = bindSpeech(chat.querySelector(".ptt")!, chat.querySelector(".ptt-label")!, ask, () => patient);
-    // talking starts once the patient is seated; a button the browser cannot support stays off
-    for (const el of chat.querySelectorAll<HTMLButtonElement | HTMLInputElement>(".ptt, input")) { if (el.disabled) unsupported.add(el); el.disabled = true; }
-  }
+  /** Slides the panel from over the scene to its place on the exam screen, while the scene zooms away. */
+  const dockPanel = () => {
+    exam.classList.remove("over-intro");
+    panel.removeAttribute("style");
+    const slot = panel.getBoundingClientRect();
+    exam.classList.add("over-intro");
+    layout();
+    void panel.offsetWidth;   // settle the styles, so the slide starts from where the panel is now
+    if (slot.width && slot.bottom <= innerHeight) {
+      panel.style.transition = ["top", "right", "bottom", "width"].map(p => `${p} .7s cubic-bezier(.6,0,.3,1)`).join();
+      Object.assign(panel.style, { top: `${slot.top}px`, right: `${innerWidth - slot.right}px`, bottom: `${innerHeight - slot.bottom}px`, width: `${slot.width}px` });
+    }
+  };
 
   return new Promise(resolve => {
     let done = false;
-    const finish = (zoom: boolean) => {
+    start.addEventListener("click", () => {
       if (done) return;
       done = true;
-      stopListening?.(); turn?.abort(); patient?.stopSpeaking();
-      if (zoom) {
-        // zoom into the screen, then fade the scene away
-        stage.style.left = "50%";
-        chat?.classList.remove("open");
-        const z = Math.min(innerWidth / (quad[1][0] - quad[0][0]), innerHeight / (quad[3][1] - quad[0][1]));
-        stage.style.transform = `translate(${-ctr[0] * z}px, ${-ctr[1] * z}px) scale(${z})`;
-      }
-      setTimeout(() => { document.documentElement.classList.remove("intro"); root.classList.add("out"); }, zoom ? 700 : 0);
-      setTimeout(() => { removeEventListener("resize", layout); root.remove(); css.remove(); resolve(); }, zoom ? 1300 : 600);
-    };
-    const start = root.querySelector<HTMLButtonElement>(".start")!;
-    start.addEventListener("click", () => finish(true));
-    root.querySelector(".skip")!.addEventListener("click", () => finish(false));
-    addEventListener("keydown", function esc(e) { if (e.key === "Escape") { removeEventListener("keydown", esc); finish(false); } });
-
-    // seated: the last frame holds, the patient greets the doctor and the simulation can start
-    video.addEventListener("ended", () => {
-      start.classList.add("on"); start.tabIndex = 0;
-      root.querySelector(".skip")!.textContent = "Skip ▸";
-      void greetDoctor?.();
-      for (const el of chat?.querySelectorAll<HTMLButtonElement | HTMLInputElement>(".ptt, input") ?? []) if (!unsupported.has(el)) el.disabled = false;
+      removeEventListener("resize", layout);
+      start.classList.remove("on");
+      dockPanel();
+      // zoom into the screen, then the exam screen fades in round the panel; the conversation is not interrupted
+      scene.classList.add("zoom");
+      scene.style.width = "100%";
+      stage.style.left = "50%";
+      const z = Math.min(innerWidth / (quad[1][0] - quad[0][0]), innerHeight / (quad[3][1] - quad[0][1]));
+      stage.style.transform = `translate(${-ctr[0] * z}px, ${-ctr[1] * z}px) scale(${z})`;
+      setTimeout(() => {
+        document.documentElement.classList.remove("intro");
+        root.classList.add("out");
+        panel.removeAttribute("style");
+        exam.classList.replace("over-intro", "intro-reveal");
+      }, 700);
+      setTimeout(() => { exam.classList.remove("intro-reveal"); root.remove(); css.remove(); resolve(); }, 1300);
     });
+
+    // seated: the last frame holds, the patient greets the doctor and the simulation can start. A clip that cannot play
+    // goes straight here, so the trainee can always go on.
+    let seated = false;
+    const seat = () => {
+      if (seated) return;
+      seated = true;
+      start.classList.add("on"); start.tabIndex = 0;
+      holdTalk(false);
+      void greet();
+    };
+    video.addEventListener("ended", seat);
+    video.addEventListener("error", seat);
     // show the stage and start once the first frame and the lamp are both ready
     const firstFrame = new Promise(r => video.readyState >= 2 ? r(0) : video.addEventListener("loadeddata", r, { once: true }));
     Promise.all([firstFrame, lamp.decode().catch(() => {})]).then(() => {
@@ -239,7 +218,7 @@ export function playIntro(subject: { sex?: string; age: number }, patient?: Pati
         // autoplay blocked: ask for one click to start the scene
         const tap = document.createElement("div");
         tap.className = "tap"; tap.textContent = "Click to enter the clinic";
-        root.append(tap);
+        scene.append(tap);
         tap.addEventListener("click", () => { tap.remove(); video.play(); }, { once: true });
       });
     });

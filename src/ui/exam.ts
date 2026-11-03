@@ -30,6 +30,16 @@ export interface ExamHooks {
   end?(): void;
 }
 
+/** The conversation panel, which the walk-in (src/intro.ts) shows over its scene: one conversation, from the greeting to the end of the exam. */
+export interface ExamConversation {
+  panel: HTMLElement;
+  /** The patient's first words. */
+  greet(): Promise<void>;
+  /** Stops the trainee talking or typing while on, as until the patient is seated. */
+  holdTalk(on: boolean): void;
+}
+export interface ExamScreen { sync(): void; conversation: ExamConversation }
+
 /** One lamp event, for the Examiner's technique score (part 8, task 2). */
 export interface ExamEvent { t: number; type: string; value: unknown }
 export const examLog: ExamEvent[] = [];
@@ -155,7 +165,7 @@ export function mountExam() {
 
 <aside class="panel chat">
   <h2>${svg("wave")}Patient Conversation<button type="button" class="mute" aria-pressed="false">${svg("speaker")}<span>Mute Patient</span></button></h2>
-  <ol class="msgs" aria-live="polite"><li class="note">Introduce yourself and take the history while you examine. Tap the microphone to talk hands-free, or type below.</li></ol>
+  <ol class="msgs" aria-live="polite"><li class="note">Take the history before and during the examination. Tap the microphone to talk hands-free, or type below.</li></ol>
   <div class="talk">
     <button type="button" class="ptt" aria-label="Turn hands-free listening on or off">${svg("mic")}</button><span class="ptt-label">Tap to Talk</span>
     <button type="button" class="spk" aria-label="Patient voice volume">${svg("speaker")}</button>
@@ -203,10 +213,10 @@ export function mountExam() {
 </dialog>`;
   root.querySelector(".logo")!.append(createLogo({ height: 26, alt: "VibeDoc" }));
   document.body.prepend(root);
-  return { root, bind: (hooks: ExamHooks, patient: ExamPatient) => bindExam(root, hooks, patient) };
+  return { root, bind: (hooks: ExamHooks, patient: ExamPatient): ExamScreen => bindExam(root, hooks, patient) };
 }
 
-function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient) {
+function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): ExamScreen {
   const q = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel)! as T;
   const qa = <T extends Element = HTMLElement>(sel: string) => [...root.querySelectorAll<T>(sel)];
   const L = hooks.lamp;
@@ -415,6 +425,20 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient) {
       typing.textContent = `(The patient could not answer: ${(e as Error).message})`;
     }
   };
+  // the patient speaks first; if the trainee speaks before the history is ready, that turn takes over
+  const greet = async () => {
+    const link = hooks.patient?.();
+    if (!link) return;
+    const mine = turn = new AbortController(), line = say("Patient", "…");
+    try {
+      const hello = await link.greet(mine.signal);
+      line.textContent = hello;
+      if (!muted) link.speak(hello);
+      msgs.scrollTop = msgs.scrollHeight;
+    } catch {
+      line.closest("li")?.remove();
+    }
+  };
   q<HTMLFormElement>(".type").onsubmit = e => { e.preventDefault(); const t = input.value.trim(); if (t) { input.value = ""; void ask(t); } };
   // Instructions: the patient looks, blinks or opens wide a moment after being asked, and holds a gaze or a wide
   // opening until asked again; asking for the held one again releases it.
@@ -497,7 +521,7 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient) {
     notice.textContent = msg; notice.hidden = !msg;
   }
   sync();
-  return { sync };
+  return { sync, conversation: { panel: q(".chat"), greet, holdTalk: on => { qa(".talk, .type").forEach(el => { el.inert = on; }); } } };
 }
 
 /** Colours a range input's track up to its thumb. */
@@ -568,7 +592,7 @@ function knob(parent: HTMLElement, k: KnobSpec) {
 interface Recognition { lang: string; interimResults: boolean; start(): void; stop(): void; onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null; onend: (() => void) | null }
 const OFF_LABEL = "Tap to Talk", HANDS_FREE_ON = "Listening: just speak";
 // Returns a function that closes the microphone for good when the conversation ends: what it was still hearing is dropped.
-export function bindSpeech(button: HTMLElement, label: HTMLElement, onText: (t: string) => void, link: () => PatientLink | undefined): () => void {
+function bindSpeech(button: HTMLElement, label: HTMLElement, onText: (t: string) => void, link: () => PatientLink | undefined): () => void {
   const Ctor = (window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition });
   const Rec = Ctor.SpeechRecognition ?? Ctor.webkitSpeechRecognition;
   const canRecord = !!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== "undefined";
