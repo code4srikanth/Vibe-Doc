@@ -110,11 +110,13 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
 @keyframes grain { 0% { background-position: 0 0; } 100% { background-position: 77px 53px; } }
 #intro canvas { transform-origin: 0 0; filter: blur(.35px) contrast(.92); }
 /* the same button as the lobby's "Enter Cabin" (lobby.css): navy face, mint text, a turning rim */
-#intro .start { --ink: #0b1230; position: absolute; translate: -50% -50%; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3em; width: 7em; height: 7em; padding: 0 .6em; border: 0; border-radius: 50%; background: none; color: #7df3d9; white-space: normal; text-align: center; font: 600 18px/1.15 "Barlow", "Segoe UI", system-ui, sans-serif; box-shadow: 0 0 14px rgba(20, 179, 148, .4); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .4s ease, box-shadow .2s ease; }
-#intro .start.on { opacity: 1; pointer-events: auto; }
+#intro .start { --ink: #0b1230; position: absolute; translate: -50% -50%; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3em; width: 7em; height: 7em; padding: 0 .6em; border: 0; border-radius: 50%; background: none; color: #7df3d9; white-space: normal; text-align: center; font: 600 18px/1.15 "Barlow", "Segoe UI", system-ui, sans-serif; box-shadow: 0 0 14px rgba(20, 179, 148, .4); cursor: pointer; transition: opacity .4s ease, box-shadow .2s ease; }
+#intro .start:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+#intro .start:disabled::before { animation: none; }
+#intro .start.gone { opacity: 0; pointer-events: none; }
 #intro .start::before { content: ""; position: absolute; z-index: -2; left: 50%; top: 50%; width: 200%; aspect-ratio: 1; translate: -50% -50%; background: conic-gradient(#fff, #5eead4 18%, #14b394 38%, #fff 55%, #67e8f9 78%, #fff); animation: intro-spin 3.2s linear infinite; will-change: rotate; }
 #intro .start::after { content: ""; position: absolute; z-index: -1; inset: 1.5px; border-radius: inherit; background: linear-gradient(180deg, #16264f, var(--ink)); }
-#intro .start:hover, #intro .start:focus-visible { box-shadow: 0 0 30px 4px rgba(24, 214, 186, .75); }
+#intro .start:not(:disabled):hover, #intro .start:focus-visible { box-shadow: 0 0 30px 4px rgba(24, 214, 186, .75); }
 #intro .start:focus-visible { outline: 3px solid #0b8f86; outline-offset: 3px; }
 @keyframes intro-spin { to { rotate: 360deg; } }
 @media (prefers-reduced-motion: reduce) { #intro .start::before { animation: none; } }
@@ -123,7 +125,7 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
 
   const root = document.createElement("div");
   root.id = "intro";
-  root.innerHTML = `<div class="scene"><div class="stage"><video muted playsinline preload="auto"></video><div class="fx ambient"><img alt=""></div><canvas width="480" height="214"></canvas><img class="lamp" alt="Slit lamp"><div class="fx contact"></div><div class="fx wrap"></div><div class="fx grain"></div></div><button type="button" class="start" tabindex="-1">Start Simulation</button></div>`;
+  root.innerHTML = `<div class="scene"><div class="stage"><video muted playsinline preload="auto"></video><div class="fx ambient"><img alt=""></div><canvas width="480" height="214"></canvas><img class="lamp" alt="Slit lamp"><div class="fx contact"></div><div class="fx wrap"></div><div class="fx grain"></div></div><button type="button" class="start" disabled>Start Simulation</button></div>`;
   document.body.append(root);
   const scene = root.querySelector<HTMLDivElement>(".scene")!, stage = root.querySelector<HTMLDivElement>(".stage")!, video = root.querySelector("video")!, cv = root.querySelector("canvas")!;
   const lamp = root.querySelector<HTMLImageElement>(".lamp")!;
@@ -184,7 +186,7 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
       if (done) return;
       done = true;
       removeEventListener("resize", layout);
-      start.classList.remove("on");
+      start.classList.add("gone");
       dockPanel();
       // zoom into the screen, then the exam screen fades in round the panel; the conversation is not interrupted
       scene.classList.add("zoom");
@@ -207,7 +209,7 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
     const seat = () => {
       if (seated) return;
       seated = true;
-      start.classList.add("on"); start.tabIndex = 0;
+      start.disabled = false;
       holdTalk(false);
       void greet();
     };
