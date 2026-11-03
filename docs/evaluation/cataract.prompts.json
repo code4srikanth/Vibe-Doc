@@ -1,0 +1,247 @@
+{
+  "disease": "cataract",
+  "title": "Cataract: render evaluation",
+  "query": "dilated",
+  "prompts": [
+    {
+      "id": "CAT-001",
+      "description": "Early nuclear cataract",
+      "prompt": "58-year-old woman with a mild age-related nuclear cataract in the right eye. Slowly dimming vision over a year and needing more light to read.",
+      "intended": { "diagnosis": "Mild nuclear cataract", "terms": ["nuclear"], "severity": "mild" }
+    },
+    {
+      "id": "CAT-002",
+      "description": "Moderate nuclear cataract",
+      "prompt": "70-year-old man with a moderate age-related nuclear cataract in the right eye. Gradually blurred distance vision over two years and colours look yellowed.",
+      "intended": { "diagnosis": "Moderate nuclear cataract", "terms": ["nuclear"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-003",
+      "description": "Dense brunescent nuclear cataract",
+      "prompt": "82-year-old woman with a dense brunescent nuclear cataract in the left eye. Severe painless loss of vision over several years and she can no longer read or recognise faces.",
+      "intended": { "diagnosis": "Dense brunescent nuclear cataract", "terms": ["nuclear","brunescent"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-004",
+      "description": "Early cortical cataract",
+      "prompt": "62-year-old man with an early cortical cataract in the right eye, with spokes in the inferior peripheral lens. Mild glare from headlights at night, with reading vision still good.",
+      "intended": { "diagnosis": "Early cortical cataract", "terms": ["cortical"], "severity": "mild" }
+    },
+    {
+      "id": "CAT-005",
+      "description": "Advanced cortical cataract",
+      "prompt": "74-year-old woman with an advanced cortical cataract in the left eye, with spokes reaching the visual axis. Marked glare and blurred vision in bright light.",
+      "intended": { "diagnosis": "Advanced cortical cataract", "terms": ["cortical"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-006",
+      "description": "Posterior subcapsular cataract in a young steroid user",
+      "prompt": "38-year-old man with a posterior subcapsular cataract in the right eye after years of oral steroids for asthma. Glare, and poor reading vision that is worse in bright light.",
+      "intended": { "diagnosis": "Steroid-related posterior subcapsular cataract", "terms": ["posterior subcapsular","subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-007",
+      "description": "Posterior subcapsular cataract with diabetes",
+      "prompt": "52-year-old woman with long-standing diabetes and a posterior subcapsular cataract in the left eye. Reading has become difficult over six months and she is dazzled by sunlight.",
+      "intended": { "diagnosis": "Diabetes-associated posterior subcapsular cataract", "terms": ["posterior subcapsular","subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-008",
+      "description": "Mixed cataract (nuclear, cortical and posterior subcapsular)",
+      "prompt": "76-year-old man with a mixed age-related cataract in the right eye, with moderate nuclear, cortical and posterior subcapsular changes. Blurred vision at all distances, with glare at night.",
+      "intended": { "diagnosis": "Mixed age-related cataract", "terms": ["mixed","nuclear","cortical","subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-009",
+      "description": "Mature white cataract",
+      "prompt": "80-year-old woman with a mature white cataract in the left eye. The pupil looks white and she can only see hand movements in that eye.",
+      "intended": { "diagnosis": "Mature white cataract", "terms": ["mature","white"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-010",
+      "description": "Traumatic cataract",
+      "prompt": "35-year-old man with a traumatic cataract in the right eye, with a rosette-shaped opacity, six months after a blunt injury from a squash ball. Blurred vision in that eye since the injury.",
+      "intended": { "diagnosis": "Traumatic cataract", "terms": ["traumatic","rosette"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-011",
+      "description": "Anterior polar cataract",
+      "prompt": "9-year-old girl with a congenital anterior polar cataract in the right eye, a small white plaque on the front of the lens in the pupillary area. No symptoms, found at a school screening.",
+      "intended": { "diagnosis": "Anterior polar cataract", "terms": ["anterior polar","polar"], "severity": "mild" }
+    },
+    {
+      "id": "CAT-012",
+      "description": "Posterior polar cataract",
+      "prompt": "29-year-old man with a posterior polar cataract in the left eye, a round white plaque at the back of the lens on the visual axis. Glare and blur in bright light, and his father had the same.",
+      "intended": { "diagnosis": "Posterior polar cataract", "terms": ["posterior polar","polar"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-013",
+      "description": "Lamellar (zonular) cataract",
+      "prompt": "7-year-old boy with a lamellar cataract in both eyes, a hazy shell around a clear centre with riders at the edge. Poor vision in class, worse when the pupils are wide.",
+      "intended": { "diagnosis": "Lamellar (zonular) cataract", "terms": ["lamellar","zonular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-014",
+      "description": "Congenital total cataract with leukocoria",
+      "prompt": "Three-month-old girl with a dense congenital cataract in the right eye. Her mother noticed a white pupil in photographs and the eye does not fix on faces.",
+      "intended": { "diagnosis": "Congenital total cataract", "terms": ["congenital","white","leukocoria"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-015",
+      "description": "Sutural (Y-shaped) cataract",
+      "prompt": "24-year-old woman with a sutural cataract in the left eye, fine Y-shaped opacities in the lens. Found at a routine eye test, with 6/6 vision and no symptoms.",
+      "intended": { "diagnosis": "Sutural cataract", "terms": ["sutural","y-shaped"], "severity": "mild" }
+    },
+    {
+      "id": "CAT-016",
+      "description": "Blue-dot (cerulean) cataract",
+      "prompt": "31-year-old man with blue-dot cataracts in the right eye, many small blue-white dots scattered through the lens. Found at a routine eye test, with no symptoms.",
+      "intended": { "diagnosis": "Blue-dot (cerulean) cataract", "terms": ["blue dot","cerulean"], "severity": "mild" }
+    },
+    {
+      "id": "CAT-017",
+      "description": "Rubella cataract",
+      "prompt": "Two-year-old boy with a congenital rubella cataract in the left eye, a dense pearly white nucleus. His mother had rubella in early pregnancy, and he has a small eye and a heart murmur.",
+      "intended": { "diagnosis": "Rubella cataract", "terms": ["rubella","congenital","nuclear"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-018",
+      "description": "Galactosemic (oil-droplet) cataract",
+      "prompt": "Five-week-old girl with galactosemia and oil-droplet cataracts in both eyes. She is vomiting and jaundiced and has been feeding on milk formula.",
+      "intended": { "diagnosis": "Galactosemic cataract", "terms": ["galactosemia","oil-droplet","oil droplet"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-019",
+      "description": "Persistent fetal vasculature",
+      "prompt": "Four-month-old boy with persistent fetal vasculature in the right eye. White pupil, a small eye and a retrolental white plaque with a stalk reaching the back of the lens.",
+      "intended": { "diagnosis": "Persistent fetal vasculature with cataract", "terms": ["persistent fetal vasculature","retrolental","plaque"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-020",
+      "description": "Diabetic snowflake cataract",
+      "prompt": "19-year-old woman with poorly controlled type 1 diabetes and a snowflake cataract in the right eye, with white flakes across the lens. Vision dropped over a few weeks.",
+      "intended": { "diagnosis": "Diabetic snowflake cataract", "terms": ["snowflake","diabetic"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-021",
+      "description": "Hypocalcaemic cataract",
+      "prompt": "45-year-old woman with a hypocalcaemic cataract in the left eye after thyroid surgery, with fine multicoloured crystals and flecks under the lens capsule. Blurred vision for four months, and muscle cramps.",
+      "intended": { "diagnosis": "Hypocalcaemic cataract", "terms": ["hypocalcaemic","hypocalcemic","punctate"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-022",
+      "description": "Sunflower cataract (Wilson disease)",
+      "prompt": "27-year-old man with Wilson disease and a sunflower cataract in the right eye, a petalled disc of copper-coloured deposits under the front of the lens. Vision is good.",
+      "intended": { "diagnosis": "Sunflower cataract", "terms": ["sunflower","wilson"], "severity": "mild" }
+    },
+    {
+      "id": "CAT-023",
+      "description": "Myotonic dystrophy cataract",
+      "prompt": "41-year-old man with myotonic dystrophy and a posterior subcapsular cataract in the left eye with bright multicoloured dots (Christmas-tree appearance). Drooping eyelids, and he cannot release his grip.",
+      "intended": { "diagnosis": "Myotonic dystrophy cataract", "terms": ["myotonic","christmas","multicoloured","subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-024",
+      "description": "Atopic shield cataract",
+      "prompt": "22-year-old man with severe atopic dermatitis and a shield cataract in the right eye, a plaque on the front of the lens. Itchy red eyelids, and blurred vision for a year.",
+      "intended": { "diagnosis": "Atopic shield cataract", "terms": ["atopic","shield","anterior subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-025",
+      "description": "Complicated cataract in chronic uveitis",
+      "prompt": "34-year-old woman with juvenile idiopathic arthritis and chronic anterior uveitis, with a complicated cataract in the left eye. Posterior synechiae, a small irregular pupil and blurred vision.",
+      "intended": { "diagnosis": "Complicated cataract in uveitis", "terms": ["complicated","uveitis","synechiae"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-026",
+      "description": "Glaukomflecken after acute angle closure",
+      "prompt": "68-year-old woman with a cataract in the right eye and white anterior subcapsular flecks (glaukomflecken) after an attack of acute angle-closure glaucoma two months ago. The pupil is mid-dilated and oval.",
+      "intended": { "diagnosis": "Glaukomflecken", "terms": ["glaukomflecken","angle","anterior subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-027",
+      "description": "Phacomorphic (intumescent) cataract",
+      "prompt": "78-year-old woman with a swollen, white intumescent cataract in the left eye. Shallow anterior chamber, a red eye with a headache, and the pressure is raised.",
+      "intended": { "diagnosis": "Phacomorphic cataract", "terms": ["phacomorphic","intumescent","swollen","shallow"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-028",
+      "description": "Hypermature Morgagnian cataract",
+      "prompt": "86-year-old man with a hypermature Morgagnian cataract in the right eye, a milky liquefied cortex with the brown nucleus sunk to the bottom. He has had very poor vision for many years.",
+      "intended": { "diagnosis": "Morgagnian cataract", "terms": ["morgagnian","hypermature","sunk"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-029",
+      "description": "Phacolytic cataract",
+      "prompt": "82-year-old woman with a hypermature cataract in the left eye and phacolytic glaucoma. White lens material leaks into a cloudy anterior chamber, the eye is red and painful, and the pressure is high.",
+      "intended": { "diagnosis": "Phacolytic cataract", "terms": ["phacolytic","hypermature"], "severity": "severe" }
+    },
+    {
+      "id": "CAT-030",
+      "description": "Pseudoexfoliation with cataract",
+      "prompt": "76-year-old man with pseudoexfoliation and a nuclear cataract in the right eye. White flaky material on the pupil edge and anterior lens, a poorly dilating pupil and a trembling lens.",
+      "intended": { "diagnosis": "Cataract with pseudoexfoliation", "terms": ["pseudoexfoliation","exfoliation","nuclear","phacodonesis"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-031",
+      "description": "Nuclear cataract in high myopia",
+      "prompt": "48-year-old woman with pathological myopia of about -12 dioptres and a nuclear cataract in the left eye. A myopic shift that keeps getting stronger, and a long eye.",
+      "intended": { "diagnosis": "Nuclear cataract in high myopia", "terms": ["myopia","myopic","nuclear"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-032",
+      "description": "Retinitis pigmentosa with PSC",
+      "prompt": "44-year-old man with retinitis pigmentosa and a posterior subcapsular cataract in the right eye. Night blindness since adolescence, and now glare and worse central vision.",
+      "intended": { "diagnosis": "Posterior subcapsular cataract in retinitis pigmentosa", "terms": ["retinitis pigmentosa","subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-033",
+      "description": "Infrared (glassblower) cataract",
+      "prompt": "63-year-old man who worked as a glassblower for 40 years and has an infrared cataract in the left eye, with a posterior subcapsular opacity and a peeling front capsule. Blurred vision for two years.",
+      "intended": { "diagnosis": "Infrared (heat) cataract", "terms": ["infrared","glassblower","heat","capsule"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-034",
+      "description": "Radiation cataract",
+      "prompt": "57-year-old woman with a radiation cataract in the right eye, 5 years after radiotherapy for an orbital tumour. A posterior subcapsular opacity at the back of the lens, getting worse.",
+      "intended": { "diagnosis": "Radiation cataract", "terms": ["radiation","subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-035",
+      "description": "Electrical injury cataract",
+      "prompt": "28-year-old electrician with an anterior subcapsular cataract in the left eye, 8 months after a high-voltage electrical injury to the head. Blurring and spots in his vision.",
+      "intended": { "diagnosis": "Electrical injury cataract", "terms": ["electrical","anterior subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-036",
+      "description": "Inhaled steroid PSC",
+      "prompt": "66-year-old woman with severe COPD, years of high-dose inhaled steroids and a posterior subcapsular cataract in the right eye. Glare from headlights, and she cannot read in bright light.",
+      "intended": { "diagnosis": "Steroid-induced posterior subcapsular cataract", "terms": ["steroid","subcapsular"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-037",
+      "description": "Phenothiazine lens deposits",
+      "prompt": "59-year-old man on chlorpromazine for 20 years with fine brown-yellow granules on the front of the lens in the left eye in a stellate pattern. Vision is mildly reduced.",
+      "intended": { "diagnosis": "Drug-induced anterior lens deposits", "terms": ["chlorpromazine","phenothiazine","anterior","stellate","drug"], "severity": "mild" }
+    },
+    {
+      "id": "CAT-038",
+      "description": "Cataract after vitrectomy",
+      "prompt": "69-year-old man with a fast-growing nuclear cataract in the right eye, 14 months after a vitrectomy for a macular hole. Blurred distance vision and colours look brown.",
+      "intended": { "diagnosis": "Post-vitrectomy nuclear cataract", "terms": ["vitrectomy","nuclear"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-039",
+      "description": "Posterior capsule opacification",
+      "prompt": "72-year-old woman with posterior capsule opacification in the left eye, three years after cataract surgery with an intraocular lens. Pearl-like and wrinkled capsule haze behind the lens, with blurred vision and glare.",
+      "intended": { "diagnosis": "Posterior capsule opacification", "terms": ["posterior capsule","pco","intraocular lens","pseudophakia"], "severity": "moderate" }
+    },
+    {
+      "id": "CAT-040",
+      "description": "Mature cataract in dark skin and a dark brown iris",
+      "prompt": "67-year-old man of West African descent with dark skin and dark brown irides, and a mature brunescent cataract in the right eye. A slowly worsening dark haze in the pupil over five years.",
+      "intended": { "diagnosis": "Mature brunescent cataract", "terms": ["mature","brunescent","nuclear"], "severity": "severe" }
+    }
+  ]
+}
