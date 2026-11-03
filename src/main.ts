@@ -123,6 +123,7 @@ function applyFundus(r: EyeRenderer) {
 }
 
 const SHOT_SIZE = [720, 405], SHOT_PATIENCE = 5400;   // pixels; animation frames to wait with nothing drawn (a compile, a GPU reset), about 90 s
+const SHOT_IRIS_MARGIN = 1.15;   // the report's field height over the iris diameter, so the whole iris fits with a small margin (framing, not anatomy)
 
 /** The report's picture of this patient's eye in a standard view, or of a healthy eye of the same age: the disease, the
  *  agent's edits and the case's own overrides come off, and the lamp and exam conditions stay. The exam is over, so this borrows its renderer. */
@@ -132,7 +133,8 @@ async function drawForReport(view: Comparison["view"], healthy: boolean): Promis
   const kase: Case = healthy ? { ...remote.base, diseases: [], overrides: undefined } : remote.base;
   const e = resolveCase(library, kase, healthy ? [] : remote.edits);
   r.resize(SHOT_SIZE[0], SHOT_SIZE[1]);
-  const skin = await slitSkinUniforms(), settings = settingsFor(view, e), f = frame(settings, SHOT_SIZE[0] / SHOT_SIZE[1], skin.uExtRect as number[]);
+  const skin = await slitSkinUniforms(), settings = settingsFor(view, e), aspectRatio = SHOT_SIZE[0] / SHOT_SIZE[1];
+  const f = frame(settings, aspectRatio, skin.uExtRect as number[], e.num("eye.iris", "anatomy.diameter") * SHOT_IRIS_MARGIN * aspectRatio);
   r.setFragment(SHADERS.slitLamp);
   r.setUniforms({ ...eyeUniforms(e), ...skin, ...lampUniforms(settings, e, f), uLidClose: 0, uLidCentre: 0 }, f.centre);
   for (let idle = 0; !r.done && idle < SHOT_PATIENCE;) {

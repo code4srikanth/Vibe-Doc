@@ -52,9 +52,10 @@ const FIELD_ASPECT = 16 / 9;
 export interface Frame { width: number; centre: [number, number] }
 /** The field (width in mm, centre) at this magnification, for a view of this aspect ratio (width / height). With the
  *  photo's crop ([left, top, width, height], mm), the lowest magnification frames the whole photo; a higher one is
- *  narrowed if it is larger than the photo, and its centre is slid inside it, so the photo's clamped edge never shows. */
-export function frame(s: LampSettings, aspect = FIELD_ASPECT, crop?: number[]): Frame {
-  let width = 160 / s.magnification * aspect / FIELD_ASPECT, [x, y] = cameraCentre(s);
+ *  narrowed if it is larger than the photo, and its centre is slid inside it, so the photo's clamped edge never shows.
+ *  minWidth is the narrowest field to show, in mm; the photo's crop can still limit it. */
+export function frame(s: LampSettings, aspect = FIELD_ASPECT, crop?: number[], minWidth = 0): Frame {
+  let width = Math.max(160 / s.magnification * aspect / FIELD_ASPECT, minWidth), [x, y] = cameraCentre(s);
   if (crop) {
     const [x0, y0, cw, ch] = crop;
     width = s.magnification <= 6 ? Math.min(cw, ch * aspect) : Math.min(width, cw, ch * aspect);
