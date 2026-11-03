@@ -85,15 +85,21 @@ html:has(#caseprompt) { overflow: hidden; }
 #caseprompt input::placeholder { color: #7a8898; }
 #caseprompt :is(select, input):hover, #caseprompt :is(select, input):focus { background: #fff; border-color: var(--teal); box-shadow: 0 0 0 4px rgba(13, 148, 136, .1); }
 #caseprompt .err { margin: .9em 0 0; color: #b42318; font-size: .82em; }
+/* the same colours as Start Simulation (src/intro.ts) and the lobby's "Enter Cabin": navy face, mint text, a turning rim */
 #caseprompt .go {
+  position: relative; isolation: isolate; overflow: hidden;
   display: flex; align-items: center; justify-content: center; gap: .7em; width: 100%; margin-top: 1.8em; min-height: 3.4em;
-  border: 2px solid rgba(255, 255, 255, .95); border-radius: 99px; color: #fff; font-size: 1.1em; font-weight: 700; line-height: 1; cursor: pointer;
-  background: linear-gradient(180deg, #13c8ba, #0d9488 50%, #087f8c);
-  box-shadow: 0 10px 25px rgba(13, 148, 136, .24), 0 0 20px rgba(94, 234, 212, .25), inset 0 1px 0 rgba(255, 255, 255, .35); transition: transform .3s, box-shadow .3s, background .3s;
+  border: 0; border-radius: 99px; background: none; color: #7df3d9; font-size: 1.1em; font-weight: 700; line-height: 1; cursor: pointer;
+  box-shadow: 0 0 14px rgba(20, 179, 148, .4); transition: transform .3s, box-shadow .2s;
 }
+#caseprompt .go::before {
+  content: ""; position: absolute; z-index: -2; left: 50%; top: 50%; width: 110%; aspect-ratio: 1; translate: -50% -50%;
+  background: conic-gradient(#fff, #5eead4 18%, #14b394 38%, #fff 55%, #67e8f9 78%, #fff); animation: cp-spin 3.2s linear infinite; will-change: rotate;
+}
+#caseprompt .go::after { content: ""; position: absolute; z-index: -1; inset: 1.5px; border-radius: inherit; background: linear-gradient(180deg, #16264f, #0b1230); }
 #caseprompt .go svg { width: 1.6em; height: 1.6em; stroke-width: 1.5; transition: transform .25s; }
 #caseprompt .go:hover svg { transform: translateX(4px); }
-#caseprompt .go:hover { transform: translateY(-2px); background: linear-gradient(180deg, #20d8c9, #0da89b, #087f8c); box-shadow: 0 14px 35px rgba(13, 148, 136, .35), 0 0 30px rgba(94, 234, 212, .35); }
+#caseprompt .go:hover { transform: translateY(-2px); box-shadow: 0 0 30px 4px rgba(24, 214, 186, .75); }
 #caseprompt .go:active { transform: scale(.99); }
 #caseprompt :is(button, select, input):focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 @media (max-width: 800px) {
@@ -101,4 +107,5 @@ html:has(#caseprompt) { overflow: hidden; }
 }
 @media (max-width: 480px) { #caseprompt .row { grid-template-columns: 1fr; } }
 @keyframes cp-in { from { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { #caseprompt { animation: none; } #caseprompt :is(.back, select, input, textarea, .go, .go svg) { transition: none; } }
+@keyframes cp-spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { #caseprompt { animation: none; } #caseprompt .go::before { animation: none; } #caseprompt :is(.back, select, input, textarea, .go, .go svg) { transition: none; } }
