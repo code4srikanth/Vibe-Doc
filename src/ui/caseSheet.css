@@ -28,7 +28,7 @@ html:has(#casesheet) { overflow: hidden; }
 #casesheet .go { padding: 11px 22px; font: 700 14px inherit; font-family: inherit; color: #fff; background: linear-gradient(135deg, var(--teal-dark), var(--teal)); border: 0; border-radius: 10px; cursor: pointer; }
 #casesheet .go:hover { filter: brightness(1.06); }
 #casesheet .go:focus-visible { outline: 3px solid rgba(13, 148, 136, .45); outline-offset: 2px; }
-#casesheet .busy { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; text-align: center; background: rgba(255, 255, 255, .94); border-radius: inherit; }
+#casesheet .busy { position: fixed; inset: 0; z-index: 2; display: grid; place-content: center; justify-items: center; gap: 10px; text-align: center; background: #fff; }
 #casesheet .busy[hidden] { display: none; }
 #casesheet .busy h2 { margin: 6px 0 0; font-size: 20px; }
 #casesheet .busy p { margin: 0; color: var(--text); }

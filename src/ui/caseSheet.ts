@@ -48,8 +48,8 @@ export function runCaseSheet(submit: (sheet: CaseSheet) => Promise<Report>): Pro
   <header><div class="brand"></div><h1>Case Sheet</h1><p>Write what you found. Your sheet, the questions you asked and how you used the slit lamp are scored against the hidden answer key.</p></header>
   <div class="fields">${sections}</div>
   <footer><p class="err" role="alert" hidden></p><button type="submit" class="go">Submit for Evaluation</button></footer>
-  <div class="busy" hidden><div class="spin" aria-hidden="true"></div><h2>Evaluating your examination…</h2><p>This takes up to a minute.</p></div>
-</form>`;
+</form>
+<div class="busy" hidden><div class="spin" aria-hidden="true"></div><h2>Evaluating your examination…</h2><p>This takes up to a minute.</p></div>`;
   root.querySelector(".brand")!.append(createLogo({ height: 24, alt: "VibeDoc" }));
   document.body.appendChild(root);
 
@@ -58,15 +58,16 @@ export function runCaseSheet(submit: (sheet: CaseSheet) => Promise<Report>): Pro
     form.onsubmit = async e => {
       e.preventDefault();
       const sheet = Object.fromEntries([...form.querySelectorAll("textarea")].map(t => [t.name, t.value.trim()])) as CaseSheet;
-      err.hidden = true; busy.hidden = false;
+      err.hidden = true; busy.hidden = false; form.inert = true;
       try {
         const report = await submit(sheet);
         root.remove();
         resolve(report);
       } catch (x) {
-        busy.hidden = true;
+        busy.hidden = true; form.inert = false;
         err.textContent = `The evaluation could not be completed (${(x as Error).message}). Your sheet is kept: try again.`;
         err.hidden = false;
+        form.querySelector<HTMLButtonElement>(".go")!.focus();
       }
     };
   });
