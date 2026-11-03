@@ -13,33 +13,37 @@ import lampInfo from "../assets/scene/slit-lamp.json";
 import registry from "../videos/videos.json";
 import type { ExamConversation } from "./ui/exam.ts";
 
-type Clip = { file: string; sex: string; age: [number, number] };
+type Clip = { file: string; sex: string; age: [number, number]; chinY: number };
 const clipUrls = import.meta.glob("../videos/*.mp4", { query: "?url", import: "default", eager: true }) as Record<string, string>;
 
 /** The clip for this subject: same sex and age in range; else same sex, nearest age range; else the first clip. */
-function pickClip(subject: { sex?: string; age: number }): string {
+function pickClip(subject: { sex?: string; age: number }): Clip {
   const clips = registry.videos as Clip[];
   const gap = (c: Clip) => Math.max(0, c.age[0] - subject.age, subject.age - c.age[1]);
   const same = clips.filter(c => c.sex === subject.sex).sort((a, b) => gap(a) - gap(b));
-  return clipUrls[`../videos/${(same[0] ?? clips[0]).file}`];
+  return same[0] ?? clips[0];
 }
 
 const W = 1280, H = 720, CHAT_W = 360, CHAT_GAP = 10;
 // the Start button's centre and text size on the stage: over the clips' corner mark (about 50 px across), which it covers once shown
 const START = { x: 1160, y: 600, font: 16 };
-// the seated patient in the clips (all share one framing): chin point and head width on the stage, measured on the last frames
-const CHIN = [639, 266], HEAD = 84;
+// the seated patient on the stage, measured on the clips' last frames: the chin's x and the head's width are the same in
+// every clip, and the chin's height is each clip's own (chinY in videos/videos.json)
+const CHIN_X = 639, HEAD = 84;
 // 1 cm = HEAD / 15 px (a head is about 15 cm wide); the lamp is lowered 3 cm from the eye line
 const DROP = 3 * HEAD / 15;
-const EYE_Y = CHIN[1] - 0.7 * HEAD + DROP;
-// lamp placement: the eyepieces sit over the seated patient's eyes; the pedestal runs on below the frame, so the lamp
-// is enlarged until the table top spans about 430 px of the stage
+// lamp size: the pedestal runs on below the frame, so the lamp is enlarged until the table top spans about 430 px of the stage
 const SCALE = 0.5;
-const LAMP = { scale: SCALE, x: CHIN[0] - lampInfo.chin[0] * SCALE, y: EYE_Y - lampInfo.eyes[1] * SCALE, w: lampInfo.size[0], h: lampInfo.size[1] };
 // the screen glass in lamp-image pixels (TL, TR, BR, BL), the same quad that was cut out of the image
 const SCREEN = lampInfo.screen as [number, number][];
-const toStage = ([x, y]: [number, number]): [number, number] => [LAMP.x + x * LAMP.scale, LAMP.y + y * LAMP.scale];
-const quad = SCREEN.map(toStage);
+
+/** The lamp's place for a patient whose chin is at this height: the eyepieces sit over the patient's eyes. */
+function placeLamp(chinY: number) {
+  const eyeY = chinY - 0.7 * HEAD + DROP;
+  const LAMP = { scale: SCALE, x: CHIN_X - lampInfo.chin[0] * SCALE, y: eyeY - lampInfo.eyes[1] * SCALE, w: lampInfo.size[0], h: lampInfo.size[1] };
+  const toStage = ([x, y]: [number, number]): [number, number] => [LAMP.x + x * LAMP.scale, LAMP.y + y * LAMP.scale];
+  return { LAMP, toStage, quad: SCREEN.map(toStage) };
+}
 
 /** CSS matrix3d mapping the rectangle (0,0)-(w,h) onto a quad (TL, TR, BR, BL). */
 function rectToQuad(w: number, h: number, q: [number, number][]): string {
@@ -77,11 +81,12 @@ function darkScreen(cv: HTMLCanvasElement) {
 
 /** Shows the intro over the app; resolves once the trainee has pressed Start Simulation. */
 export function playIntro(subject: { sex?: string; age: number }, conversation: ExamConversation): Promise<void> {
+  const clip = pickClip(subject), { LAMP, toStage, quad } = placeLamp(clip.chinY);
   // depth: the room and patient sit a little softer than the lamp; the lamp body casts a faint ambient shadow on the patient
   // only (masked to the head and torso, the wall is metres behind); the base gets a contact shadow on the table
   const box = `left: ${LAMP.x}px; top: ${LAMP.y}px; width: ${LAMP.w * LAMP.scale}px; height: ${LAMP.h * LAMP.scale}px;`;
   const mask = (url: string) => `-webkit-mask: url("${url}") 0 0 / 100% 100%; mask: url("${url}") 0 0 / 100% 100%;`;
-  const headShade = `radial-gradient(ellipse ${2 * HEAD}px ${3.2 * HEAD}px at ${CHIN[0]}px ${CHIN[1] + 1.4 * HEAD}px, #000 45%, transparent 100%)`;
+  const headShade = `radial-gradient(ellipse ${2 * HEAD}px ${3.2 * HEAD}px at ${CHIN_X}px ${clip.chinY + 1.4 * HEAD}px, #000 45%, transparent 100%)`;
   const [bx, by] = toStage([lampInfo.base[0], lampInfo.base[1]]), brx = lampInfo.base[2] * LAMP.scale, bry = lampInfo.base[3] * LAMP.scale;
   const css = document.createElement("style");
   css.textContent = `
@@ -126,7 +131,7 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
   root.querySelector<HTMLDivElement>(".grain")!.style.backgroundImage = `url(${grainTile()})`;
   // the grain moves only while the clip plays; on the held last frame it is still, like the video's own
   for (const ev of ["play", "pause", "ended"]) video.addEventListener(ev, () => stage.classList.toggle("playing", !video.paused && !video.ended));
-  video.src = pickClip(subject);
+  video.src = clipUrls[`../videos/${clip.file}`];
 
   // the canvas fills the screen quad, grown by 2.5 px so no seam shows under the thin bezel
   const ctr = quad.reduce(([a, b], [x, y]) => [a + x / 4, b + y / 4], [0, 0]);
