@@ -169,7 +169,7 @@ export async function evaluate(s: Session, lib: Library, sheet: CaseSheet, log: 
   const weights = weightsFor(s);
   const transcript = transcriptOf(s);
   const diseases = (s.base.diseases ?? []).map(d => lib.diseases.find(x => x.id === d.id)).filter(d => d !== undefined);
-  const worth = s.patient?.facts.facts.map(f => `${f.topic}${f.red_flag ? " (red flag)" : ""}`) ?? [];
+  const worth = s.patient?.facts.facts.filter(f => f.relevant || f.red_flag).map(f => `${f.topic}${f.red_flag ? " (red flag)" : ""}`) ?? [];
   const flags = safetyFlags(s, lib, log);
   const pictured = drawableViews(diseases).length ? diseases : [viewsOfEdits(s.result.edits)];
 
@@ -189,7 +189,7 @@ Rules:
 - signs_found and signs_missed list the answer key's signs. incorrect_claims lists findings the trainee wrote that are not present in this eye.
 - The case sheet records each eye separately. The answer key's signs are in the affected eye, and the other eye is healthy for the patient's age. A sign counts as found only if it is written for the affected eye. A finding of disease written for the other eye goes in incorrect_claims, saying it was written for the wrong eye. A blank or normal entry for the other eye is not an error.
 - signs_missed_where gives one entry for each signs_missed entry, with the same wording, and the view that shows it best: ${drawableViews(pictured).join(", ")}. Use "none" for a sign that none of these shows.
-- history_asked and history_missed use the history topics worth asking. Count a topic as asked only if the trainee's words in the conversation cover it.
+- history_asked and history_missed use only the history topics worth asking listed below. Every other topic is irrelevant to this case: never list it or deduct for it. Count a topic as asked only if the trainee's words in the conversation cover it.
 - technique: judge from the lamp log which views, magnifications, beams and filters were used, and whether they would reveal the signs. An empty log means no examination was done.
 - improvements: 3 to 5 concrete things to do next time, most important first, each tied to this case. strengths: what was done well, possibly none.
 - Do not invent facts about the case. Use only the answer key below.`
@@ -240,7 +240,8 @@ ${flags.length ? `Automatic safety finding: ${flags.join(" ")}` : ""}`
     signsFound: raw.signs_found, signsMissed: raw.signs_missed, incorrectClaims: raw.incorrect_claims,
     comparisons: comparisons(raw.signs_missed_where ?? [], raw.signs_missed, pictured),
     furtherReading: furtherReading(diseases),
-    historyAsked: raw.history_asked, historyMissed: raw.history_missed,
+    historyAsked: raw.history_asked,
+    historyMissed: raw.history_missed.filter(h => !s.patient?.facts.facts.some(f => f.topic === h && !f.relevant && !f.red_flag)),
     strengths: raw.strengths, improvements: raw.improvements, safetyFlags: flags
   };
 }

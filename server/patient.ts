@@ -31,8 +31,8 @@ export interface PatientFacts {
   persona: { speech: string; anxiety: "calm" | "worried" | "very worried"; pain_tolerance: "low" | "average" | "high" };
   /** What the patient says when asked why they came: the only thing volunteered. */
   chief_complaint: string;
-  /** One answer per topic, in the patient's words. red_flag facts come out only when asked about directly. */
-  facts: { topic: Topic; answer: string; red_flag: boolean }[];
+  /** One answer per topic, in the patient's words. red_flag facts come out only when asked about directly; relevant marks the topics this presentation calls for, the ones the Examiner expects. */
+  facts: { topic: Topic; answer: string; red_flag: boolean; relevant: boolean }[];
 }
 
 const FACTS_SCHEMA = {
@@ -54,8 +54,8 @@ const FACTS_SCHEMA = {
       type: "array",
       items: {
         type: "object",
-        properties: { topic: { enum: [...TOPICS] }, answer: { type: "string" }, red_flag: { type: "boolean" } },
-        required: ["topic", "answer", "red_flag"], additionalProperties: false
+        properties: { topic: { enum: [...TOPICS] }, answer: { type: "string" }, red_flag: { type: "boolean" }, relevant: { type: "boolean" } },
+        required: ["topic", "answer", "red_flag", "relevant"], additionalProperties: false
       }
     }
   },
@@ -83,6 +83,7 @@ Rules:
 - Write each answer in the first person, as the patient would say it aloud, in plain words. The patient does not know the diagnosis and never uses its name or clinical terms.
 - If the case description gives measured vision, what the patient says about their sight must fit it, in everyday terms of what they can and cannot do, never as chart figures.
 - Give one fact for every topic in the schema. Mark red_flag true for answers that point strongly to the diagnosis or to danger (for example halos with headache and vomiting).
+- Mark relevant true only for topics a good clinician would make a point of asking this patient, given their age and presentation: to reach the diagnosis, rule out the likely alternatives, or assess risk and plan treatment. Mark it false for routine topics that would not change anything here (for example contact lenses in an elderly patient with a cataract). Every red_flag topic is relevant.
 - chief_complaint is one or two sentences: what the patient says first when asked why they came.
 - persona.speech describes how this person talks, fitting their age and background.`
       },

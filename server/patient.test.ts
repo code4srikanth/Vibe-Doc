@@ -10,9 +10,9 @@ const facts: PatientFacts = {
   persona: { speech: "polite, short sentences", anxiety: "very worried", pain_tolerance: "average" },
   chief_complaint: "My right eye has been very painful and red since last night.",
   facts: [
-    { topic: "halos_glare", answer: "I saw rainbow rings around the lights.", red_flag: true },
-    { topic: "family_history", answer: "My mother had glaucoma.", red_flag: false },
-    { topic: "discharge", answer: "No, nothing like that.", red_flag: false }
+    { topic: "halos_glare", answer: "I saw rainbow rings around the lights.", red_flag: true, relevant: true },
+    { topic: "family_history", answer: "My mother had glaucoma.", red_flag: false, relevant: true },
+    { topic: "discharge", answer: "No, nothing like that.", red_flag: false, relevant: false }
   ]
 };
 

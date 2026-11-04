@@ -10,7 +10,11 @@ import { createPatient, type PatientFacts } from "./patient.ts";
 const lib = loadLibrary();
 const facts: PatientFacts = {
   name: "Test", occupation: "teacher", persona: { speech: "plain", anxiety: "calm", pain_tolerance: "average" },
-  chief_complaint: "My eye hurts.", facts: [{ topic: "halos_glare", answer: "Rings round lights.", red_flag: true }]
+  chief_complaint: "My eye hurts.", facts: [
+    { topic: "halos_glare", answer: "Rings round lights.", red_flag: true, relevant: true },
+    { topic: "trauma", answer: "No knocks.", red_flag: false, relevant: true },
+    { topic: "contact_lenses", answer: "I don't wear them.", red_flag: false, relevant: false }
+  ]
 };
 const session = (caseId = "aacg") => {
   const s = caseSession(lib, caseId)!;
@@ -78,6 +82,20 @@ test("the model is told the affected eye and reads each eye's findings under its
   assert.match(seen, /Affected eye: left\nOther eye: healthy/);
   assert.match(seen, /Cornea, right eye: Clear/);
   assert.match(seen, /Cornea, left eye: Hazy cornea/);
+});
+
+test("only history relevant to the case is expected: irrelevant topics are not sent and never reported as missed", async () => {
+  let seen = "";
+  const scores = { diagnosis: 50, observations: 50, history: 50, technique: 50, safety: 50 };
+  const model: Model = async req => {
+    seen = req.messages.map(m => m.content).join("\n");
+    const answer = await reply(scores)(req);
+    const raw = JSON.parse(answer.message.content as string);
+    return { ...answer, message: { ...answer.message, content: JSON.stringify({ ...raw, history_missed: ["trauma", "contact_lenses"] }) } };
+  };
+  const r = await evaluate(session(), lib, sheet, [], model);
+  assert.match(seen, /History topics worth asking: halos_glare \(red flag\), trauma\n/);
+  assert.deepEqual(r.historyMissed, ["trauma"]);
 });
 
 test("a cataract's report carries the trainee's diagnosis and a comparison captioned from the metadata", async () => {
