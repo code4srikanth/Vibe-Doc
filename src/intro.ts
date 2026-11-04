@@ -25,8 +25,13 @@ function pickClip(subject: { sex?: string; age: number }): Clip {
 }
 
 const W = 1280, H = 720, CHAT_W = 360, CHAT_GAP = 10;
-// the Start button's centre and text size on the stage: over the clips' corner mark (about 50 px across), which it covers once shown
-const START = { x: 1160, y: 600, font: 16 };
+// the Start button's centre and text size on the stage: centred on the clips' corner mark (at this same place in every
+// clip), which the 112 px button covers at any window size because layout() moves the video to suit
+const START = { x: 1160, y: 601, font: 16 };
+// the mark's radius on the stage, with a little to spare
+const MARK_R = 26;
+// the button's least distance from the scene's right and bottom edges, in screen px
+const START_MARGIN = { x: 12, y: 28 };
 // the seated patient on the stage, measured on the clips' last frames: the chin's x and the head's width are the same in
 // every clip, and the chin's height is each clip's own (chinY in videos/videos.json)
 const CHIN_X = 639, HEAD = 84;
@@ -110,9 +115,9 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
 @keyframes grain { 0% { background-position: 0 0; } 100% { background-position: 77px 53px; } }
 #intro canvas { transform-origin: 0 0; filter: blur(.35px) contrast(.92); }
 /* the same button as the lobby's "Enter Cabin" (lobby.css): navy face, mint text, a turning rim */
-#intro .start { --ink: #0b1230; position: absolute; translate: -50% -50%; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3em; width: 7em; height: 7em; padding: 0 .6em; border: 0; border-radius: 50%; background: none; color: #7df3d9; white-space: normal; text-align: center; font: 600 18px/1.15 "Barlow", "Segoe UI", system-ui, sans-serif; box-shadow: 0 0 14px rgba(20, 179, 148, .4); cursor: pointer; transition: opacity .4s ease, box-shadow .2s ease; }
-#intro .start:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
-#intro .start:disabled::before { animation: none; }
+#intro .start { --ink: #0b1230; position: absolute; translate: -50% -50%; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3em; width: 7em; height: 7em; padding: 0 .6em; border: 0; border-radius: 50%; background: none; color: #7df3d9; white-space: normal; text-align: center; font: 600 18px/1.15 "Barlow", "Segoe UI", system-ui, sans-serif; box-shadow: 0 0 14px rgba(20, 179, 148, .4); cursor: pointer; transition: opacity .4s ease, color .4s ease, box-shadow .2s ease; }
+#intro .start:disabled { color: #6f7d99; cursor: not-allowed; box-shadow: none; }
+#intro .start:disabled::before { animation: none; background: #33405f; }
 #intro .start.gone { opacity: 0; pointer-events: none; }
 #intro .start::before { content: ""; position: absolute; z-index: -2; left: 50%; top: 50%; width: 200%; aspect-ratio: 1; translate: -50% -50%; background: conic-gradient(#fff, #5eead4 18%, #14b394 38%, #fff 55%, #67e8f9 78%, #fff); animation: intro-spin 3.2s linear infinite; will-change: rotate; }
 #intro .start::after { content: ""; position: absolute; z-index: -1; inset: 1.5px; border-radius: inherit; background: linear-gradient(180deg, #16264f, var(--ink)); }
@@ -153,13 +158,22 @@ export function playIntro(subject: { sex?: string; age: number }, conversation: 
     Object.assign(panel.style, { top: `${CHAT_GAP}px`, right: `${CHAT_GAP}px`, bottom: `${CHAT_GAP}px`, width: `${chatW}px` });
     const fit = Math.max(avail / W, innerHeight / H);
     scene.style.width = `${avail}px`;
-    stage.style.left = `${avail / 2}px`;
-    stage.style.transform = `translate(${-W * fit / 2}px, ${-H * fit / 2}px) scale(${fit})`;
-    // the button sits on its mark in the video and grows with it, but stays inside the scene when the sides are cropped
     start.style.fontSize = `${START.font * fit}px`;
     const halfW = start.offsetWidth / 2, halfH = start.offsetHeight / 2;
-    start.style.left = `${Math.max(halfW + 12, Math.min(avail - halfW - 12, avail / 2 + (START.x - W / 2) * fit))}px`;
-    start.style.top = `${Math.min(innerHeight - halfH - 28, innerHeight / 2 + (START.y - H / 2) * fit)}px`;
+    // along one axis: where the stage starts and where the button's centre goes. The video stays centred when that crops
+    // the mark away, with the button just inside the edge. If any of the mark would show, the button sits exactly on it,
+    // and the video moves left or up just enough to keep the button on screen, but never so far that it leaves a gap.
+    const place = (size: number, stageSize: number, at: number, half: number, margin: number) => {
+      const centred = (size - stageSize) / 2, limit = size - half - margin;
+      if (centred + (at - MARK_R) * fit >= size) return { from: centred, button: Math.max(half + margin, limit) };
+      const from = Math.max(size - stageSize, Math.min(centred, limit - at * fit));
+      return { from, button: from + at * fit };
+    };
+    const x = place(avail, W * fit, START.x, halfW, START_MARGIN.x), y = place(innerHeight, H * fit, START.y, halfH, START_MARGIN.y);
+    stage.style.left = `${avail / 2}px`;
+    stage.style.transform = `translate(${x.from - avail / 2}px, ${y.from - innerHeight / 2}px) scale(${fit})`;
+    start.style.left = `${x.button}px`;
+    start.style.top = `${y.button}px`;
   };
   layout();
   addEventListener("resize", layout);
