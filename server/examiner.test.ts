@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { loadLibrary } from "../tools/lib/library.ts";
 import type { Model } from "./gateway.ts";
 import { caseSession } from "./session.ts";
-import { builtCataract, cleanSheet, comparisons, evaluate, safetyFlags, summariseLog, verified, weightsFor } from "./examiner.ts";
+import { cleanSheet, comparisons, evaluate, safetyFlags, summariseLog, verified, viewsOfEdits, weightsFor } from "./examiner.ts";
 import { createPatient, type PatientFacts } from "./patient.ts";
 
 const lib = loadLibrary();
@@ -90,7 +90,7 @@ test("a cataract's report carries the trainee's diagnosis and a comparison capti
   assert.match(r.comparisons[0].caption, /Nucleus yellow/);
 });
 
-test("a cataract's report compares every view it shows in, even when no sign was missed", async () => {
+test("a report compares every view the case shows in, even when no sign was missed", async () => {
   const scores = { diagnosis: 90, observations: 90, history: 90, technique: 90, safety: 90 };
   const none: Model = async req => {
     const answer = await reply(scores)(req);
@@ -102,49 +102,43 @@ test("a cataract's report compares every view it shows in, even when no sign was
   assert.ok(r.comparisons.every(c => c.caption && !c.signs.length));
 });
 
-test("a cataract the Case agent built is compared in the lens views; another built eye is not", async () => {
+test("an eye the Case agent built is compared in the views of the parts it changed", async () => {
   const scores = { diagnosis: 90, observations: 90, history: 90, technique: 90, safety: 90 };
-  const built = (diagnosis: string) => {
-    const s = session();
-    s.origin = "generated";
-    s.base = { ...s.base, diseases: [] };
-    s.result = { ...s.result, diagnosis };
-    return evaluate(s, lib, sheet, [], reply(scores, [], "retroillumination"));
-  };
-  const r = await built("Posterior subcapsular cataract, right eye");
+  const edits = (...components: string[]) => components.map(component => ({ component, property: "optics.density", value: 1, reason: "r" }));
+  const views = (...components: string[]) => Object.keys(viewsOfEdits(edits(...components)).revealed_by!);
+  assert.deepEqual(views("eye.lens.nucleus"), ["diffuse", "optic_section_lens", "retroillumination"]);
+  assert.deepEqual(views("eye.conjunctiva"), ["diffuse"]);
+  assert.deepEqual(views("eye.cornea.stroma", "eye.anterior_chamber"), ["diffuse", "optic_section_cornea"]);
+  assert.deepEqual(views("eye.optic_disc", "eye.retinal_vessels"), ["fundus"]);
+  assert.deepEqual(views(), ["diffuse"]);
+  const s = session();
+  s.origin = "generated";
+  s.base = { ...s.base, diseases: [] };
+  s.result = { ...s.result, diagnosis: "Nuclear sclerosis, left eye", edits: edits("eye.lens.nucleus") };
+  const r = await evaluate(s, lib, sheet, [], reply(scores, [], "retroillumination"));
   assert.deepEqual(r.comparisons.map(c => c.view), ["retroillumination", "diffuse", "optic_section_lens"]);
   assert.deepEqual(r.comparisons[0].signs, ["shallow chamber"]);
-  assert.deepEqual((await built("Anterior uveitis, right eye")).comparisons, []);
 });
 
-test("a built eye counts as a cataract by its usual names or by changing only the lens", () => {
-  const edit = (component: string) => ({ component, property: "optics.density", value: 1, reason: "r" });
-  const built = (diagnosis: string, ...components: string[]) => builtCataract({ origin: "generated", result: { diagnosis, signs: [], valid: true, edits: components.map(edit) } });
-  assert.equal(built("nuclear sclerosis", "eye.lens.nucleus"), true);
-  assert.equal(built("Nuclear sclerosis", "eye.lens.nucleus", "eye.cornea"), true, "named, though more than the lens changed");
-  assert.equal(built("Lens yellowing", "eye.lens.nucleus", "eye.lens.cortex"), true, "not named, but only the lens changed");
-  assert.equal(built("Anterior uveitis", "eye.lens.capsule", "eye.iris"), false);
-  assert.equal(built("Multiple sclerosis", "eye.cornea"), false);
-  assert.equal(built("Healthy eye"), false, "no edits");
-  assert.equal(builtCataract({ origin: "matched", result: { diagnosis: "Age-related nuclear cataract", signs: [], valid: true, edits: [] } }), false, "a stored case uses its disease file");
-});
-
-test("only cataract gets comparisons: other diseases and eyes with no cataract keep the plain list", async () => {
+test("every stored case gets comparisons, whatever the disease", async () => {
   const scores = { diagnosis: 90, observations: 90, history: 90, technique: 90, safety: 90 };
-  // the stored angle-closure case also has an incidental cataract, which reveals in this view
-  const r = await evaluate(session("aacg"), lib, sheet, [], reply(scores, [], "optic_section_lens"));
-  assert.deepEqual(r.comparisons, []);
-  assert.deepEqual(r.signsMissed, ["shallow chamber"]);
-  const where = [{ sign: "a", view: "diffuse" }];
-  assert.deepEqual(comparisons(where, ["a"], []), [], "no disease, no picture");
-  // in a mixed case, only the cataract's views and captions are used
-  const mixed: { id: string; name: string; revealed_by: Record<string, string> }[] = [
-    { id: "disease.cataract.nuclear", name: "Nuclear cataract", revealed_by: { diffuse: "Amber pupil." } },
-    { id: "disease.cornea.arcus_senilis", name: "Arcus senilis", revealed_by: { diffuse: "Grey ring.", retroillumination: "Not a cataract view." } }
+  const views = async (id: string) => (await evaluate(session(id), lib, sheet, [], reply(scores))).comparisons.map(c => c.view);
+  for (const c of lib.cases) assert.ok((await views(c.id)).length > 0, c.id);
+  assert.deepEqual(await views("poag"), ["fundus"], "its findings are at the back of the eye");
+  assert.deepEqual(await views("normal"), ["diffuse"], "no disease: the eye is still drawn");
+  assert.equal((await views("conjunctivitis"))[0], "optic_section_cornea", "the view the model placed the missed sign in");
+});
+
+test("the main disease's views come first, and a view's caption covers every disease it shows", () => {
+  const diseases: { id: string; name: string; revealed_by: Record<string, string> }[] = [
+    { id: "disease.conjunctivitis.bacterial", name: "Conjunctivitis", revealed_by: { diffuse: "Red eye.", optic_section_cornea: "Clear cornea.", tonometry: "A number." } },
+    { id: "disease.cataract.nuclear", name: "Nuclear cataract", revealed_by: { optic_section_lens: "Yellow nucleus.", diffuse: "Amber pupil." } }
   ];
-  assert.deepEqual(comparisons([...where, { sign: "b", view: "retroillumination" }], ["a", "b"], mixed), [{ view: "diffuse", signs: ["a"], caption: "Amber pupil." }]);
-  // the model placed another condition's sign in a cataract view: it stays out, so it is not captioned as cataract
-  assert.deepEqual(comparisons([{ sign: "Arcus senilis, grade moderate", view: "diffuse" }], ["Arcus senilis, grade moderate"], mixed), [{ view: "diffuse", signs: [], caption: "Amber pupil." }]);
+  assert.deepEqual(comparisons([], [], diseases), [
+    { view: "diffuse", signs: [], caption: "Red eye. Amber pupil." },
+    { view: "optic_section_cornea", signs: [], caption: "Clear cornea." },
+    { view: "optic_section_lens", signs: [], caption: "Yellow nucleus." }
+  ]);
 });
 
 test("a cataract's report links each hand-picked page once, others none, and the model never sees them", async () => {

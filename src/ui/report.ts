@@ -21,18 +21,19 @@ const reading = (r: Report, section: FurtherReading["sections"][number]) => {
   return links.length ? `<p class="reading">Read more: ${links.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.source)}: ${esc(l.title)}</a>`).join(" · ")}</p>` : "";
 };
 
+const viewName = (view: Comparison["view"]) => view === "fundus" ? "Fundus" : VIEWS[view].label;
 const shot = (c: Comparison, healthy: boolean) => {
   const who = healthy ? "Healthy eye, same age" : "This patient";
-  return `<figure><div class="shot" data-view="${c.view}" data-healthy="${healthy}" data-alt="${esc(`${VIEWS[c.view].label}: ${who.toLowerCase()}`)}"><span>Drawing…</span></div><figcaption>${who}</figcaption></figure>`;
+  return `<figure><div class="shot" data-view="${c.view}" data-healthy="${healthy}" data-alt="${esc(`${viewName(c.view)}: ${who.toLowerCase()}`)}"><span>Drawing…</span></div><figcaption>${who}</figcaption></figure>`;
 };
 const comparison = (c: Comparison) => `<div class="compare">
-  <h4>${esc(VIEWS[c.view].label)}</h4>
+  <h4>${esc(viewName(c.view))}</h4>
   ${c.signs.length ? `<p class="you-missed">You missed this here:</p>${list(c.signs, "crosses")}` : ""}
   ${c.caption ? `<p class="reveal">${esc(c.caption)}</p>` : ""}
   <div class="pair">${shot(c, true)}${shot(c, false)}</div>
 </div>`;
 
-/** A cataract's views, each drawn in this eye beside a healthy one, whether or not any sign was missed. */
+/** The case's views, each drawn in this eye beside a healthy one, whether or not any sign was missed. */
 const compareSection = (r: Report) => r.comparisons.length ? `<section class="block missed"><h3>Normal vs this eye</h3>
     <p class="sim">Both pictures are simulated in the same view.</p>
     ${r.comparisons.map(comparison).join("")}

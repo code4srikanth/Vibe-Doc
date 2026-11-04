@@ -146,10 +146,16 @@ async function drawForReport(view: Comparison["view"], healthy: boolean): Promis
   const kase: Case = healthy ? healthyCase(remote.base) : remote.base;
   const e = resolveCase(library, kase, healthy ? [] : remote.edits);
   r.resize(SHOT_SIZE[0], SHOT_SIZE[1]);
-  const skin = await slitSkinUniforms(), settings = settingsFor(view, e), aspectRatio = SHOT_SIZE[0] / SHOT_SIZE[1];
-  const f = frame(settings, aspectRatio, skin.uExtRect as number[], e.num("eye.iris", "anatomy.diameter") * SHOT_IRIS_MARGIN * aspectRatio);
-  r.setFragment(SHADERS.slitLamp);
-  r.setUniforms({ ...eyeUniforms(e), ...skin, ...lampUniforms(settings, e, f), uLidClose: 0, uLidCentre: 0, uMirror: mirrored(kase.subject.eye) ? 1 : 0 }, f.centre);
+  if (view === "fundus") {
+    // the photograph of the fundus, on the case's own side, whatever the exam last showed
+    eye = e; fundusLens = null; viewedEye = null; lids = 0;
+    applyFundus(r);
+  } else {
+    const skin = await slitSkinUniforms(), settings = settingsFor(view, e), aspectRatio = SHOT_SIZE[0] / SHOT_SIZE[1];
+    const f = frame(settings, aspectRatio, skin.uExtRect as number[], e.num("eye.iris", "anatomy.diameter") * SHOT_IRIS_MARGIN * aspectRatio);
+    r.setFragment(SHADERS.slitLamp);
+    r.setUniforms({ ...eyeUniforms(e), ...skin, ...lampUniforms(settings, e, f), uLidClose: 0, uLidCentre: 0, uMirror: mirrored(kase.subject.eye) ? 1 : 0 }, f.centre);
+  }
   for (let idle = 0; !r.done && idle < SHOT_PATIENCE;) {
     await new Promise(requestAnimationFrame);
     if (!r.step()) idle++;
