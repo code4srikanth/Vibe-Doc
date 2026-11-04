@@ -83,3 +83,12 @@ test("a matched session takes the described patient and keeps the answer on the 
   assert.equal(publicEye(s).origin, "matched");
   assert.doesNotMatch(JSON.stringify(publicEye(s)), /"answer"/);
 });
+
+test("the answer key names the eye the session has, not the stored case's", () => {
+  const diagnosis = (id: string, eye?: "OD" | "OS") => caseSession(lib, id, { subject: { eye } })!.result.diagnosis;
+  assert.equal(diagnosis("ns2", "OS"), "Age-related nuclear cataract, grade 2, left eye");
+  assert.equal(diagnosis("ns3", "OD"), "Age-related nuclear cataract, grade 3, right eye");
+  assert.equal(diagnosis("poag", "OS"), "Primary open-angle glaucoma, left eye (moderate)");
+  assert.equal(diagnosis("ns2"), "Age-related nuclear cataract, grade 2, right eye", "no eye described: the case's own");
+  assert.equal(caseSession(lib, "ns3")!.result.diagnosis, "Age-related nuclear cataract, grade 3, left eye");
+});

@@ -51,7 +51,9 @@ export function caseSession(lib: Library, caseId: string, opts: { origin?: CaseO
     return `${disease?.name ?? d.id}, grade ${d.grade}: ${disease?.summary ?? ""}`;
   });
   const { answer, ...base } = structuredClone(kase);
-  return add({ origin: opts.origin ?? "stored", source: opts.origin === "matched" && opts.prompt ? { prompt: opts.prompt } : { caseId }, base, result: { edits: [], diagnosis: answer?.diagnosis ?? kase.title, signs, valid: true } });
+  // the stored wording names the case's own eye, and a described patient may have the other one
+  const diagnosis = (answer?.diagnosis ?? kase.title).replace(/\b(right|left) eye\b/g, `${eye === "OS" ? "left" : "right"} eye`);
+  return add({ origin: opts.origin ?? "stored", source: opts.origin === "matched" && opts.prompt ? { prompt: opts.prompt } : { caseId }, base, result: { edits: [], diagnosis, signs, valid: true } });
 }
 
 export function getSession(id: string): Session | undefined {

@@ -36,9 +36,18 @@ const DRAWN_VIEWS = ["diffuse", "optic_section_cornea", "optic_section_lens", "r
 const MAX_COMPARISONS = 3;   // each one is two progressive renders in the trainee's browser
 // The report draws comparisons for cataract only, by product decision; other conditions keep the plain list of missed signs
 const COMPARED_DISEASES = "disease.cataract.";
+// An eye the Case agent built has no disease file, so a cataract it built is drawn in the views any cataract shows in
+const BUILT_CATARACT: Revealed = {
+  id: `${COMPARED_DISEASES}built`, name: "Cataract",
+  revealed_by: {
+    diffuse: "Broad light shows the pupil's colour and clarity.",
+    optic_section_lens: "The narrow beam cuts through the lens, so an opacity shows at its depth.",
+    retroillumination: "Opacities show dark against the red reflex."
+  }
+};
 
 export interface DimensionScore { score: number; weight: number; comment: string; evidence: string[] }
-/** Missed signs that one view reveals: the report draws this eye beside a healthy one in that view. */
+/** A view that reveals this cataract, drawn in this eye beside a healthy one, with any signs the trainee missed there. */
 export interface Comparison { view: typeof DRAWN_VIEWS[number]; signs: string[]; caption: string }
 /** A hand-picked external page from the disease metadata, and the report sections that link to it. */
 export interface FurtherReading { source: string; title: string; url: string; sections: ("diagnosis" | "signs" | "technique")[] }
@@ -125,27 +134,25 @@ export const weightsFor = (s: Session) => "prompt" in s.source ? rubric.weights.
 type Revealed = { id: string; name: string; revealed_by?: Record<string, string>; further_reading?: FurtherReading[] };
 /** A case's main disease is listed first. An incidental cataract gets no picture, which would mostly show the main disease. */
 const compared = (diseases: Revealed[]) => diseases[0]?.id.startsWith(COMPARED_DISEASES) ? diseases.filter(d => d.id.startsWith(COMPARED_DISEASES)) : [];
-/** The views that reveal this case's cataract. An eye the Case agent built has no disease file, so it has none. */
+/** The views that reveal this case's cataract. */
 const drawableViews = (diseases: Revealed[]) => DRAWN_VIEWS.filter(v => compared(diseases).some(d => d.revealed_by?.[v]));
 
 /** The links for the same cases as the comparisons, each page once. They come only from the metadata, and the model never sees them. */
 export const furtherReading = (diseases: Revealed[]) =>
   [...new Map(compared(diseases).flatMap(d => d.further_reading ?? []).map(l => [l.url, l])).values()];
 
-/** Groups the missed signs by the view the model placed them in. The model only chooses among the case's views, and the caption comes from the metadata. */
+/** Every view that reveals this cataract, whether or not the trainee missed anything, with the missed signs the model placed in it.
+ *  Views with a missed sign come first, so the limit never drops them. The model only chooses among the case's views. */
 export function comparisons(where: { sign: string; view: string }[], missed: string[], allDiseases: Revealed[]): Comparison[] {
-  const diseases = compared(allDiseases), views = drawableViews(diseases);
+  const diseases = compared(allDiseases);
   const others = allDiseases.filter(d => !diseases.includes(d)).map(d => d.name.toLowerCase());   // the caption would not describe their signs
-  const out: Comparison[] = [];
+  const out: Comparison[] = drawableViews(diseases).map(view => ({ view, signs: [], caption: diseases.map(d => d.revealed_by?.[view]).filter(Boolean).join(" ") }));
   for (const { sign, view } of where) {
     if (!missed.includes(sign) || others.some(name => sign.toLowerCase().includes(name))) continue;
-    const found = views.find(v => v === view);
-    if (!found) continue;
-    const group = out.find(c => c.view === found);
-    if (group) { if (!group.signs.includes(sign)) group.signs.push(sign); }
-    else if (out.length < MAX_COMPARISONS) out.push({ view: found, signs: [sign], caption: diseases.map(d => d.revealed_by?.[found]).filter(Boolean).join(" ") });
+    const group = out.find(c => c.view === view);
+    if (group && !group.signs.includes(sign)) group.signs.push(sign);
   }
-  return out;
+  return out.sort((a, b) => Number(b.signs.length > 0) - Number(a.signs.length > 0)).slice(0, MAX_COMPARISONS);
 }
 
 export async function evaluate(s: Session, lib: Library, sheet: CaseSheet, log: LampEvent[], model: Model): Promise<Report> {
@@ -155,6 +162,7 @@ export async function evaluate(s: Session, lib: Library, sheet: CaseSheet, log: 
   const diseases = (s.base.diseases ?? []).map(d => lib.diseases.find(x => x.id === d.id)).filter(d => d !== undefined);
   const worth = s.patient?.facts.facts.map(f => `${f.topic}${f.red_flag ? " (red flag)" : ""}`) ?? [];
   const flags = safetyFlags(s, lib, log);
+  const pictured = s.origin === "generated" && /cataract/i.test(s.result.diagnosis) ? [BUILT_CATARACT] : diseases;
 
   const { message } = await model({
     purpose: "examiner", model: MODELS.examiner, temperature: 0, reasoning: "medium",
@@ -171,7 +179,7 @@ Rules:
 - Evidence entries must be exact short quotes from the trainee's case sheet or from what the trainee said to the patient. Use [] if there is no quote.
 - signs_found and signs_missed list the answer key's signs. incorrect_claims lists findings the trainee wrote that are not present in this eye.
 - The case sheet records each eye separately. The answer key's signs are in the affected eye, and the other eye is healthy for the patient's age. A sign counts as found only if it is written for the affected eye. A finding of disease written for the other eye goes in incorrect_claims, saying it was written for the wrong eye. A blank or normal entry for the other eye is not an error.
-- ${drawableViews(diseases).length ? `signs_missed_where gives one entry for each signs_missed entry, with the same wording, and the view that shows it best: ${drawableViews(diseases).join(", ")}. Use "none" for a sign that none of these shows, and for every sign of another condition${diseases.some(d => !d.id.startsWith(COMPARED_DISEASES)) ? ` (${diseases.filter(d => !d.id.startsWith(COMPARED_DISEASES)).map(d => d.name).join(", ")})` : ""}.` : "signs_missed_where is []."}
+- ${drawableViews(pictured).length ? `signs_missed_where gives one entry for each signs_missed entry, with the same wording, and the view that shows it best: ${drawableViews(pictured).join(", ")}. Use "none" for a sign that none of these shows, and for every sign of another condition${diseases.some(d => !d.id.startsWith(COMPARED_DISEASES)) ? ` (${diseases.filter(d => !d.id.startsWith(COMPARED_DISEASES)).map(d => d.name).join(", ")})` : ""}.` : "signs_missed_where is []."}
 - history_asked and history_missed use the history topics worth asking. Count a topic as asked only if the trainee's words in the conversation cover it.
 - technique: judge from the lamp log which views, magnifications, beams and filters were used, and whether they would reveal the signs. An empty log means no examination was done.
 - improvements: 3 to 5 concrete things to do next time, most important first, each tied to this case. strengths: what was done well, possibly none.
@@ -221,7 +229,7 @@ ${flags.length ? `Automatic safety finding: ${flags.join(" ")}` : ""}`
     key: { diagnosis: s.result.diagnosis, signs: s.result.signs },
     yourDiagnosis: sheet.diagnosis,
     signsFound: raw.signs_found, signsMissed: raw.signs_missed, incorrectClaims: raw.incorrect_claims,
-    comparisons: comparisons(raw.signs_missed_where ?? [], raw.signs_missed, diseases),
+    comparisons: comparisons(raw.signs_missed_where ?? [], raw.signs_missed, pictured),
     furtherReading: furtherReading(diseases),
     historyAsked: raw.history_asked, historyMissed: raw.history_missed,
     strengths: raw.strengths, improvements: raw.improvements, safetyFlags: flags

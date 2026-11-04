@@ -47,6 +47,7 @@ html:has(#report) { overflow: hidden; }
 #report .compare { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
 #report .compare h4 { margin: 0 0 6px; font-size: 14px; color: var(--teal); }
 #report .reveal { margin: 6px 0 0; color: var(--text); }
+#report .you-missed { margin: 6px 0 2px; color: var(--muted); font-size: 12px; }
 #report .pair { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 #report figure { margin: 0; }
 #report figcaption { margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 600; text-align: center; }

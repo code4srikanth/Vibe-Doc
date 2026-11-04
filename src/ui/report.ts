@@ -27,24 +27,30 @@ const shot = (c: Comparison, healthy: boolean) => {
 };
 const comparison = (c: Comparison) => `<div class="compare">
   <h4>${esc(VIEWS[c.view].label)}</h4>
-  ${list(c.signs, "crosses")}
+  ${c.signs.length ? `<p class="you-missed">You missed this here:</p>${list(c.signs, "crosses")}` : ""}
   ${c.caption ? `<p class="reveal">${esc(c.caption)}</p>` : ""}
   <div class="pair">${shot(c, true)}${shot(c, false)}</div>
 </div>`;
 
-/** Signs you missed: the ones a view reveals, drawn in this eye beside a healthy one, and any others as a plain list. */
+/** A cataract's views, each drawn in this eye beside a healthy one, whether or not any sign was missed. */
+const compareSection = (r: Report) => r.comparisons.length ? `<section class="block missed"><h3>Normal vs this eye</h3>
+    <p class="sim">Both pictures are simulated in the same view.</p>
+    ${r.comparisons.map(comparison).join("")}
+    ${reading(r, "signs")}
+  </section>` : "";
+
+/** Missed signs no picture above shows, as a plain list. */
 function missedSigns(r: Report): string {
-  if (!r.signsMissed.length) return "";
   const shown = new Set(r.comparisons.flatMap(c => c.signs));
   const rest = r.signsMissed.filter(s => !shown.has(s));
-  return `<section class="block missed"><h3>Signs you missed</h3>
-    ${r.comparisons.length ? `<p class="sim">See them in this eye. Both pictures are simulated in the same view.</p>${r.comparisons.map(comparison).join("")}` : ""}
-    ${rest.length && r.comparisons.length ? `<div class="compare">${list(rest, "crosses")}</div>` : list(rest, "crosses")}
-    ${reading(r, "signs")}
+  if (!rest.length) return "";
+  return `<section class="block missed"><h3>${shown.size ? "Other signs you missed" : "Signs you missed"}</h3>
+    ${list(rest, "crosses")}
+    ${r.comparisons.length ? "" : reading(r, "signs")}
   </section>`;
 }
 
-/** Draws the pictures one at a time, since they share one renderer. A view that can't be drawn leaves its text. */
+/** Draws the pictures one at a time, since they share one renderer. A view that can't be drawn says so and leaves its text. */
 async function drawShots(root: HTMLElement, draw: DrawEye) {
   for (const box of root.querySelectorAll<HTMLElement>(".shot")) {
     try {
@@ -54,7 +60,7 @@ async function drawShots(root: HTMLElement, draw: DrawEye) {
       box.replaceChildren(img);
     } catch (e) {
       console.warn("Report picture:", e);
-      box.closest(".pair")?.remove();
+      box.closest(".pair")?.replaceWith(Object.assign(document.createElement("p"), { className: "sim", textContent: "This view could not be drawn." }));
     }
   }
 }
@@ -87,6 +93,7 @@ export function showReport(r: Report, onAgain: () => void, draw?: DrawEye) {
     </div>
   </div>
   ${block("Where to improve", list(r.improvements, "steps"))}
+  ${compareSection(r)}
   ${missedSigns(r)}
   ${block("What went well", list(r.strengths, "ticks"))}
   <div class="dims">${dims}</div>

@@ -84,20 +84,47 @@ test("a cataract's report carries the trainee's diagnosis and a comparison capti
   const scores = { diagnosis: 90, observations: 90, history: 90, technique: 90, safety: 90 };
   const r = await evaluate(session("ns4"), lib, sheet, [], reply(scores, [], "optic_section_lens"));
   assert.equal(r.yourDiagnosis, "Acute angle closure");
-  assert.equal(r.comparisons.length, 1);
+  assert.equal(r.comparisons.length, 3);
   assert.equal(r.comparisons[0].view, "optic_section_lens");
   assert.deepEqual(r.comparisons[0].signs, ["shallow chamber"]);
   assert.match(r.comparisons[0].caption, /Nucleus yellow/);
 });
 
-test("only cataract gets comparisons: other diseases and generated eyes keep the plain list", async () => {
+test("a cataract's report compares every view it shows in, even when no sign was missed", async () => {
+  const scores = { diagnosis: 90, observations: 90, history: 90, technique: 90, safety: 90 };
+  const none: Model = async req => {
+    const answer = await reply(scores)(req);
+    return { ...answer, message: { ...answer.message, content: JSON.stringify({ ...JSON.parse(answer.message.content as string), signs_missed: [], signs_missed_where: [] }) } };
+  };
+  const r = await evaluate(session("ns2"), lib, sheet, [], none);
+  assert.deepEqual(r.signsMissed, []);
+  assert.deepEqual(r.comparisons.map(c => c.view), ["diffuse", "optic_section_lens", "retroillumination"]);
+  assert.ok(r.comparisons.every(c => c.caption && !c.signs.length));
+});
+
+test("a cataract the Case agent built is compared in the lens views; another built eye is not", async () => {
+  const scores = { diagnosis: 90, observations: 90, history: 90, technique: 90, safety: 90 };
+  const built = (diagnosis: string) => {
+    const s = session();
+    s.origin = "generated";
+    s.base = { ...s.base, diseases: [] };
+    s.result = { ...s.result, diagnosis };
+    return evaluate(s, lib, sheet, [], reply(scores, [], "retroillumination"));
+  };
+  const r = await built("Posterior subcapsular cataract, right eye");
+  assert.deepEqual(r.comparisons.map(c => c.view), ["retroillumination", "diffuse", "optic_section_lens"]);
+  assert.deepEqual(r.comparisons[0].signs, ["shallow chamber"]);
+  assert.deepEqual((await built("Anterior uveitis, right eye")).comparisons, []);
+});
+
+test("only cataract gets comparisons: other diseases and eyes with no cataract keep the plain list", async () => {
   const scores = { diagnosis: 90, observations: 90, history: 90, technique: 90, safety: 90 };
   // the stored angle-closure case also has an incidental cataract, which reveals in this view
   const r = await evaluate(session("aacg"), lib, sheet, [], reply(scores, [], "optic_section_lens"));
   assert.deepEqual(r.comparisons, []);
   assert.deepEqual(r.signsMissed, ["shallow chamber"]);
   const where = [{ sign: "a", view: "diffuse" }];
-  assert.deepEqual(comparisons(where, ["a"], []), [], "a generated eye has no disease file");
+  assert.deepEqual(comparisons(where, ["a"], []), [], "no disease, no picture");
   // in a mixed case, only the cataract's views and captions are used
   const mixed: { id: string; name: string; revealed_by: Record<string, string> }[] = [
     { id: "disease.cataract.nuclear", name: "Nuclear cataract", revealed_by: { diffuse: "Amber pupil." } },
@@ -105,7 +132,7 @@ test("only cataract gets comparisons: other diseases and generated eyes keep the
   ];
   assert.deepEqual(comparisons([...where, { sign: "b", view: "retroillumination" }], ["a", "b"], mixed), [{ view: "diffuse", signs: ["a"], caption: "Amber pupil." }]);
   // the model placed another condition's sign in a cataract view: it stays out, so it is not captioned as cataract
-  assert.deepEqual(comparisons([{ sign: "Arcus senilis, grade moderate", view: "diffuse" }], ["Arcus senilis, grade moderate"], mixed), []);
+  assert.deepEqual(comparisons([{ sign: "Arcus senilis, grade moderate", view: "diffuse" }], ["Arcus senilis, grade moderate"], mixed), [{ view: "diffuse", signs: [], caption: "Amber pupil." }]);
 });
 
 test("a cataract's report links each hand-picked page once, others none, and the model never sees them", async () => {
@@ -117,6 +144,12 @@ test("a cataract's report links each hand-picked page once, others none, and the
   assert.ok(r.furtherReading.every(l => l.url.startsWith("https://")));
   assert.ok(r.furtherReading.every(l => !seen.includes(l.url)));
   assert.deepEqual((await evaluate(session("aacg"), lib, sheet, [], reply(scores))).furtherReading, [], "an incidental cataract gets no links");
+});
+
+test("the limit on pictures keeps the views with a missed sign", () => {
+  const views = { diffuse: "A.", optic_section_cornea: "B.", optic_section_lens: "C.", retroillumination: "D." };
+  const disease = { id: "disease.cataract.nuclear", name: "Nuclear cataract", revealed_by: views };
+  assert.deepEqual(comparisons([{ sign: "x", view: "retroillumination" }], ["x"], [disease]).map(c => c.view), ["retroillumination", "diffuse", "optic_section_cornea"]);
 });
 
 test("comparisons keep only missed signs in views that reveal this case, one group per view", () => {
