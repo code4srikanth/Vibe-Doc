@@ -134,6 +134,11 @@ export const weightsFor = (s: Session) => "prompt" in s.source ? rubric.weights.
 type Revealed = { id: string; name: string; revealed_by?: Record<string, string>; further_reading?: FurtherReading[] };
 /** A case's main disease is listed first. An incidental cataract gets no picture, which would mostly show the main disease. */
 const compared = (diseases: Revealed[]) => diseases[0]?.id.startsWith(COMPARED_DISEASES) ? diseases.filter(d => d.id.startsWith(COMPARED_DISEASES)) : [];
+/** An eye the Case agent built is a cataract if its diagnosis says so in any usual words, or if the lens is all it changed. */
+const CATARACT_NAMES = /cataract|nuclear (sclerosis|opalescence)|lens opacit|brunescen/i;
+export const builtCataract = (s: Pick<Session, "origin" | "result">) =>
+  s.origin === "generated" && (CATARACT_NAMES.test(s.result.diagnosis) || (s.result.edits.length > 0 && s.result.edits.every(e => e.component.startsWith("eye.lens"))));
+
 /** The views that reveal this case's cataract. */
 const drawableViews = (diseases: Revealed[]) => DRAWN_VIEWS.filter(v => compared(diseases).some(d => d.revealed_by?.[v]));
 
@@ -162,7 +167,7 @@ export async function evaluate(s: Session, lib: Library, sheet: CaseSheet, log: 
   const diseases = (s.base.diseases ?? []).map(d => lib.diseases.find(x => x.id === d.id)).filter(d => d !== undefined);
   const worth = s.patient?.facts.facts.map(f => `${f.topic}${f.red_flag ? " (red flag)" : ""}`) ?? [];
   const flags = safetyFlags(s, lib, log);
-  const pictured = s.origin === "generated" && /cataract/i.test(s.result.diagnosis) ? [BUILT_CATARACT] : diseases;
+  const pictured = builtCataract(s) ? [BUILT_CATARACT] : diseases;
 
   const { message } = await model({
     purpose: "examiner", model: MODELS.examiner, temperature: 0, reasoning: "medium",

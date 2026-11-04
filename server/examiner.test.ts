@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { loadLibrary } from "../tools/lib/library.ts";
 import type { Model } from "./gateway.ts";
 import { caseSession } from "./session.ts";
-import { cleanSheet, comparisons, evaluate, safetyFlags, summariseLog, verified, weightsFor } from "./examiner.ts";
+import { builtCataract, cleanSheet, comparisons, evaluate, safetyFlags, summariseLog, verified, weightsFor } from "./examiner.ts";
 import { createPatient, type PatientFacts } from "./patient.ts";
 
 const lib = loadLibrary();
@@ -115,6 +115,18 @@ test("a cataract the Case agent built is compared in the lens views; another bui
   assert.deepEqual(r.comparisons.map(c => c.view), ["retroillumination", "diffuse", "optic_section_lens"]);
   assert.deepEqual(r.comparisons[0].signs, ["shallow chamber"]);
   assert.deepEqual((await built("Anterior uveitis, right eye")).comparisons, []);
+});
+
+test("a built eye counts as a cataract by its usual names or by changing only the lens", () => {
+  const edit = (component: string) => ({ component, property: "optics.density", value: 1, reason: "r" });
+  const built = (diagnosis: string, ...components: string[]) => builtCataract({ origin: "generated", result: { diagnosis, signs: [], valid: true, edits: components.map(edit) } });
+  assert.equal(built("nuclear sclerosis", "eye.lens.nucleus"), true);
+  assert.equal(built("Nuclear sclerosis", "eye.lens.nucleus", "eye.cornea"), true, "named, though more than the lens changed");
+  assert.equal(built("Lens yellowing", "eye.lens.nucleus", "eye.lens.cortex"), true, "not named, but only the lens changed");
+  assert.equal(built("Anterior uveitis", "eye.lens.capsule", "eye.iris"), false);
+  assert.equal(built("Multiple sclerosis", "eye.cornea"), false);
+  assert.equal(built("Healthy eye"), false, "no edits");
+  assert.equal(builtCataract({ origin: "matched", result: { diagnosis: "Age-related nuclear cataract", signs: [], valid: true, edits: [] } }), false, "a stored case uses its disease file");
 });
 
 test("only cataract gets comparisons: other diseases and eyes with no cataract keep the plain list", async () => {
