@@ -626,14 +626,15 @@ vec3 gVesT = vec3(1.);   // transmittance of the vessels alone at the last bulba
 // mottle, the blood wash (basal_vascularity rising to fornix_vascularity over the last fornix_blush_width before the
 // silhouette, plus injection rising from injection_limbal_fraction at the limbus to full over injection_ramp_width,
 // plus aExtra), then
-// the superficial and deep vessels.
+// the superficial and deep vessels. rRoom: the radius in the room. The fornix does not turn with the globe, so its
+// blush stays where it is under gaze while the pattern read at r rides on the globe.
 // Ciliary flush engorges the deep limbal plexus: a second, deep absorber densest at the limbus that falls off over
 // ciliary_flush_width, and the deep vessels under it darken with it.
 // pix: image pixel size (mm); nv: n.v, which foreshortens the surface (texture level of detail).
 // The superficial vessel map leaves an empty ring round the limbus, so its lookup is stretched inward: at the limbus
 // it reads vessel_limbal_reach further out, and the shift tapers to nothing vessel_reach_blend from the limbus. The
 // map's own vessels then run on up to the cornea; none are added, and the pattern further out stays where it was.
-vec3 bulbar(vec3 alb, float r, float s, vec2 dir, float pix, float nv, float aExtra){
+vec3 bulbar(vec3 alb, float r, float rRoom, float s, vec2 dir, float pix, float nv, float aExtra){
   vec2 su = s*dir;
   // mottle: a 2-octave value-noise fBm with unit RMS (0.214 per octave, measured); the amplitude is a relative
   // std of luma as a photo records it (sRGB-encoded), so it applies before decoding
@@ -641,7 +642,7 @@ vec3 bulbar(vec3 alb, float r, float s, vec2 dir, float pix, float nv, float aEx
   float m = ((noise(mq) - .5) + .5*(noise(mq*2. + 7.3) - .5))/(.214*sqrt(1.25));
   alb *= pow(max(1. + uConjMottle*m, 0.), 2.2);
   float sL = uScR*asin(uRL/uScR);
-  float a = mix(uBasalVasc, uFornixVasc, sstep(uScR - uFornixBlushW, uScR, r))
+  float a = mix(uBasalVasc, uFornixVasc, sstep(uScR - uFornixBlushW, uScR, rRoom))
           + uInj*uInjBlush*mix(uInjLimb, 1., sstep(0., uInjRamp, s - sL)) + aExtra;
   vec2 uv = (su - uVesRect.xy)/uVesRect.zw;
   float texel = uVesRect.z/float(textureSize(uVesTex, 0).x);
@@ -760,35 +761,48 @@ vec3 dischargeLit(vec2 p, vec3 ill, float c){
 vec3 sclera(vec3 ro, vec3 rd){
   vec2 h = sph(ro, rd, vec3(0., 0., uScZ), uScR);
   vec3 p, N;
+  vec2 sp;   // where the conjunctiva's pattern is read: the globe's own frame on the globe, the room's on the fillet
   float cav = 1., s;
+  mat3 G = transpose(GAZE);
   if(h.x < 0.){
-    // past the silhouette: the conjunctival fornix fillet (as in externalEye) closes the canthal ends of the fissure
-    p = ro + rd*((uScZ - ro.z)/rd.z);
-    float rr = length(p.xy), c = (uScR + uFilletW - rr)/uFilletW;
+    // past the silhouette: the conjunctival fornix fillet (as in externalEye) closes the canthal ends of the fissure.
+    // The fornix does not turn with the globe, so the fillet is worked out in the room, without the globe's lift
+    vec3 C = vec3(0., 0., uScZ), ror = GAZE*(ro - C) + C, rdr = GAZE*rd, q = ror + rdr*((uScZ - ror.z)/rdr.z);
+    float rr = length(q.xy), c = (uScR + uFilletW - rr)/uFilletW;
     if(c < 0.) return vec3(.4, .17, .14)*uAmb*.5;
-    N = normalize(vec3(p.xy/rr*c, sqrt(max(1. - c*c, 0.))));
+    N = G*normalize(vec3(q.xy/rr*c, sqrt(max(1. - c*c, 0.))));
     cav = mix(1., uFornixOcc, 1. - c);
     s = uScR*PI*.5 + uFilletW*acos(clamp(c, 0., 1.));
+    p = G*(q - C) + C;
+    sp = q.xy;
   } else {
     p = ro + rd*h.x;
     N = normalize(p - vec3(0., 0., uScZ));
     s = uScR*acos(clamp(N.z, -1., 1.));
+    sp = p.xy;
   }
-  float r = length(p.xy);
+  float r = length(sp), pix = uFov/uRes.x;
   vec3 base = mix(uScBase, vec3(.9, .85, .72), uScYellow);
   vec2 pw = toRoom(p).xy, dl = lidDist(pw);   // the lids, plica, caruncle and canthi stay put when the globe turns
   // plica semilunaris, medial recess and medial folds (L3); the recess adds to the blood wash
   vec2 g; float wP, occ, wR;
-  plica(pw, .5*(dl.y - dl.x), uFov/uRes.x, min(dl.x, dl.y), g, wP, occ, wR);
-  vec3 c = bulbar(base, r, s, p.xy/max(r, 1e-4), uFov/uRes.x, N.z, uMarginVasc*max(1. - dl.y/uMarginBlushW, 0.) + uRecessVasc*wR);
+  plica(pw, .5*(dl.y - dl.x), pix, min(dl.x, dl.y), g, wP, occ, wR);
+  vec2 qw = pw - SHIFT.xy;
+  float rw = length(qw);
+  vec3 c = bulbar(base, r, rw, s, sp/max(r, 1e-4), pix, (GAZE*N).z, uMarginVasc*max(1. - dl.y/uMarginBlushW, 0.) + uRecessVasc*wR);
+  // The plica is fixed in the room and keeps its colour as the globe turns, so the vessels in it are read at its room
+  // position, not from the globe sliding behind it. gVesT goes back to the globe's for the limbal band.
+  vec3 vesGlobe = gVesT;
+  if(wP > 0. && h.x >= 0.) bulbar(base, rw, rw, surfS(rw), qw/max(rw, 1e-4), pix, sqrt(max(1. - rw*rw/(uScR*uScR), .0025)), 0.);
   c = mix(c, plicaAlb(pw), wP);
-  N = normalize(N + vec3(-g, 0.));
+  gVesT = vesGlobe;
+  N = normalize(N + G*vec3(-g, 0.));   // g is a slope in the room
   cav *= occ;
   // caruncle: within one caruncle size of the medial canthus
   float med = uCanMX + uCarSize;
   c = mix(c, vec3(.62, .3, .27), sstep(med, uCanMX + .28*uCarSize, pw.x));
   // canthal corners and fornix: tissue grain, a pink mottle and fine branching vessels, so they are not flat tint
-  float tw = max(max(sstep(med + 1.5, uCanMX + .28*uCarSize, pw.x), sstep(uCanLX - 4., uCanLX - .3, pw.x)), sstep(uScR - uFornixBlushW, uScR, r));
+  float tw = max(max(sstep(med + 1.5, uCanMX + .28*uCarSize, pw.x), sstep(uCanLX - 4., uCanLX - .3, pw.x)), sstep(uScR - uFornixBlushW, uScR, rw));
   vec2 wq = pw + .35*vec2(noise(pw*2.3), noise(pw*2.3 + 9.));
   float vein = pow(max(1. - abs(noise(wq*5.5)), 0.), 14.) + .6*pow(max(1. - abs(noise(wq*13. + 4.)), 0.), 16.);
   c *= 1. + tw*(.6*fbm(pw*3.) + .3*noise(pw*12.));
@@ -923,6 +937,14 @@ vec3 shade(vec3 ro, vec3 rd, float jt){
   vec3 col;
   vec3 p0 = globeHit(ro, rd);
   float r0 = length(p0.xy), cv = r0 < uScR ? limbCover(p0.xy) : 1.;
+  // A ray past the globe's silhouette meets the fornix, whatever point globeHit() lands on when the globe is turned;
+  // and the plica lies on top of the globe, so a limbus turned toward it passes under it.
+  if(sph(ro, rd, vec3(0., 0., uScZ), uScR).x < 0.) cv = 1.;
+  else {
+    float dIn, xe, v;
+    plicaFold(toRoom(p0).xy, dIn, xe, v);
+    cv = max(cv, sstep(-uPlicaSoft, uPlicaSoft, dIn));
+  }
   bool inner = uLayer > 2.5 && uLayer < 5.5;   // debug layers inside the cornea
   bool sclOnly = uLayer > 1.5 && uLayer < 2.5;
   // one sclera() call site (and one cornealPath()), for the same reason as irisShade()
@@ -1171,7 +1193,7 @@ vec3 externalEye(vec2 p){
   // conjunctiva (L3): mottle, blood wash with the pink band along the lower lid, vessels; then the plica and folds
   vec2 g; float wP, occ, wR;
   plica(p, .5*(gDL - gDU), uFov/uRes.x, min(gDU, gDL), g, wP, occ, wR);
-  alb = bulbar(alb, r, surfS(r), p/max(r, 1e-4), uFov/uRes.x, N.z, uMarginVasc*max(1. - gDL/uMarginBlushW, 0.) + uRecessVasc*wR);
+  alb = bulbar(alb, r, r, surfS(r), p/max(r, 1e-4), uFov/uRes.x, N.z, uMarginVasc*max(1. - gDL/uMarginBlushW, 0.) + uRecessVasc*wR);
   alb = mix(alb, plicaAlb(p)*norm, wP);
   N = normalize(N + vec3(-g, 0.));
   cav *= occ;
