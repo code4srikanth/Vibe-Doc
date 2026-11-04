@@ -1,0 +1,251 @@
+{
+  "disease": "conjunctivitis",
+  "title": "Conjunctivitis: render evaluation",
+  "views": [
+    { "id": "exterior", "heading": "External" },
+    { "id": "diffuse", "heading": "Slit view 1 (diffuse)" },
+    { "id": "optic_section_cornea", "heading": "Slit view 2 (optic section, cornea)" }
+  ],
+  "prompts": [
+    {
+      "id": "CON-001",
+      "description": "Mild bacterial conjunctivitis",
+      "prompt": "24-year-old woman with mild acute bacterial conjunctivitis in the right eye for two days. A pink eye with a little sticky discharge in the morning. Vision is normal.",
+      "intended": { "diagnosis": "Mild acute bacterial conjunctivitis", "terms": ["bacterial","conjunctivitis"], "severity": "mild" }
+    },
+    {
+      "id": "CON-002",
+      "description": "Moderate bacterial conjunctivitis",
+      "prompt": "28-year-old woman with moderate acute bacterial conjunctivitis in the right eye for three days. A red sticky eye with creamy discharge and lids stuck together on waking. Slightly puffy lids and normal vision.",
+      "intended": { "diagnosis": "Moderate acute bacterial conjunctivitis", "terms": ["bacterial","conjunctivitis"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-003",
+      "description": "Severe bacterial conjunctivitis",
+      "prompt": "35-year-old man with severe acute bacterial conjunctivitis in the left eye. A fiery red eye, thick discharge and swollen lids, with a clear cornea and normal vision.",
+      "intended": { "diagnosis": "Severe acute bacterial conjunctivitis", "terms": ["bacterial","conjunctivitis"], "severity": "severe" }
+    },
+    {
+      "id": "CON-004",
+      "description": "Bacterial conjunctivitis in a child",
+      "prompt": "Five-year-old boy with acute bacterial conjunctivitis in the right eye, sent home from school. A red eye with yellow discharge, and crusted lashes in the morning.",
+      "intended": { "diagnosis": "Acute bacterial conjunctivitis", "terms": ["bacterial","conjunctivitis"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-005",
+      "description": "Bacterial conjunctivitis in dark skin and a dark brown iris",
+      "prompt": "32-year-old man of West African descent with dark skin and dark brown irides, and moderate bacterial conjunctivitis in the right eye. A red eye with sticky discharge.",
+      "intended": { "diagnosis": "Moderate acute bacterial conjunctivitis", "terms": ["bacterial","conjunctivitis"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-006",
+      "description": "Bacterial conjunctivitis in fair skin and a blue iris",
+      "prompt": "45-year-old woman of Scandinavian descent with fair skin and pale blue irides, and moderate bacterial conjunctivitis in the left eye. A red eye with sticky discharge.",
+      "intended": { "diagnosis": "Moderate acute bacterial conjunctivitis", "terms": ["bacterial","conjunctivitis"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-007",
+      "description": "Bacterial conjunctivitis in an elderly patient",
+      "prompt": "81-year-old woman with acute bacterial conjunctivitis in the left eye, on a background of dry eye. Red and sore, with stringy mucopurulent discharge in the inner corner.",
+      "intended": { "diagnosis": "Acute bacterial conjunctivitis", "terms": ["bacterial","conjunctivitis"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-008",
+      "description": "Hyperacute gonococcal conjunctivitis",
+      "prompt": "22-year-old man with hyperacute gonococcal conjunctivitis in the right eye, developing over 12 hours. Copious pus pouring from the eye, tensely swollen lids and severe conjunctival swelling.",
+      "intended": { "diagnosis": "Hyperacute gonococcal conjunctivitis", "terms": ["gonococcal","gonorrh","hyperacute","hyperpurulent"], "severity": "severe" }
+    },
+    {
+      "id": "CON-009",
+      "description": "Adult inclusion (chlamydial) conjunctivitis",
+      "prompt": "23-year-old woman with adult chlamydial inclusion conjunctivitis in the left eye for four weeks. A chronic red eye that did not settle on antibiotic drops, with large follicles in the lower fornix and mild mucopurulent discharge.",
+      "intended": { "diagnosis": "Adult inclusion (chlamydial) conjunctivitis", "terms": ["chlamydia","inclusion","follicular"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-010",
+      "description": "Active trachoma",
+      "prompt": "Seven-year-old girl from a dry rural area with active trachoma in the right eye. Follicles and thickening of the upper tarsal conjunctiva, a chronic red eye and some discharge.",
+      "intended": { "diagnosis": "Active trachoma", "terms": ["trachoma"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-011",
+      "description": "Neonatal gonococcal conjunctivitis",
+      "prompt": "Three-day-old baby boy with gonococcal ophthalmia neonatorum in the right eye. Severe lid swelling and heavy pus from the eye.",
+      "intended": { "diagnosis": "Gonococcal ophthalmia neonatorum", "terms": ["neonatorum","gonococcal","neonatal"], "severity": "severe" }
+    },
+    {
+      "id": "CON-012",
+      "description": "Neonatal chlamydial conjunctivitis",
+      "prompt": "Ten-day-old baby girl with chlamydial conjunctivitis in the left eye. Lid swelling and a red eye with mucopurulent discharge, not as heavy as gonococcal disease.",
+      "intended": { "diagnosis": "Chlamydial ophthalmia neonatorum", "terms": ["neonatorum","chlamydia","neonatal"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-013",
+      "description": "Moraxella angular blepharoconjunctivitis",
+      "prompt": "67-year-old man with angular blepharoconjunctivitis in the right eye. Redness and scaling of the skin at the outer lid corner, and conjunctival redness that is worst near the corners.",
+      "intended": { "diagnosis": "Angular blepharoconjunctivitis", "terms": ["angular","blepharoconjunctivitis","moraxella"], "severity": "mild" }
+    },
+    {
+      "id": "CON-014",
+      "description": "Staphylococcal blepharoconjunctivitis",
+      "prompt": "52-year-old woman with chronic staphylococcal blepharoconjunctivitis in the left eye. Crusting at the lash bases, red lid margins and a mild red eye for months.",
+      "intended": { "diagnosis": "Staphylococcal blepharoconjunctivitis", "terms": ["blepharoconjunctivitis","blepharitis","staphylococc"], "severity": "mild" }
+    },
+    {
+      "id": "CON-015",
+      "description": "Mild adenoviral conjunctivitis",
+      "prompt": "29-year-old man with mild viral conjunctivitis in the right eye after a cold. A pink watery eye with no sticky discharge, and a tender lump in front of the ear.",
+      "intended": { "diagnosis": "Mild adenoviral conjunctivitis", "terms": ["viral","adenovir"], "severity": "mild" }
+    },
+    {
+      "id": "CON-016",
+      "description": "Epidemic keratoconjunctivitis",
+      "prompt": "38-year-old nurse with epidemic keratoconjunctivitis in the left eye, during an outbreak on the ward. A very red watery eye, puffy lids, lower fornix follicles, grittiness, and small white spots under the corneal surface.",
+      "intended": { "diagnosis": "Epidemic keratoconjunctivitis", "terms": ["epidemic","adenovir","viral","keratoconjunctivitis"], "severity": "severe" }
+    },
+    {
+      "id": "CON-017",
+      "description": "Pharyngoconjunctival fever",
+      "prompt": "Nine-year-old boy with pharyngoconjunctival fever in the right eye, after swimming at a pool. High temperature, sore throat, and a red watery eye with follicles.",
+      "intended": { "diagnosis": "Pharyngoconjunctival fever", "terms": ["pharyngoconjunctival","adenovir","viral"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-018",
+      "description": "Pseudomembranous adenoviral conjunctivitis",
+      "prompt": "41-year-old woman with severe adenoviral conjunctivitis and a grey-white pseudomembrane on the lower tarsal conjunctiva of the right eye. Painful swollen lids and bloodstained tears.",
+      "intended": { "diagnosis": "Pseudomembranous adenoviral conjunctivitis", "terms": ["pseudomembran","adenovir","viral","membranous"], "severity": "severe" }
+    },
+    {
+      "id": "CON-019",
+      "description": "Acute haemorrhagic conjunctivitis",
+      "prompt": "26-year-old man with acute haemorrhagic conjunctivitis in the left eye, during a local outbreak. Sudden red watery eye with bright red patches of bleeding under the conjunctiva.",
+      "intended": { "diagnosis": "Acute haemorrhagic conjunctivitis", "terms": ["haemorrhagic","hemorrhagic","subconjunctival"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-020",
+      "description": "Herpes simplex blepharoconjunctivitis",
+      "prompt": "19-year-old woman with primary herpes simplex blepharoconjunctivitis in the right eye. Small clustered blisters on the lid skin, a watery red eye and swollen glands.",
+      "intended": { "diagnosis": "Herpes simplex blepharoconjunctivitis", "terms": ["herpes","hsv"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-021",
+      "description": "Herpes zoster conjunctivitis",
+      "prompt": "72-year-old man with shingles over the left forehead and upper lid, and herpes zoster conjunctivitis in the left eye. Scabbed blistering rash, a swollen upper lid and a red watery eye.",
+      "intended": { "diagnosis": "Herpes zoster ophthalmicus with conjunctivitis", "terms": ["zoster","shingles"], "severity": "severe" }
+    },
+    {
+      "id": "CON-022",
+      "description": "Molluscum contagiosum conjunctivitis",
+      "prompt": "Eight-year-old girl with a molluscum lesion on the lower lid margin of the right eye and a chronic follicular conjunctivitis. A pearly nodule with a central dimple, and a mildly red eye.",
+      "intended": { "diagnosis": "Molluscum contagiosum with follicular conjunctivitis", "terms": ["molluscum"], "severity": "mild" }
+    },
+    {
+      "id": "CON-023",
+      "description": "Seasonal allergic conjunctivitis",
+      "prompt": "21-year-old man with seasonal allergic conjunctivitis in the right eye during the pollen season. Itching, watering, a pale jelly-like swollen conjunctiva and mild redness.",
+      "intended": { "diagnosis": "Seasonal allergic conjunctivitis", "terms": ["allergic","allergy"], "severity": "mild" }
+    },
+    {
+      "id": "CON-024",
+      "description": "Marked chemosis in acute allergy",
+      "prompt": "17-year-old girl who rubbed her left eye after handling a cat. The conjunctiva quickly ballooned into a glassy jelly-like blister, with intense itching and little redness.",
+      "intended": { "diagnosis": "Acute allergic conjunctivitis with chemosis", "terms": ["allergic","allergy","chemosis"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-025",
+      "description": "Perennial allergic conjunctivitis",
+      "prompt": "33-year-old woman with perennial allergic conjunctivitis in the right eye all year round, worse with house dust. Mild itch, mild redness and fine papillae, with no discharge.",
+      "intended": { "diagnosis": "Perennial allergic conjunctivitis", "terms": ["allergic","allergy"], "severity": "mild" }
+    },
+    {
+      "id": "CON-026",
+      "description": "Palpebral vernal keratoconjunctivitis",
+      "prompt": "11-year-old boy with palpebral vernal keratoconjunctivitis in the left eye. Giant cobblestone papillae under the upper lid, a thick ropy mucus discharge, severe itching and light sensitivity.",
+      "intended": { "diagnosis": "Palpebral vernal keratoconjunctivitis", "terms": ["vernal","vkc","papillae"], "severity": "severe" }
+    },
+    {
+      "id": "CON-027",
+      "description": "Limbal vernal keratoconjunctivitis",
+      "prompt": "13-year-old boy of South Asian descent with limbal vernal keratoconjunctivitis in the right eye. Gelatinous nodules at the upper corneal edge with white Horner-Trantas dots, and severe itching.",
+      "intended": { "diagnosis": "Limbal vernal keratoconjunctivitis", "terms": ["vernal","vkc","trantas"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-028",
+      "description": "Atopic keratoconjunctivitis",
+      "prompt": "43-year-old man with eczema and atopic keratoconjunctivitis in the left eye. Thickened scaly lids, a red eye with a boggy conjunctiva, and a chronic burning itch.",
+      "intended": { "diagnosis": "Atopic keratoconjunctivitis", "terms": ["atopic","eczema"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-029",
+      "description": "Giant papillary conjunctivitis from contact lenses",
+      "prompt": "30-year-old woman who wears soft contact lenses for long hours and has giant papillary conjunctivitis in the right eye. Mucus, itch after lens removal, and large papillae under the upper lid.",
+      "intended": { "diagnosis": "Giant papillary conjunctivitis", "terms": ["giant papillary","gpc","contact lens"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-030",
+      "description": "Toxic conjunctivitis from eye drops",
+      "prompt": "61-year-old woman with toxic conjunctivitis in the left eye after months of preserved glaucoma drops. A red irritated eye with a follicular reaction, worst at the lower fornix, and sore lid skin.",
+      "intended": { "diagnosis": "Toxic (medicamentosa) conjunctivitis", "terms": ["toxic","medicamentosa","drop"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-031",
+      "description": "Contact dermatoconjunctivitis",
+      "prompt": "49-year-old woman with contact dermatoconjunctivitis in the right eye, one day after starting new eye drops. Red, itchy, weeping lid skin with a pink watery eye.",
+      "intended": { "diagnosis": "Contact dermatoconjunctivitis", "terms": ["dermatoconjunctivitis","contact","allergic"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-032",
+      "description": "Mild chemical irritant conjunctivitis",
+      "prompt": "36-year-old man who splashed dish soap in the right eye an hour ago. Stinging, a pink watery eye with a clear cornea and normal vision.",
+      "intended": { "diagnosis": "Chemical irritant conjunctivitis", "terms": ["chemical","irritant","toxic"], "severity": "mild" }
+    },
+    {
+      "id": "CON-033",
+      "description": "Superior limbic keratoconjunctivitis",
+      "prompt": "47-year-old woman with thyroid disease and superior limbic keratoconjunctivitis in the left eye. A band of redness on the upper conjunctiva only, with a burning feeling and a white lower eye.",
+      "intended": { "diagnosis": "Superior limbic keratoconjunctivitis", "terms": ["superior limbic","slk"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-034",
+      "description": "Ligneous conjunctivitis",
+      "prompt": "Six-year-old girl with ligneous conjunctivitis in the right eye. Thick, woody yellow-white membranes on the tarsal conjunctiva that come back after removal.",
+      "intended": { "diagnosis": "Ligneous conjunctivitis", "terms": ["ligneous","membranous"], "severity": "severe" }
+    },
+    {
+      "id": "CON-035",
+      "description": "Acute Stevens-Johnson conjunctivitis",
+      "prompt": "28-year-old woman with Stevens-Johnson syndrome after starting a new drug, and acute membranous conjunctivitis in the right eye. A very red eye with membranes, crusted bleeding lid margins and blisters on the skin.",
+      "intended": { "diagnosis": "Stevens-Johnson syndrome with membranous conjunctivitis", "terms": ["stevens","toxic epidermal","membranous"], "severity": "severe" }
+    },
+    {
+      "id": "CON-036",
+      "description": "Ocular cicatricial pemphigoid",
+      "prompt": "74-year-old woman with ocular mucous membrane pemphigoid in the left eye. A chronic red eye with a shortened lower fornix, scar bands between lid and eye, and inturned lashes.",
+      "intended": { "diagnosis": "Ocular mucous membrane pemphigoid", "terms": ["pemphigoid","cicatri","symblepharon"], "severity": "severe" }
+    },
+    {
+      "id": "CON-037",
+      "description": "Parinaud oculoglandular syndrome",
+      "prompt": "14-year-old boy with Parinaud oculoglandular syndrome in the right eye after a kitten scratch. A red eye with a granuloma on the conjunctiva and a large lump in front of the ear.",
+      "intended": { "diagnosis": "Parinaud oculoglandular syndrome", "terms": ["parinaud","oculoglandular","cat scratch","granuloma"], "severity": "moderate" }
+    },
+    {
+      "id": "CON-038",
+      "description": "Conjunctivitis in reactive arthritis",
+      "prompt": "31-year-old man with reactive arthritis and conjunctivitis in the left eye, along with knee pain and urethritis. A mildly red eye with light mucopurulent discharge.",
+      "intended": { "diagnosis": "Conjunctivitis in reactive arthritis", "terms": ["reactive","reiter","conjunctivitis"], "severity": "mild" }
+    },
+    {
+      "id": "CON-039",
+      "description": "Viral conjunctivitis with COVID-19",
+      "prompt": "54-year-old man with COVID-19 and mild conjunctivitis in the right eye. A pink, gritty, watery eye with fever and loss of smell. The cornea is clear.",
+      "intended": { "diagnosis": "COVID-19 associated conjunctivitis", "terms": ["viral","covid","conjunctivitis"], "severity": "mild" }
+    },
+    {
+      "id": "CON-040",
+      "description": "Conjunctivitis with a clear subconjunctival haemorrhage",
+      "prompt": "58-year-old woman with viral conjunctivitis in the left eye and a coughing fit two days ago. A watery pink eye and a bright red flat patch of blood on the temporal white of the eye.",
+      "intended": { "diagnosis": "Viral conjunctivitis with subconjunctival haemorrhage", "terms": ["viral","conjunctivitis","subconjunctival"], "severity": "moderate" }
+    }
+  ]
+}

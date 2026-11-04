@@ -1,0 +1,251 @@
+{
+  "disease": "glaucoma",
+  "title": "Glaucoma: render evaluation",
+  "views": [
+    { "id": "exterior", "heading": "External" },
+    { "id": "optic_section_cornea", "heading": "Slit view (optic section, cornea and chamber)" },
+    { "id": "fundus_90d", "heading": "Fundus view (90D lens, optic disc)", "view": "diffuse", "query": "dilated&lens=90D&lamp=magnification:25,focus:-1.5", "label": "Fundus through a 90D lens, dilated: optic disc and macula" }
+  ],
+  "prompts": [
+    {
+      "id": "GLA-001",
+      "description": "Early primary open-angle glaucoma",
+      "prompt": "56-year-old man with early primary open-angle glaucoma in the right eye, found at a routine check. No symptoms. Vertical cup-to-disc ratio about 0.6 with slight inferior rim thinning.",
+      "intended": { "diagnosis": "Early primary open-angle glaucoma", "terms": ["open-angle","open angle","poag","glaucoma"], "severity": "mild" }
+    },
+    {
+      "id": "GLA-002",
+      "description": "Moderate primary open-angle glaucoma",
+      "prompt": "64-year-old man with moderate primary open-angle glaucoma in the right eye. No pain or redness. Vertical cup-to-disc ratio about 0.75 with an inferotemporal notch.",
+      "intended": { "diagnosis": "Moderate primary open-angle glaucoma", "terms": ["open-angle","open angle","poag","glaucoma"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-003",
+      "description": "Advanced primary open-angle glaucoma",
+      "prompt": "75-year-old woman with advanced primary open-angle glaucoma in the left eye. Tunnel vision that she keeps bumping into things with. Cup-to-disc ratio about 0.9, a pale disc and almost no rim.",
+      "intended": { "diagnosis": "Advanced primary open-angle glaucoma", "terms": ["open-angle","open angle","poag","glaucoma"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-004",
+      "description": "POAG with a disc haemorrhage",
+      "prompt": "68-year-old woman with primary open-angle glaucoma in the right eye and a splinter haemorrhage at the inferior disc margin, seen for the first time at this visit. No symptoms.",
+      "intended": { "diagnosis": "Primary open-angle glaucoma with a disc haemorrhage", "terms": ["open-angle","open angle","poag","glaucoma","haemorrhage","hemorrhage"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-005",
+      "description": "POAG with a focal notch",
+      "prompt": "61-year-old man with primary open-angle glaucoma in the left eye and a deep focal notch of the inferior rim, while the rest of the rim is well preserved.",
+      "intended": { "diagnosis": "Primary open-angle glaucoma with a focal notch", "terms": ["open-angle","open angle","poag","glaucoma","notch"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-006",
+      "description": "Normal-tension glaucoma",
+      "prompt": "63-year-old woman with normal-tension glaucoma in the right eye. Eye pressure has always been 14 to 16 mmHg, with a large vertical cup, a notch and a disc haemorrhage. She has migraines and cold hands.",
+      "intended": { "diagnosis": "Normal-tension glaucoma", "terms": ["normal-tension","normal tension","glaucoma"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-007",
+      "description": "Glaucoma in a high myope",
+      "prompt": "45-year-old man with high myopia of -9 dioptres and open-angle glaucoma in the right eye. A tilted disc with wide peripapillary atrophy and a large cup.",
+      "intended": { "diagnosis": "Open-angle glaucoma with a myopic tilted disc", "terms": ["glaucoma","myopic","tilted"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-008",
+      "description": "Ocular hypertension with a healthy disc",
+      "prompt": "52-year-old woman with ocular hypertension in the left eye. Eye pressure 26 mmHg, with an open angle, a healthy rim and a cup-to-disc ratio of 0.3.",
+      "intended": { "diagnosis": "Ocular hypertension without glaucomatous damage", "terms": ["ocular hypertension","healthy","normal"], "severity": "none" }
+    },
+    {
+      "id": "GLA-009",
+      "description": "Juvenile open-angle glaucoma",
+      "prompt": "19-year-old man with juvenile open-angle glaucoma in the right eye and a strong family history. Eye pressure 38 mmHg, an enlarged cup and no pain.",
+      "intended": { "diagnosis": "Juvenile open-angle glaucoma", "terms": ["juvenile","open-angle","open angle","glaucoma"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-010",
+      "description": "End-stage glaucoma with a white disc",
+      "prompt": "81-year-old woman with end-stage glaucoma in the left eye, with only light perception left. A totally cupped white disc with no visible rim.",
+      "intended": { "diagnosis": "End-stage glaucoma", "terms": ["end-stage","end stage","advanced","glaucoma","optic atrophy"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-011",
+      "description": "POAG in dark skin and a dark brown iris",
+      "prompt": "58-year-old man of West African descent with dark skin and dark brown irides, and moderate primary open-angle glaucoma in the right eye. A large oval cup and a thin inferior rim.",
+      "intended": { "diagnosis": "Moderate primary open-angle glaucoma", "terms": ["open-angle","open angle","poag","glaucoma"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-012",
+      "description": "POAG in fair skin and a blue iris",
+      "prompt": "70-year-old woman of Scandinavian descent with fair skin and pale blue irides, and moderate primary open-angle glaucoma in the left eye. Peripapillary atrophy and a thin rim.",
+      "intended": { "diagnosis": "Moderate primary open-angle glaucoma", "terms": ["open-angle","open angle","poag","glaucoma"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-013",
+      "description": "Acute angle-closure attack",
+      "prompt": "62-year-old woman with an acute angle-closure attack in the right eye, starting yesterday evening. Severe eye pain, headache, vomiting and haloes around lights. Red eye, steamy cornea and a fixed mid-dilated pupil.",
+      "intended": { "diagnosis": "Acute primary angle closure", "terms": ["angle closure","angle-closure"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-014",
+      "description": "Acute angle closure in a man with dark skin",
+      "prompt": "67-year-old man with dark skin and dark brown irides, and acute angle closure in the left eye. Sudden pain and blurred vision after an evening at the cinema. Ciliary flush, hazy cornea and a very shallow chamber.",
+      "intended": { "diagnosis": "Acute primary angle closure", "terms": ["angle closure","angle-closure"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-015",
+      "description": "Angle-closure attack after treatment, with glaukomflecken",
+      "prompt": "66-year-old woman two weeks after an acute angle-closure attack in the right eye, now treated. The eye is white and comfortable, with white anterior subcapsular flecks (glaukomflecken) on the lens and a mid-dilated, poorly reacting pupil.",
+      "intended": { "diagnosis": "Resolved acute angle closure with glaukomflecken", "terms": ["angle closure","angle-closure","glaukomflecken"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-016",
+      "description": "Intermittent subacute angle closure",
+      "prompt": "59-year-old woman with intermittent angle closure in the left eye. Brief evening episodes of blur and haloes that settle after sleep. Today the eye is quiet with a shallow chamber and a slight corneal haze.",
+      "intended": { "diagnosis": "Subacute intermittent angle closure", "terms": ["angle closure","angle-closure","narrow angle","shallow"], "severity": "mild" }
+    },
+    {
+      "id": "GLA-017",
+      "description": "Chronic angle-closure glaucoma",
+      "prompt": "71-year-old man with chronic angle-closure glaucoma in the right eye. No pain. A quiet white eye, a shallow chamber with a forward iris, and an enlarged cup with rim thinning.",
+      "intended": { "diagnosis": "Chronic angle-closure glaucoma", "terms": ["angle closure","angle-closure","glaucoma"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-018",
+      "description": "Primary angle-closure suspect",
+      "prompt": "55-year-old woman with long sight and a narrow angle in the left eye. No symptoms, normal eye pressure and a healthy disc, but a shallow peripheral chamber.",
+      "intended": { "diagnosis": "Primary angle-closure suspect", "terms": ["angle closure","angle-closure","narrow angle","shallow"], "severity": "mild" }
+    },
+    {
+      "id": "GLA-019",
+      "description": "Plateau iris",
+      "prompt": "42-year-old woman with plateau iris in the right eye and a patent iridotomy. A normal central chamber depth, a flat iris and a narrow angle at the periphery.",
+      "intended": { "diagnosis": "Plateau iris", "terms": ["plateau","angle closure","angle-closure","narrow angle"], "severity": "mild" }
+    },
+    {
+      "id": "GLA-020",
+      "description": "Phacomorphic glaucoma",
+      "prompt": "76-year-old woman with phacomorphic glaucoma in the right eye. A swollen white cataract has pushed the iris forward. Painful red eye, hazy cornea and a very shallow chamber.",
+      "intended": { "diagnosis": "Phacomorphic glaucoma", "terms": ["phacomorphic","angle closure","angle-closure","intumescent"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-021",
+      "description": "Phacolytic glaucoma",
+      "prompt": "82-year-old man with phacolytic glaucoma in the left eye. A hypermature cataract is leaking protein. Painful red eye, hazy cornea, a deep chamber with heavy flare and white cells floating in it.",
+      "intended": { "diagnosis": "Phacolytic glaucoma", "terms": ["phacolytic","hypermature","lens-induced"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-022",
+      "description": "Malignant (aqueous misdirection) glaucoma",
+      "prompt": "64-year-old woman with malignant glaucoma in the right eye, three days after a trabeculectomy. Painful eye, very high pressure and a flat central and peripheral anterior chamber, with a patent iridotomy.",
+      "intended": { "diagnosis": "Malignant glaucoma (aqueous misdirection)", "terms": ["malignant","aqueous misdirection","flat anterior chamber"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-023",
+      "description": "Pseudoexfoliation glaucoma",
+      "prompt": "73-year-old woman with pseudoexfoliation glaucoma in the left eye. Grey-white flaky material in a target pattern on the front of the lens and at the pupil margin, a poorly dilating pupil and a large cup.",
+      "intended": { "diagnosis": "Pseudoexfoliation glaucoma", "terms": ["pseudoexfoliation","exfoliation","pxf"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-024",
+      "description": "Pigmentary glaucoma",
+      "prompt": "34-year-old man with myopia and pigmentary glaucoma in the right eye. A vertical brown pigment line on the back of the cornea (Krukenberg spindle), spoke-like iris transillumination and an enlarged cup. Blurred vision after running.",
+      "intended": { "diagnosis": "Pigmentary glaucoma", "terms": ["pigmentary","pigment dispersion","krukenberg"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-025",
+      "description": "Steroid-induced glaucoma",
+      "prompt": "27-year-old man who has used steroid eye drops for vernal allergy for two years, with steroid-induced glaucoma in the left eye. A quiet eye, eye pressure 34 mmHg and an enlarged cup.",
+      "intended": { "diagnosis": "Steroid-induced glaucoma", "terms": ["steroid","glaucoma"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-026",
+      "description": "Neovascular glaucoma",
+      "prompt": "69-year-old man with diabetes and neovascular glaucoma in the right eye. Fine new vessels on the iris and at the pupil margin, a painful red eye, a hazy cornea and a mid-dilated pupil.",
+      "intended": { "diagnosis": "Neovascular glaucoma", "terms": ["neovascular","rubeosis"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-027",
+      "description": "Uveitic glaucoma",
+      "prompt": "41-year-old woman with uveitic glaucoma in the left eye. Red eye with keratic precipitates, flare and cells in the chamber, adhesions at the pupil and eye pressure of 36 mmHg.",
+      "intended": { "diagnosis": "Uveitic glaucoma", "terms": ["uveitic","uveitis","iritis","inflammatory"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-028",
+      "description": "Posner-Schlossman syndrome",
+      "prompt": "37-year-old man with Posner-Schlossman syndrome in the right eye. Mild discomfort and haloes, a white eye, a few fine keratic precipitates, slight corneal haze and eye pressure of 48 mmHg.",
+      "intended": { "diagnosis": "Glaucomatocyclitic crisis (Posner-Schlossman)", "terms": ["posner","glaucomatocyclitic","uveitis"], "severity": "mild" }
+    },
+    {
+      "id": "GLA-029",
+      "description": "Fuchs heterochromic cyclitis with glaucoma",
+      "prompt": "39-year-old woman with Fuchs heterochromic cyclitis and glaucoma in the left eye. A paler iris than the other eye, fine stellate keratic precipitates and a quiet white eye.",
+      "intended": { "diagnosis": "Fuchs heterochromic cyclitis with glaucoma", "terms": ["fuchs","heterochromi"], "severity": "mild" }
+    },
+    {
+      "id": "GLA-030",
+      "description": "Angle-recession glaucoma",
+      "prompt": "48-year-old man with angle-recession glaucoma in the right eye, 15 years after being hit by a cricket ball. A slightly irregular pupil, a deeper chamber than the other eye and an enlarged cup.",
+      "intended": { "diagnosis": "Angle-recession glaucoma", "terms": ["angle recession","angle-recession","traumatic"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-031",
+      "description": "Hyphaema with raised pressure",
+      "prompt": "22-year-old man hit in the left eye by a squash ball two days ago. A 3 mm layered hyphaema, a hazy cornea, pain and eye pressure of 42 mmHg.",
+      "intended": { "diagnosis": "Traumatic hyphaema with raised intraocular pressure", "terms": ["hyphaema","hyphema","traumatic"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-032",
+      "description": "Ghost-cell glaucoma",
+      "prompt": "60-year-old man with ghost-cell glaucoma in the right eye, three weeks after a vitreous haemorrhage. Tan-coloured cells layered in the lower chamber, a red painful eye and eye pressure of 44 mmHg.",
+      "intended": { "diagnosis": "Ghost-cell glaucoma", "terms": ["ghost"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-033",
+      "description": "Iridocorneal endothelial syndrome",
+      "prompt": "44-year-old woman with iridocorneal endothelial syndrome in the left eye. A displaced, distorted pupil with holes in the iris, a slightly hazy cornea and raised eye pressure.",
+      "intended": { "diagnosis": "Iridocorneal endothelial syndrome", "terms": ["iridocorneal","ice syndrome","essential iris atrophy","chandler"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-034",
+      "description": "Glaucoma in Sturge-Weber syndrome",
+      "prompt": "16-year-old girl with Sturge-Weber syndrome and glaucoma in the right eye. A port-wine stain on the upper lid and forehead, dilated episcleral vessels and an enlarged cup.",
+      "intended": { "diagnosis": "Glaucoma in Sturge-Weber syndrome", "terms": ["sturge","port-wine","episcleral"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-035",
+      "description": "Axenfeld-Rieger syndrome",
+      "prompt": "12-year-old boy with Axenfeld-Rieger syndrome and glaucoma in the left eye. A white line at the corneal edge, a thin iris with an off-centre pupil and an enlarged cup.",
+      "intended": { "diagnosis": "Axenfeld-Rieger syndrome with glaucoma", "terms": ["axenfeld","rieger","corectopia"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-036",
+      "description": "Congenital glaucoma with buphthalmos",
+      "prompt": "Six-month-old boy with primary congenital glaucoma in the right eye. An enlarged cloudy cornea with breaks in its back layer, watering, light sensitivity and an enlarged eye.",
+      "intended": { "diagnosis": "Primary congenital glaucoma", "terms": ["congenital","buphthalmos"], "severity": "severe" }
+    },
+    {
+      "id": "GLA-037",
+      "description": "Raised episcleral pressure in thyroid eye disease",
+      "prompt": "53-year-old woman with thyroid eye disease and secondary glaucoma in the left eye. A bulging eye, a retracted upper lid, dilated vessels over the muscle insertions and an enlarged cup.",
+      "intended": { "diagnosis": "Secondary glaucoma in thyroid eye disease", "terms": ["thyroid","graves","episcleral"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-038",
+      "description": "Carotid-cavernous fistula",
+      "prompt": "47-year-old man with a carotid-cavernous fistula and raised eye pressure in the right eye, six weeks after a head injury. Corkscrew dilated vessels over the white of the eye, a bulging eye and a swishing noise in the head.",
+      "intended": { "diagnosis": "Carotid-cavernous fistula with raised episcleral venous pressure", "terms": ["carotid","fistula","episcleral"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-039",
+      "description": "Filtering bleb after trabeculectomy",
+      "prompt": "72-year-old woman with glaucoma in the left eye, one year after a trabeculectomy. A raised pale bleb under the upper lid, a small peripheral iridectomy, a quiet eye and a large cup.",
+      "intended": { "diagnosis": "Glaucoma after trabeculectomy with a functioning bleb", "terms": ["trabeculectomy","bleb","filtering"], "severity": "moderate" }
+    },
+    {
+      "id": "GLA-040",
+      "description": "Lens-particle glaucoma",
+      "prompt": "65-year-old man with lens-particle glaucoma in the right eye, ten days after complicated cataract surgery. White fluffy lens fragments in the chamber, a red eye, a hazy cornea and eye pressure of 40 mmHg.",
+      "intended": { "diagnosis": "Lens-particle glaucoma", "terms": ["lens-particle","lens particle","lens-induced","retained lens"], "severity": "moderate" }
+    }
+  ]
+}
