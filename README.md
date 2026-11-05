@@ -11,10 +11,10 @@ A browser-based slit-lamp simulator for trainee ophthalmologists.</p>
   <img src="docs/readme/patient-screen.png" width="100%" alt="Patient screen: a seated patient behind the slit lamp, with the patient's opening words in a conversation panel and a Start Simulation button">
 </p>
 <p align="center">
-  <img src="docs/readme/cataract.png" width="49%" alt="Rendered eye with an advanced nuclear cataract: a brown lens behind the pupil">
+  <img src="docs/readme/cataract.png" width="49%" alt="Rendered eye with a grade 2 nuclear cataract: a soft yellow-brown haze in the lens behind the pupil">
   <img src="docs/readme/fundus.png" width="49%" alt="Rendered fundus through a 90D lens: a pale, deeply cupped optic disc with retinal vessels">
 </p>
-<p align="center"><sub>Top: the patient screen, where the history starts. Left: an advanced nuclear cataract. Right: the fundus in advanced glaucoma, seen through a 90D lens, so the image is inverted. Both eyes are rendered, not photographed.</sub></p>
+<p align="center"><sub>Top: the patient screen, where the history starts. Left: a grade 2 nuclear cataract. Right: the fundus in advanced glaucoma, seen through a 90D lens, so the image is inverted. Both eyes are rendered, not photographed.</sub></p>
 
 > **Training prototype, not a medical device.** It must not be used to diagnose or treat real patients. An ophthalmologist has validated the cataract and conjunctivitis cases and some of the glaucoma cases. Other cases have not had that review. See [Limitations](#limitations).
 
