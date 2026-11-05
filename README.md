@@ -174,7 +174,7 @@ These counts measure what an AI judge recognises from images alone across eyes t
 ## Limitations
 
 - **Clinical validation is partial.** An ophthalmologist has validated the cataract and conjunctivitis cases and some of the glaucoma cases. The remaining glaucoma cases, eyes the agent builds from a prompt, the match threshold and the scoring rubric have not had that review. Values marked `provenance.confidence: "low"` are calibrated to look right in the renderer.
-- **Limited disease coverage.** There are metadata definitions for nuclear and cortical cataract, primary open-angle and acute angle-closure glaucoma, bacterial conjunctivitis and arcus senilis. Other conditions depend on what the case agent can express, and often come out weak or wrong.
+- **Limited disease coverage.** There are metadata definitions for nuclear, cortical and posterior subcapsular cataract, primary open-angle and acute angle-closure glaucoma, bacterial conjunctivitis and arcus senilis. Other conditions depend on what the case agent can express, and often come out weak or wrong.
 - **One affected eye.** The disease is placed in one eye and the other is a mirrored healthy eye, so bilateral prompts are not fully represented.
 - **Patient appearance often misses the prompt.** Skin tone, iris colour and childhood anatomy frequently do not come through in agent-built eyes.
 - **Sessions live in memory.** Run a single server instance, and expect open sessions to end on a restart.
