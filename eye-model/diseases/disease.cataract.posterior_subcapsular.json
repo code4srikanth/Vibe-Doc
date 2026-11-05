@@ -1,0 +1,29 @@
+{
+  "id": "disease.cataract.posterior_subcapsular",
+  "name": "Posterior subcapsular cataract",
+  "summary": "A granular plaque just inside the posterior capsule at the visual axis: dark against the red reflex, with glare and poor near vision.",
+  "affects": ["eye.lens.capsule"],
+  "severity_scale": "Posterior subcapsular 1-3 (approximately LOCS III P1-P5 by area)",
+  "grades": {
+    "1": { "eye.lens.capsule": { "optics.posterior_subcapsular_opacity": 0.3 } },
+    "2": { "eye.lens.capsule": { "optics.posterior_subcapsular_opacity": 0.6 } },
+    "3": { "eye.lens.capsule": { "optics.posterior_subcapsular_opacity": 1.0 } }
+  },
+  "revealed_by": {
+    "retroillumination": "A central dark granular plaque silhouetted against the red reflex.",
+    "optic_section_lens": "Bright granular opacity at the very back of the lens section, just in front of the posterior capsule."
+  },
+  "differentials": ["Nuclear cataract", "Cortical cataract", "Posterior polar cataract", "Posterior capsular opacification after surgery"],
+  "teaching_points": [
+    "Focus on the back of the lens in the optic section, and confirm with retroillumination through a dilated pupil.",
+    "Ask about steroid use and diabetes, and about glare and near vision, which suffer early.",
+    "A small central plaque can reduce vision far more than its size suggests, especially in bright light."
+  ],
+  "further_reading": [
+    { "source": "National Eye Institute", "title": "Cataracts", "url": "https://www.nei.nih.gov/learn-about-eye-health/eye-conditions-and-diseases/cataracts", "sections": ["diagnosis"] },
+    { "source": "MedlinePlus", "title": "Cataract", "url": "https://medlineplus.gov/cataract.html", "sections": ["diagnosis"] },
+    { "source": "EyeWiki", "title": "Cataract", "url": "https://eyewiki.org/Cataract", "sections": ["diagnosis", "signs"] },
+    { "source": "Moran CORE", "title": "Cataracts", "url": "https://morancore.utah.edu/basic-ophthalmology-review/cataracts/", "sections": ["signs", "technique"] }
+  ],
+  "provenance": { "source": "LOCS III: Chylack et al. (1993); values render-calibrated", "confidence": "low", "reviewed_by": null }
+}

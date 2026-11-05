@@ -1,0 +1,13 @@
+{
+  "id": "aacg_subacute",
+  "title": "Subacute (intermittent) angle closure",
+  "subject": { "age": 58, "sex": "female", "eye": "OS", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.glaucoma.acute_angle_closure", "grade": "subacute" }
+  ],
+  "exam_conditions": { "dilated": false },
+  "answer": {
+    "diagnosis": "Subacute primary angle closure, left eye",
+    "notes": "Do not dilate. IOP raised, below the level of a full attack. Mild haze and flush with a shallow chamber; check the fellow eye's angle."
+  }
+}

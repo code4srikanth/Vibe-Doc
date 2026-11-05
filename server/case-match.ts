@@ -9,8 +9,12 @@ import type { Library } from "../src/model/library.ts";
 import { BASE_CASE_ID } from "./harness.ts";
 import { SIGNS, caseVector, scoresToVector, type SignScores } from "./signs.ts";
 
-/** The stored cases with signs at the front of the eye: the hackathon's scenarios and the nuclear and cortical grades. */
-export const MATCHABLE_CASES = ["aacg", "conjunctivitis", "ns1", "ns2", "ns3", "ns4", "cc2", "cc4"];
+/** The stored cases a prompt can match: the hackathon's scenarios, the cataract types and grades, and the glaucoma stages. */
+export const MATCHABLE_CASES = [
+  "conjunctivitis",
+  "ns1", "ns2", "ns3", "ns4", "cc1", "cc2", "cc3", "cc4", "psc1", "psc2", "psc3", "ns2_cc2", "ns3_cc3", "ns3_psc2",
+  "aacg", "aacg_subacute", "aacg_moderate", "aacg_ns3", "poag_early", "poag", "poag_advanced", "poag_ns2", "poag_advanced_ns3"
+];
 /** Euclidean distance in sign space. Render-calibrated on a small prompt set; not clinically validated. */
 export const MAX_DISTANCE = 0.6;
 

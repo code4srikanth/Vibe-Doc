@@ -1,0 +1,14 @@
+{
+  "id": "aacg_ns3",
+  "title": "Acute angle-closure attack with nuclear cataract",
+  "subject": { "age": 71, "sex": "female", "eye": "OS", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.glaucoma.acute_angle_closure", "grade": "attack" },
+    { "id": "disease.cataract.nuclear", "grade": "3" }
+  ],
+  "exam_conditions": { "dilated": false },
+  "answer": {
+    "diagnosis": "Acute primary angle closure with nuclear cataract grade 3, left eye",
+    "notes": "Do not dilate. IOP expected 40-70 mmHg. The corneal haze is the emergency; the cataract is a co-existing finding seen through it."
+  }
+}

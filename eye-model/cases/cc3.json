@@ -1,0 +1,10 @@
+{
+  "id": "cc3",
+  "title": "Marked cortical cataract",
+  "subject": { "age": 68, "sex": "male", "eye": "OS", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.cataract.cortical", "grade": "3", "params": { "location": "diffuse" } }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": { "diagnosis": "Cortical cataract, grade 3, spokes around the lens, left eye" }
+}

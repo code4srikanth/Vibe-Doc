@@ -1,0 +1,10 @@
+{
+  "id": "psc2",
+  "title": "Moderate posterior subcapsular cataract",
+  "subject": { "age": 55, "sex": "male", "eye": "OS", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.cataract.posterior_subcapsular", "grade": "2" }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": { "diagnosis": "Posterior subcapsular cataract, grade 2, left eye" }
+}

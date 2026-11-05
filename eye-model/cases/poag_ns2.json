@@ -1,0 +1,14 @@
+{
+  "id": "poag_ns2",
+  "title": "Primary open-angle glaucoma with nuclear cataract",
+  "subject": { "age": 67, "sex": "female", "eye": "OD", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.glaucoma.poag", "grade": "moderate" },
+    { "id": "disease.cataract.nuclear", "grade": "2" }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": {
+    "diagnosis": "Primary open-angle glaucoma (moderate) with nuclear cataract grade 2, right eye",
+    "notes": "Vertical cup-to-disc ratio about 0.75, inferotemporal notch. The cataract is at the front of the eye; the glaucoma is only found by examining the disc."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "ns2_cc2",
+  "title": "Mixed nuclear and cortical cataract",
+  "subject": { "age": 64, "sex": "female", "eye": "OS", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.cataract.nuclear", "grade": "2" },
+    { "id": "disease.cataract.cortical", "grade": "2", "params": { "location": "inferior" } }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": { "diagnosis": "Age-related mixed cataract: nuclear grade 2 with cortical grade 2 inferior spokes, left eye" }
+}

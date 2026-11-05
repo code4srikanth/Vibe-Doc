@@ -12,7 +12,8 @@ export const SIGNS = [
   { sign: "ciliary_flush", component: "eye.conjunctiva", property: "appearance.ciliary_flush" },
   { sign: "discharge", component: "eye.tear_film", property: "optics.discharge" },
   { sign: "corneal_haze", component: "eye.cornea.stroma", property: "optics.haze" },
-  { sign: "shallow_chamber", component: "eye.anterior_chamber", property: "anatomy.depth" }
+  { sign: "shallow_chamber", component: "eye.anterior_chamber", property: "anatomy.depth" },
+  { sign: "optic_disc_cupping", component: "eye.optic_disc", property: "anatomy.cup_disc_ratio_vertical" }
 ] as const;
 export type SignScores = Partial<Record<typeof SIGNS[number]["sign"], number>>;
 

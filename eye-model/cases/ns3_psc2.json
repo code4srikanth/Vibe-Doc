@@ -1,0 +1,11 @@
+{
+  "id": "ns3_psc2",
+  "title": "Mixed nuclear and posterior subcapsular cataract",
+  "subject": { "age": 70, "sex": "female", "eye": "OD", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.cataract.nuclear", "grade": "3" },
+    { "id": "disease.cataract.posterior_subcapsular", "grade": "2" }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": { "diagnosis": "Age-related mixed cataract: nuclear grade 3 with posterior subcapsular grade 2, right eye" }
+}

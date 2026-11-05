@@ -1,0 +1,13 @@
+{
+  "id": "aacg_moderate",
+  "title": "Moderate acute angle-closure attack",
+  "subject": { "age": 65, "sex": "male", "eye": "OD", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.glaucoma.acute_angle_closure", "grade": "moderate" }
+  ],
+  "exam_conditions": { "dilated": false },
+  "answer": {
+    "diagnosis": "Acute primary angle closure, moderate, right eye",
+    "notes": "Do not dilate. IOP raised. Hazy cornea, ciliary flush, shallow chamber and a sluggish mid-dilated pupil."
+  }
+}

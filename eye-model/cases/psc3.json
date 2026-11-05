@@ -1,0 +1,10 @@
+{
+  "id": "psc3",
+  "title": "Advanced posterior subcapsular cataract",
+  "subject": { "age": 62, "sex": "female", "eye": "OD", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.cataract.posterior_subcapsular", "grade": "3" }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": { "diagnosis": "Posterior subcapsular cataract, grade 3, right eye" }
+}

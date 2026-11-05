@@ -848,6 +848,21 @@
       "file": "eye-model/diseases/disease.cataract.nuclear.json"
     },
     {
+      "id": "disease.cataract.posterior_subcapsular",
+      "name": "Posterior subcapsular cataract",
+      "summary": "A granular plaque just inside the posterior capsule at the visual axis: dark against the red reflex, with glare and poor near vision.",
+      "affects": [
+        "eye.lens.capsule"
+      ],
+      "grades": [
+        "1",
+        "2",
+        "3"
+      ],
+      "params": [],
+      "file": "eye-model/diseases/disease.cataract.posterior_subcapsular.json"
+    },
+    {
       "id": "disease.conjunctivitis.bacterial",
       "name": "Acute bacterial conjunctivitis",
       "summary": "Engorged superficial vessels worst toward the fornices and palest at the limbus, sticky discharge, puffy lids; cornea clear, pupil normal.",
@@ -893,6 +908,8 @@
         "eye.lens"
       ],
       "grades": [
+        "subacute",
+        "moderate",
         "attack"
       ],
       "params": [],
@@ -948,12 +965,53 @@
       "file": "eye-model/cases/aacg.json"
     },
     {
+      "id": "aacg_moderate",
+      "title": "Moderate acute angle-closure attack",
+      "diseases": [
+        "disease.glaucoma.acute_angle_closure@moderate"
+      ],
+      "file": "eye-model/cases/aacg_moderate.json"
+    },
+    {
+      "id": "aacg_ns3",
+      "title": "Acute angle-closure attack with nuclear cataract",
+      "diseases": [
+        "disease.glaucoma.acute_angle_closure@attack",
+        "disease.cataract.nuclear@3"
+      ],
+      "file": "eye-model/cases/aacg_ns3.json"
+    },
+    {
+      "id": "aacg_subacute",
+      "title": "Subacute (intermittent) angle closure",
+      "diseases": [
+        "disease.glaucoma.acute_angle_closure@subacute"
+      ],
+      "file": "eye-model/cases/aacg_subacute.json"
+    },
+    {
+      "id": "cc1",
+      "title": "Early cortical cataract",
+      "diseases": [
+        "disease.cataract.cortical@1"
+      ],
+      "file": "eye-model/cases/cc1.json"
+    },
+    {
       "id": "cc2",
       "title": "Moderate cortical cataract",
       "diseases": [
         "disease.cataract.cortical@2"
       ],
       "file": "eye-model/cases/cc2.json"
+    },
+    {
+      "id": "cc3",
+      "title": "Marked cortical cataract",
+      "diseases": [
+        "disease.cataract.cortical@3"
+      ],
+      "file": "eye-model/cases/cc3.json"
     },
     {
       "id": "cc4",
@@ -994,12 +1052,39 @@
       "file": "eye-model/cases/ns2.json"
     },
     {
+      "id": "ns2_cc2",
+      "title": "Mixed nuclear and cortical cataract",
+      "diseases": [
+        "disease.cataract.nuclear@2",
+        "disease.cataract.cortical@2"
+      ],
+      "file": "eye-model/cases/ns2_cc2.json"
+    },
+    {
       "id": "ns3",
       "title": "Advanced nuclear cataract",
       "diseases": [
         "disease.cataract.nuclear@3"
       ],
       "file": "eye-model/cases/ns3.json"
+    },
+    {
+      "id": "ns3_cc3",
+      "title": "Advanced mixed nuclear and cortical cataract",
+      "diseases": [
+        "disease.cataract.nuclear@3",
+        "disease.cataract.cortical@3"
+      ],
+      "file": "eye-model/cases/ns3_cc3.json"
+    },
+    {
+      "id": "ns3_psc2",
+      "title": "Mixed nuclear and posterior subcapsular cataract",
+      "diseases": [
+        "disease.cataract.nuclear@3",
+        "disease.cataract.posterior_subcapsular@2"
+      ],
+      "file": "eye-model/cases/ns3_psc2.json"
     },
     {
       "id": "ns4",
@@ -1018,6 +1103,64 @@
         "disease.glaucoma.poag@moderate"
       ],
       "file": "eye-model/cases/poag.json"
+    },
+    {
+      "id": "poag_advanced",
+      "title": "Advanced primary open-angle glaucoma",
+      "diseases": [
+        "disease.glaucoma.poag@advanced"
+      ],
+      "file": "eye-model/cases/poag_advanced.json"
+    },
+    {
+      "id": "poag_advanced_ns3",
+      "title": "Advanced primary open-angle glaucoma with nuclear cataract",
+      "diseases": [
+        "disease.glaucoma.poag@advanced",
+        "disease.cataract.nuclear@3"
+      ],
+      "file": "eye-model/cases/poag_advanced_ns3.json"
+    },
+    {
+      "id": "poag_early",
+      "title": "Early primary open-angle glaucoma",
+      "diseases": [
+        "disease.glaucoma.poag@early"
+      ],
+      "file": "eye-model/cases/poag_early.json"
+    },
+    {
+      "id": "poag_ns2",
+      "title": "Primary open-angle glaucoma with nuclear cataract",
+      "diseases": [
+        "disease.glaucoma.poag@moderate",
+        "disease.cataract.nuclear@2"
+      ],
+      "file": "eye-model/cases/poag_ns2.json"
+    },
+    {
+      "id": "psc1",
+      "title": "Early posterior subcapsular cataract",
+      "diseases": [
+        "disease.cataract.posterior_subcapsular@1"
+      ],
+      "file": "eye-model/cases/psc1.json"
+    },
+    {
+      "id": "psc2",
+      "title": "Moderate posterior subcapsular cataract",
+      "diseases": [
+        "disease.cataract.posterior_subcapsular@2"
+      ],
+      "file": "eye-model/cases/psc2.json"
+    },
+    {
+      "id": "psc3",
+      "title": "Advanced posterior subcapsular cataract",
+      "diseases": [
+        "disease.cataract.posterior_subcapsular@3"
+      ],
+      "file": "eye-model/cases/psc3.json"
     },
     {
       "id": "reference_black_brown",

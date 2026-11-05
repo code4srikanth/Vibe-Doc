@@ -1,0 +1,13 @@
+{
+  "id": "poag_early",
+  "title": "Early primary open-angle glaucoma",
+  "subject": { "age": 58, "sex": "female", "eye": "OD", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.glaucoma.poag", "grade": "early" }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": {
+    "diagnosis": "Primary open-angle glaucoma, right eye (early)",
+    "notes": "Vertical cup-to-disc ratio about 0.6 with early inferior rim thinning. Examine the disc with the 90D lens through a dilated pupil."
+  }
+}

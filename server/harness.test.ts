@@ -25,7 +25,11 @@ test("read returns a component's properties with ranges", () => {
 
 test("a property lists the values the library's diseases set, as a calibrated scale", () => {
   const r = harness().read("eye.cornea.stroma") as { properties: { property: string; library?: string[] }[] };
-  assert.deepEqual(r.properties.find(p => p.property === "optics.haze")?.library, ["Acute primary angle closure, grade attack: 0.35"]);
+  assert.deepEqual(r.properties.find(p => p.property === "optics.haze")?.library, [
+    "Acute primary angle closure, grade subacute: 0.1",
+    "Acute primary angle closure, grade moderate: 0.2",
+    "Acute primary angle closure, grade attack: 0.35"
+  ]);
 });
 
 test("set rejects what the schema does not allow", () => {
@@ -55,7 +59,7 @@ test("set converts numbers sent as text, and string properties take only known o
   const h = harness();
   assert.equal(set(h, "eye.lens.nucleus", "optics.density", "0.65").ok, true);
   assert.equal(h.edits[0].value, 0.65);
-  assert.match(set(h, "eye.pupil", "physiology.light_reflex", "sluggish").error!, /one of: brisk, fixed/);
+  assert.match(set(h, "eye.pupil", "physiology.light_reflex", "absent").error!, /one of: brisk, (sluggish, fixed|fixed, sluggish)/);
   assert.equal(set(h, "eye.pupil", "physiology.light_reflex", "fixed").ok, true);
   assert.match(set(h, "eye.iris", "appearance.colour", "blue").error!, /one of: black_brown./);
 });

@@ -3,8 +3,24 @@
   "name": "Acute primary angle closure",
   "summary": "Sudden blockage of aqueous outflow: very high IOP, oedematous cornea, shallow chamber, fixed mid-dilated pupil and ciliary flush.",
   "affects": ["eye.cornea.stroma", "eye.tear_film", "eye.anterior_chamber", "eye.pupil", "eye.conjunctiva", "eye.lens"],
-  "severity_scale": "present",
+  "severity_scale": "subacute, moderate, attack. The subacute and moderate grades are render-calibrated (low) and scaled down from the attack.",
   "grades": {
+    "subacute": {
+      "eye.cornea.stroma": { "optics.haze": 0.1 },
+      "eye.tear_film": { "optics.surface_irregularity": 0.005 },
+      "eye.anterior_chamber": { "anatomy.depth": 1.9, "optics.flare_grade": 0 },
+      "eye.pupil": { "anatomy.diameter": 3.8, "anatomy.dilated_diameter": 3.8, "anatomy.vertical_ratio": 1.03, "physiology.light_reflex": "sluggish" },
+      "eye.conjunctiva": { "appearance.injection": 0.1, "appearance.ciliary_flush": 0.3, "appearance.ciliary_flush_width": 2.5 },
+      "eye.lens": { "anatomy.thickness": 4.8 }
+    },
+    "moderate": {
+      "eye.cornea.stroma": { "optics.haze": 0.2 },
+      "eye.tear_film": { "optics.surface_irregularity": 0.012 },
+      "eye.anterior_chamber": { "anatomy.depth": 1.7, "optics.flare_grade": 1 },
+      "eye.pupil": { "anatomy.diameter": 4.5, "anatomy.dilated_diameter": 4.5, "anatomy.vertical_ratio": 1.08, "physiology.light_reflex": "sluggish" },
+      "eye.conjunctiva": { "appearance.injection": 0.18, "appearance.ciliary_flush": 0.6, "appearance.ciliary_flush_width": 3 },
+      "eye.lens": { "anatomy.thickness": 4.8 }
+    },
     "attack": {
       "eye.cornea.stroma": { "optics.haze": 0.35 },
       "eye.tear_film": { "optics.surface_irregularity": 0.02 },
@@ -15,9 +31,9 @@
     }
   },
   "revealed_by": {
-    "diffuse": "Steamy hazy cornea with a dull, broken reflex; the iris and pupil are still seen through it. Ciliary flush densest around the limbus; fixed, vertically oval mid-dilated pupil.",
-    "optic_section_cornea": "Thick hazy corneal section; very shallow central chamber, so the corneal and lens beams almost touch.",
-    "tonometry": "IOP typically 40-70 mmHg."
+    "diffuse": "Hazy cornea with a dull reflex, steamy and broken in a full attack; the iris and pupil are still seen through it. Ciliary flush densest around the limbus; mid-dilated pupil, fixed and vertically oval in a full attack, sluggish in a milder episode.",
+    "optic_section_cornea": "Hazy corneal section, thick in a full attack; shallow central chamber, so in a full attack the corneal and lens beams almost touch.",
+    "tonometry": "IOP typically 40-70 mmHg in a full attack, lower in a subacute episode."
   },
   "differentials": ["Acute anterior uveitis", "Neovascular glaucoma", "Phacomorphic glaucoma", "Acute conjunctivitis"],
   "teaching_points": [

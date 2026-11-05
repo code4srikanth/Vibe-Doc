@@ -1,0 +1,10 @@
+{
+  "id": "cc1",
+  "title": "Early cortical cataract",
+  "subject": { "age": 56, "sex": "female", "eye": "OD", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.cataract.cortical", "grade": "1", "params": { "location": "inferior" } }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": { "diagnosis": "Cortical cataract, grade 1, inferior spokes, right eye" }
+}

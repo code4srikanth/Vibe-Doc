@@ -1,0 +1,13 @@
+{
+  "id": "poag_advanced",
+  "title": "Advanced primary open-angle glaucoma",
+  "subject": { "age": 72, "sex": "male", "eye": "OS", "iris_colour": "black_brown", "skin_tone": "medium" },
+  "diseases": [
+    { "id": "disease.glaucoma.poag", "grade": "advanced" }
+  ],
+  "exam_conditions": { "dilated": true },
+  "answer": {
+    "diagnosis": "Primary open-angle glaucoma, left eye (advanced)",
+    "notes": "Vertical cup-to-disc ratio about 0.9, almost no rim, pale disc, disc haemorrhage at the margin. Examine the disc with the 90D lens through a dilated pupil."
+  }
+}
