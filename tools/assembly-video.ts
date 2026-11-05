@@ -174,7 +174,7 @@ const black = new Uint8Array(PIXELS*3).fill(14);
 const pupilWide = await blurGray(pupil, 4);   // runs under the iris, so nothing shows between them
 await save("pupil", black, i => Math.min(255, 2.2*pupilWide[i]));
 
-// ---- cornea and lens layers: light on black, added on top, brought up so a faint layer can be seen ----
+// ---- cornea and lens layers: light on black, which the scene shows as tinted glass, brought up so a faint layer can be seen ----
 const lensGray = luma(await load("lens"));
 let lx0 = WIDTH, lx1 = 0;
 for (let i = 0; i < PIXELS; i++) if (lensGray[i] > 5 && yOf(i) === cy) { lx0 = Math.min(lx0, xOf(i)); lx1 = Math.max(lx1, xOf(i)); }
@@ -232,7 +232,7 @@ await saveFundus("retina", await fill(noMacula, holes, 60), () => 255);
 // ---- what has no pixels of its own: its outline, at its size in the metadata ----
 const eye = resolveCase(lib, base);
 const pxPerMm = irisR/(eye.num("eye.cornea", "anatomy.diameter")/2);
-const outline = (name: string, r: number, fillOpacity = .06) => sharp(Buffer.from(`<svg width="${WIDTH}" height="${HEIGHT}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#5fdcc4" fill-opacity="${fillOpacity}" stroke="#5fdcc4" stroke-width="6"/></svg>`)).png().toFile(join(parts, `${name}.png`));
+const outline = (name: string, r: number, fillOpacity = .06) => sharp(Buffer.from(`<svg width="${WIDTH}" height="${HEIGHT}"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#0b8693" fill-opacity="${fillOpacity}" stroke="#0b8693" stroke-width="6"/></svg>`)).png().toFile(join(parts, `${name}.png`));
 await outline("cornea", corneaR);
 await outline("bowman", corneaR*.98, .03);
 await outline("descemet", corneaR*.94, .03);
@@ -241,7 +241,7 @@ await outline("lens_shape", eye.num("eye.lens", "anatomy.equatorial_diameter")/2
 await outline("globe", Math.min(eye.num("eye.globe", "anatomy.radius")*pxPerMm, HEIGHT/2 - 8), .04);
 // the fissure's outline, from the opening itself
 const fissureEdge = await blurGray(opening, 2.5);
-await save("palpebral_fissure", new Uint8Array(PIXELS*3).map((_, k) => [95, 220, 196][k % 3]), i => 255*soft(127 - Math.abs(fissureEdge[i] - 127), 60, 120) + (opening[i] ? 18 : 0));
+await save("palpebral_fissure", new Uint8Array(PIXELS*3).map((_, k) => [11, 134, 147][k % 3]), i => 255*soft(127 - Math.abs(fissureEdge[i] - 127), 60, 120) + (opening[i] ? 18 : 0));
 
 // ---- the counts on screen come from the metadata ----
 const isQuantity = (o: object) => "unit" in o && ("value" in o || "age" in o || "derived" in o);
@@ -278,7 +278,7 @@ try {
   } else {
     const out = args.out ?? join(ROOT, DIR, "eye-assembly.mp4");
     const codec = out.endsWith(".webm") ? ["-c:v", "vp8", "-qmin", "0", "-qmax", "30", "-crf", "6", "-b:v", "16M", "-deadline", "good", "-speed", "1"] : ["-c:v", "libx264", "-crf", "16", "-preset", "slow", "-movflags", "+faststart"];
-    const ffmpeg = spawn(process.env.FFMPEG ?? "ffmpeg", ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(FPS), "-c:v", "mjpeg", "-i", "pipe:0", ...codec, "-pix_fmt", "yuv420p", out], { stdio: ["pipe", "ignore", "inherit"] });
+    const ffmpeg = spawn(process.env.FFMPEG ?? "ffmpeg", ["-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", String(FPS), "-c:v", "mjpeg", "-i", "pipe:0", ...codec, "-vf", "scale=in_range=full:out_range=tv,format=yuv420p", out], { stdio: ["pipe", "ignore", "inherit"] });
     const done = new Promise<void>((ok, no) => { ffmpeg.on("error", no); ffmpeg.on("close", c => (c ? no(new Error(`ffmpeg exited with ${c}`)) : ok())); });
     const total = FPS*SECONDS;
     for (let f = 0; f < total; f++) {
