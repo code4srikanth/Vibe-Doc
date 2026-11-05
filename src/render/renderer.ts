@@ -37,7 +37,8 @@ export class EyeRenderer {
     const quad = new THREE.PlaneGeometry(2, 2);
     const common = { glslVersion: THREE.GLSL3, vertexShader: vert, depthTest: false, depthWrite: false };
     this.eyeMat = new THREE.RawShaderMaterial({ ...common, fragmentShader: fragment, uniforms: { uPrev: { value: null }, uZero: { value: 0 }, uRes: { value: new THREE.Vector2() }, uCam: { value: new THREE.Vector2() } } });
-    this.dispMat = new THREE.RawShaderMaterial({ ...common, fragmentShader: dispFrag, uniforms: { uTex: { value: null }, uRes: { value: new THREE.Vector2() }, uEye: { value: 0 }, uBloom: { value: 1 }, uGrain: { value: 1 }, uMirror: { value: 0 } } });
+    this.dispMat = new THREE.RawShaderMaterial({ ...common, fragmentShader: dispFrag, uniforms: { uTex: { value: null }, uRes: { value: new THREE.Vector2() }, uEye: { value: 0 }, uBloom: { value: 1 }, uGrain: { value: 1 }, uMirror: { value: 0 },
+      uBlink: { value: 0 }, uBlinkWarp: { value: 0 }, uLidRest: { value: 0 }, uFov: { value: 1 }, uCanLX: { value: 1 }, uCanMX: { value: 0 }, uCam: { value: new THREE.Vector2() }, uExtRect: { value: new THREE.Vector4(0, 0, 1, 1) }, uLidRows: { value: null } } });
     for (const [scene, mat] of [[this.eyeScene, this.eyeMat], [this.dispScene, this.dispMat]] as const) {
       const mesh = new THREE.Mesh(quad, mat);
       mesh.frustumCulled = false;
@@ -88,6 +89,7 @@ export class EyeRenderer {
     this.size.set(width, height);
     this.gl.setSize(width, height, false);
     this.targets?.forEach(t => t.dispose());
+    this.dispMat.uniforms.uTex.value = null;   // nothing finished to show at the new size
     const make = () => new THREE.WebGLRenderTarget(width, height, {
       type: THREE.HalfFloatType, format: THREE.RGBAFormat, depthBuffer: false,
       minFilter: THREE.LinearMipmapLinearFilter, magFilter: THREE.LinearFilter, generateMipmaps: true
@@ -133,11 +135,35 @@ export class EyeRenderer {
 
   restart() { this.frame = 0; }
 
+  /** Draws the last finished picture with the lid part-way through a blink, with no ray marching: a frame of the eye can
+   *  take seconds on a weak GPU, and a blink must not wait for one. Accumulation holds until `closed` is null, which
+   *  ends the blink; the picture built so far is kept. warp: move the lid (slit lamp), or only darken (fundus). */
+  blink(closed: number | null, warp: boolean) {
+    this.blinking = closed !== null;
+    const d = this.dispMat.uniforms, u = this.eyeMat.uniforms, rows = u.uLidRows?.value, rect = u.uExtRect?.value;
+    const moves = warp && !!rows && !!rect;
+    d.uBlink.value = closed ?? 0;
+    d.uBlinkWarp.value = moves ? 1 : 0;
+    if (moves) {
+      d.uLidRows.value = rows;
+      d.uExtRect.value = rect;
+      d.uLidRest.value = u.uLidClose?.value ?? 0;
+      d.uFov.value = u.uFov.value;
+      d.uCanLX.value = u.uCanLX.value;
+      d.uCanMX.value = u.uCanMX.value;
+      (d.uCam.value as THREE.Vector2).copy(u.uCam.value as THREE.Vector2);
+    }
+    if (!this.compiled || !d.uTex.value) return;
+    this.gl.setRenderTarget(null);
+    this.gl.render(this.dispScene, this.camera);
+  }
+  private blinking = false;
+
   get done() { return this.frame >= this.maxFrames; }
 
   /** Renders one more accumulation frame and shows it. Returns false when converged. */
   step(): boolean {
-    if (!this.targets || this.done || !this.compiled) return false;
+    if (!this.targets || this.done || !this.compiled || this.blinking) return false;
     const [read, write] = this.targets;
     const u = this.eyeMat.uniforms;
     u.uPrev.value = read.texture;

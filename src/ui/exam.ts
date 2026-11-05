@@ -20,6 +20,8 @@ export interface ExamHooks {
   setGaze(horizontal: number, vertical: number): void;
   /** The upper lid's move as a fraction of the opening's height: 1 closed, negative raised. */
   setLids(fraction: number, centre?: number): void;
+  /** One moment of a blink, 0 open to 1 shut, drawn without ray marching; null ends it. */
+  setBlink(closed: number | null): void;
   /** Width of the view's field, mm. */
   fieldWidth(): number;
   /** A fundus lens was chosen (or null, none): show the fundus through it. */
@@ -97,7 +99,7 @@ const RATE = { x: 6, y: 4, focus: 2.5 };   // mm per second at full deflection
 // patient's own left and up; the upper lid is lifted for up and down gaze, and lid moves are fractions of the
 // opening's height (1 closes it).
 const LOOK = [35, 22];   // sideways, up/down (degrees): a held look is a clear turn, inside the globe's gaze ranges
-const LID = { up: -0.12, down: -0.12, wide: -0.18, blink: 1 };
+const LID = { up: -0.12, down: -0.12, wide: -0.18 };
 const REACT_MS = 350;             // from the instruction to the patient's move
 const BLINK_MS = [34, 22, 64];    // closing, shut, opening: 0.12 s in all
 const BLINK_EVERY_MS = 8000;      // the patient's own blinks
@@ -460,8 +462,27 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): Ex
     const step = (now: number) => {
       if (id !== lidAnim) return done();
       const t = Math.min(1, Math.max(0, (now - t0) / ms)), e = t * t * (3 - 2 * t);
-      hooks.setLids(lidNow = from + (to - from) * e, lidWide ? 1 : 0);
+      hooks.setLids(lidNow = t < 1 ? from + (to - from) * e : to, lidWide ? 1 : 0);
       if (t < 1) requestAnimationFrame(step); else done();
+    };
+    requestAnimationFrame(step);
+  });
+  // A blink draws no eye frames, so the lid never waits for one. The eye frame already on the GPU can still delay the
+  // first ticks by longer than the whole blink, so each tick advances the clock by one closing time at most: the
+  // shut lid is always drawn, and the blink ends a few ticks later whatever the GPU was doing.
+  let blinking = false;
+  const blink = () => new Promise<void>(done => {
+    if (blinking) return done();
+    blinking = true;
+    hooks.setBlink(0);
+    const [close, shut, open] = BLINK_MS, ease = (t: number) => t * t * (3 - 2 * t);
+    let t = 0, last = -1;
+    const step = (now: number) => {
+      if (last >= 0) t += Math.min(now - last, close);
+      last = now;
+      if (t >= close + shut + open) { blinking = false; hooks.setBlink(null); return done(); }
+      hooks.setBlink(t < close ? ease(t / close) : t < close + shut ? 1 : 1 - ease((t - close - shut) / open));
+      requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
   });
@@ -476,14 +497,12 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): Ex
       lidWide = true;
       lidsTo(lidRest(), 220).then(() => { lidWide = wide; });
     } else if (id === "blink") {
-      await lidsTo(LID.blink, BLINK_MS[0]);
-      await new Promise(r => setTimeout(r, BLINK_MS[1]));
-      await lidsTo(lidRest(), BLINK_MS[2]);
+      await blink();
     }
     qa<HTMLButtonElement>("[data-say]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.say === held || (b.dataset.say === "open" && wide))));
   };
   // the patient also blinks on their own, but not while holding the eyes wide or while the lids are moving
-  setInterval(() => { if (!wide && !document.hidden && lidNow === lidRest()) void respond("blink", false); }, BLINK_EVERY_MS);
+  setInterval(() => { if (!wide && !blinking && !document.hidden && lidNow === lidRest()) void respond("blink", false); }, BLINK_EVERY_MS);
   const act = (a: EyeAction) => {
     const look = { look_up: "up", look_down: "down", look_left: "left", look_right: "right" }[a as string];
     if (look) void respond(look, false);

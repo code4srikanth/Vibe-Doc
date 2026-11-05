@@ -242,6 +242,7 @@ function bindScreen() {
     setDilated(on) { dilated = on; resolve(); apply(); renderPanels(); },
     setGaze(h, v) { gaze = [h, v]; resolve(); apply(); renderPanels(); },
     setLids(f, centre = 0) { lids = f; lidCentre = centre; if (!examOver) renderer?.setUniforms({ uLidClose: f, uLidCentre: centre }, fundusLens && lensView ? lensView.camera : field().centre); },
+    setBlink(closed) { if (!examOver) renderer?.blink(closed, !fundusLens); },
     // through a lens the lamp moves over the lens's image, so the view follows the pointer at the image's scale
     fieldWidth: () => fundusLens && lensView ? lensView.fov * lensView.mag : field().width,
     setFundusLens(lens) {
@@ -258,6 +259,7 @@ function bindScreen() {
         if (!patient) return Promise.reject(new Error("the server is not connected"));
         return patient.evaluate(sheet, examLog);
       }).then(report => {
+        renderer?.blink(null, false);   // a blink under way must not hold the report's pictures
         examOver = true; live = false;
         showReport(report, () => location.reload(), drawForReport);
       });
