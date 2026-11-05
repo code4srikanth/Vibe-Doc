@@ -82,7 +82,7 @@ const ICON = {
 };
 const svg = (name: keyof typeof ICON, cls = "") => `<svg viewBox="0 0 24 24" aria-hidden="true"${cls ? ` class="${cls}"` : ""}>${ICON[name]}</svg>`;
 
-const LENSES = ["None", "60D", "78D", "90D", "Pan Retinal (PRP)", "Goldmann Three Mirror", "Gonioscopy Lens"];
+const LENSES = ["None", ...Object.keys(FUNDUS_LENSES)];   // only the lenses with a simulated view
 const MAGS: LampSettings["magnification"][] = [6, 10, 16, 25, 40];
 const HEIGHTS = [1, 2, 3, 5, 8, 14];   // mm, the click stops of the slit-height knob
 const WIDTH_MAX = 14;                  // mm; the width slider is quadratic so the fine slits get most of its travel
@@ -531,8 +531,7 @@ function bindExam(root: HTMLElement, hooks: ExamHooks, patient: ExamPatient): Ex
     knobs.forEach(k => k.sync());
     q(".hint").textContent = isFundus() ? "drag: move over the fundus · scroll: focus" : "drag: move the slit · scroll: focus";
     const msg = isFundus() ? ""
-      : viewed !== patient.eye ? `Only the ${EYE_NAME[patient.eye].toLowerCase()} (${patient.eye}) is modelled in this case.`
-      : lens !== "None" ? `${lens}: the view through this lens is not simulated yet.` : "";
+      : viewed !== patient.eye ? `Only the ${EYE_NAME[patient.eye].toLowerCase()} (${patient.eye}) is modelled in this case.` : "";
     notice.textContent = msg; notice.hidden = !msg;
   }
   sync();
